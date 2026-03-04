@@ -1,0 +1,138 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #742C86;
+  --color-bg-dark: #0F0B14;
+  --color-bg-section: #1A1322;
+  --color-gold: #C6A75E;
+  --color-gold-bright: #E5C789;
+  --color-text-light: #F1EAF5;
+  --color-text-muted: #B8AFC2;
+  --color-divider: #2A1F33;
+  --color-lavender: #E0D7E5;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Orbitron", sans-serif;
+
+  @keyframes light-sweep {
+    0% {
+      transform: translateX(-100%) skewX(-20deg);
+      opacity: 0;
+    }
+
+    20% {
+      opacity: 0.5;
+    }
+
+    50% {
+      opacity: 0.5;
+    }
+
+    80% {
+      opacity: 0.5;
+    }
+
+    100% {
+      transform: translateX(200%) skewX(-20deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes gold-line-grow {
+    0% {
+      width: 0;
+      opacity: 0;
+    }
+
+    100% {
+      width: 100%;
+      opacity: 1;
+    }
+  }
+
+  @keyframes moon-pulse {
+
+    0%,
+    100% {
+      opacity: 0.3;
+      transform: scale(1);
+    }
+
+    50% {
+      opacity: 0.6;
+      transform: scale(1.05);
+    }
+  }
+
+  @keyframes gradient-x {
+
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-bg-dark text-text-light font-sans antialiased;
+    overscroll-behavior-y: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply tracking-tight font-bold;
+  }
+}
+
+@layer utilities {
+  .container-1440 {
+    @apply max-w-[1440px] mx-auto px-10;
+  }
+
+  .section-spacing {
+    @apply py-[140px];
+  }
+
+  .animate-light-sweep {
+    animation: light-sweep 4s infinite linear;
+  }
+
+  .animate-gold-line {
+    animation: gold-line-grow 1.5s forwards ease-out;
+  }
+
+  .animate-moon-pulse {
+    animation: moon-pulse 4s infinite ease-in-out;
+  }
+
+  .animate-gradient-x {
+    background-size: 200% 200%;
+    animation: gradient-x 5s ease infinite;
+  }
+
+  .text-gradient-aaa {
+    @apply bg-gradient-to-r from-primary via-lavender to-primary bg-clip-text text-transparent;
+  }
+
+  .section-focus-layer {
+    transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity: 1;
+  }
+
+  .section-focus-layer.active {
+    opacity: 1;
+  }
+
+}
