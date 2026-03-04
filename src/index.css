@@ -12,6 +12,11 @@
   --color-divider: #2A1F33;
   --color-lavender: #E0D7E5;
 
+  --breakpoint-3xl: 160em;
+  /* 2560px */
+  --breakpoint-4xl: 240em;
+  /* 3840px */
+
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Orbitron", sans-serif;
 
@@ -81,6 +86,7 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
   }
 
   body {
@@ -94,6 +100,12 @@
   h4 {
     @apply tracking-tight font-bold;
   }
+
+  button,
+  a,
+  [role="button"] {
+    cursor: pointer;
+  }
 }
 
 @layer utilities {
@@ -102,7 +114,7 @@
   }
 
   .section-spacing {
-    @apply py-[140px];
+    @apply py-20 md:py-32 lg:py-40 3xl:py-64 4xl:py-96;
   }
 
   .animate-light-sweep {
@@ -129,10 +141,16 @@
   .section-focus-layer {
     transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
     opacity: 1;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
   }
 
   .section-focus-layer.active {
     opacity: 1;
+  }
+
+  .will-change-transform {
+    will-change: transform;
   }
 
 }

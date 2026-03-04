@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence, useInView, useMotionValue, useSpring, animate } from 'motion/react';
+import { motion, useScroll, useTransform, AnimatePresence, useInView, useMotionValue, useSpring, animate, useReducedMotion } from 'motion/react';
 import {
   ChevronRight,
   Gamepad2,
@@ -227,26 +227,54 @@ const HeroBackground = ({ className = "" }: { className?: string }) => {
   );
 };
 
+const ParticleSystem = ({ count = 20 }: { count?: number }) => {
+  const particles = Array.from({ length: count });
+  return (
+    <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
+      {particles.map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-1 h-1 bg-[#c79a40]/40 rounded-full blur-[1px]"
+          initial={{
+            x: `${Math.random() * 100}%`,
+            y: `${Math.random() * 100}%`,
+            opacity: Math.random() * 0.5 + 0.2
+          }}
+          animate={{
+            y: [`${Math.random() * 100}%`, `${Math.random() * 100}%`],
+            opacity: [0.2, 0.5, 0.2]
+          }}
+          transition={{
+            duration: Math.random() * 10 + 10,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+          style={{ translateZ: 0, willChange: "transform, opacity" }}
+        />
+      ))}
+    </div>
+  );
+};
+
 const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
-  const [isZooming, setIsZooming] = useState(false);
-  const [showText, setShowText] = useState(false);
+  const [showLogo, setShowLogo] = useState(false);
+  const [isFinishing, setIsFinishing] = useState(false);
 
   useEffect(() => {
-    const textInTimer = setTimeout(() => setShowText(true), 1200);
-    const textOutTimer = setTimeout(() => setShowText(false), 2200);
+    // Stage 1: Reveal Logo with rising blur
+    const logoTimer = setTimeout(() => setShowLogo(true), 500);
 
-    const zoomStartTimer = setTimeout(() => {
-      setIsZooming(true);
-    }, 2700);
+    // Stage 2: Start finishing transition (fade out or smooth entry)
+    const finishTimer = setTimeout(() => setIsFinishing(true), 2800);
 
+    // Stage 3: Complete
     const completeTimer = setTimeout(() => {
-      onComplete();   // trigger page switch immediately after zoom
-    }, 3000); // ← shorter timing
+      onComplete();
+    }, 3500);
 
     return () => {
-      clearTimeout(textInTimer);
-      clearTimeout(textOutTimer);
-      clearTimeout(zoomStartTimer);
+      clearTimeout(logoTimer);
+      clearTimeout(finishTimer);
       clearTimeout(completeTimer);
     };
   }, [onComplete]);
@@ -261,7 +289,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
       <motion.div
         className="absolute inset-0 z-0 pointer-events-none"
         initial={{ opacity: 0 }}
-        animate={{ opacity: isZooming ? 0 : 1 }}
+        animate={{ opacity: isFinishing ? 0 : 1 }}
         transition={{ duration: 1.5 }}
       >
         {/* Large soft spread */}
@@ -296,68 +324,75 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
       </div>
 
       <motion.div
-        className="relative w-48 h-48 md:w-64 md:h-64 z-20"
-        style={{ transformOrigin: 'center center' }}
-        initial={{ scale: 1 }}
+        className="absolute inset-0 z-20 flex flex-col items-center justify-center"
+        initial={{
+          y: 40,
+          opacity: 0,
+          filter: "blur(12px)"
+        }}
         animate={{
-          scale: isZooming ? 20 : 1.05,
-          opacity: isZooming ? 0 : 1
+          y: showLogo ? 0 : 40,
+          opacity: showLogo ? 1 : 0,
+          filter: showLogo ? "blur(0px)" : "blur(12px)"
         }}
         transition={{
-          scale: {
-            duration: isZooming ? 0.8 : 2.7,
-            ease: isZooming ? [0.45, 0, 0.55, 1] : "linear"
-          },
-          opacity: { duration: 0.3 }
+          duration: 1.8,
+          ease: [0.22, 1, 0.36, 1]
         }}
+        style={{ scale: 1 }}
       >
-        {/* Outline Logo (Background) */}
-        <div className="absolute inset-0 text-white/20">
-          <LogoOutline className="w-full h-full" />
-        </div>
-
-        {/* Filling Logo (Foreground) */}
         <motion.div
-          className="absolute inset-0 overflow-hidden"
-          initial={{ height: "0%" }}
-          animate={{ height: "100%" }}
-          transition={{ duration: 1.5, ease: "easeInOut", delay: 0.2 }}
-          style={{ bottom: 0, top: 'auto' }}
-        >
-          <div className="absolute bottom-0 left-0 w-48 h-48 md:w-64 md:h-64">
-            <Logo className="w-full h-full" useGradient={true} />
-          </div>
-        </motion.div>
-
-        {/* Cinematic Glow Pulse */}
-        <motion.div
-          className="absolute inset-0 rounded-full bg-[#7B3FE4]/30 blur-[60px]"
-          initial={{ opacity: 0, scale: 0.8 }}
+          className="relative w-48 h-48 md:w-64 md:h-64"
           animate={{
-            opacity: isZooming ? 0 : [0, 0.8, 0.4, 1, 0.8],
-            scale: isZooming ? 2 : [0.8, 1.2, 1.1, 1.4, 1.2]
+            scale: isFinishing ? 0.67 : 1
           }}
           transition={{
-            delay: 1.6,
-            duration: isZooming ? 0.5 : 1.6,
-            ease: "easeOut"
+            duration: 0.8,
+            ease: "easeInOut"
           }}
-        />
-      </motion.div>
+        >
+          {/* Outline Logo (Background) */}
+          <div className="absolute inset-0 text-white/10">
+            <LogoOutline className="w-full h-full" />
+          </div>
 
-      {/* Studio Name Reveal */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{
-          opacity: showText ? 1 : 0,
-          y: showText ? 0 : (isZooming ? -20 : 10)
-        }}
-        transition={{ duration: 0.5 }}
-        className="mt-16 text-center z-20"
-      >
-        <h1 className="text-4xl md:text-6xl font-black tracking-[0.3em] text-white uppercase ml-[0.3em] font-display drop-shadow-[0_0_30px_rgba(116,44,134,0.4)]">
-          NYTWOLF <span className="text-[#742C86]">GAMES</span>
-        </h1>
+          {/* Filling Logo (Foreground) */}
+          <motion.div
+            className="absolute inset-0 overflow-hidden"
+            initial={{ height: "0%" }}
+            animate={{ height: showLogo ? "100%" : "0%" }}
+            transition={{ duration: 2, ease: "easeInOut", delay: 0.6 }}
+            style={{ bottom: 0, top: 'auto' }}
+          >
+            <div className="absolute bottom-0 left-0 w-48 h-48 md:w-64 md:h-64">
+              <Logo className="w-full h-full" useGradient={true} />
+            </div>
+          </motion.div>
+
+          {/* Cinematic Glow (Static/Soft) */}
+          <motion.div
+            className="absolute inset-0 rounded-full bg-[#7B3FE4]/10 blur-[80px]"
+            animate={{
+              opacity: showLogo ? 1 : 0,
+              scale: showLogo ? 1 : 0.8
+            }}
+            transition={{ duration: 2, delay: 0.5 }}
+          />
+        </motion.div>
+
+        {/* Studio Name Reveal (Integrated with upward rise) */}
+        <motion.div
+          animate={{
+            opacity: showLogo ? 1 : 0,
+            y: showLogo ? 0 : 10
+          }}
+          transition={{ duration: 1.2, delay: 1.4 }}
+          className="mt-16 text-center"
+        >
+          <h1 className="text-4xl md:text-6xl font-black tracking-[0.3em] text-white uppercase ml-[0.3em] font-display drop-shadow-[0_0_30px_rgba(116,44,134,0.3)]">
+            NYTWOLF <span className="text-[#742C86]">GAMES</span>
+          </h1>
+        </motion.div>
       </motion.div>
     </motion.div>
   );
@@ -688,17 +723,17 @@ const Hero = () => {
     <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden bg-transparent" style={{ perspective: "1000px" }}>
 
       {/* ===== Layer 2: Statue (Left, distinct, some padding) ===== */}
-      <motion.div style={{ y: statueY, scale: statueScale, rotateY: statueRotateY, transformStyle: "preserve-3d" }} className="absolute bottom-[-18%] left-[0%] z-10 pointer-events-none origin-bottom">
+      <motion.div style={{ y: statueY, scale: statueScale, rotateY: statueRotateY, transformStyle: "preserve-3d" }} className="absolute bottom-[-5%] md:bottom-[-18%] left-[0%] z-10 pointer-events-none origin-bottom">
         <motion.img src="/statue.png" className="h-[185vh] w-auto max-w-[80vw] object-contain object-bottom drop-shadow-[50px_0_30px_rgba(0,0,0,0.3)]" alt="Statue" />
       </motion.div>
 
       {/* ===== Layer 3: Grass Foreground (Bottom Left Edge) ===== */}
-      <motion.div style={{ y: grassY, x: grassX, scale: grassScale }} className="absolute bottom-[-9%] left-0 z-20 pointer-events-none origin-bottom-left">
+      <motion.div style={{ y: grassY, x: grassX, scale: grassScale }} className="absolute bottom-[-4%] md:bottom-[-9%] left-0 z-20 pointer-events-none origin-bottom-left">
         <motion.img src="/grass.png" className="w-[66vw] min-w-[400px] h-auto object-contain object-bottom drop-shadow-[20px_0_30px_rgba(0,0,0,0.8)]" alt="Grass" />
       </motion.div>
 
       {/* ===== Layer 4: Right Tree Foreground (Bottom Right Edge) ===== */}
-      <motion.div style={{ y: treeY, x: treeX, rotate: treeRotate, scale: treeScale }} className="absolute bottom-[-9%] right-[-5%] z-20 pointer-events-none origin-bottom-right">
+      <motion.div style={{ y: treeY, x: treeX, rotate: treeRotate, scale: treeScale }} className="absolute bottom-[-4%] md:bottom-[-9%] right-[-5%] z-20 pointer-events-none origin-bottom-right">
         <motion.img src="/tree.png" className="w-[45vw] min-w-[350px] h-auto object-contain object-bottom drop-shadow-[-20px_0_30px_rgba(0,0,0,0.8)]" alt="Tree" />
       </motion.div>
 
@@ -709,7 +744,7 @@ const Hero = () => {
       >
         <div className="mb-8 relative">
           <MouseParallax factor={40}>
-            <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}>
+            <motion.div animate={{ y: [-10, 0, -10] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}>
               <Logo className="w-32 h-32 md:w-40 md:h-40 text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]" useGradient={false} />
             </motion.div>
           </MouseParallax>
@@ -802,7 +837,7 @@ const About = () => {
   ];
 
   return (
-    <section ref={sectionRef} className="relative py-10 md:py-16 bg-[#060408] overflow-hidden" style={{ perspective: "2000px" }}>
+    <section ref={sectionRef} className="relative min-h-screen flex flex-col justify-center section-spacing bg-[#060408] overflow-hidden" style={{ perspective: "2000px" }}>
 
       {/* ===== LAYER 1: DEEP BACKGROUND (Slow Parallax) ===== */}
       <motion.div style={{ y: bgY }} className="absolute inset-0 pointer-events-none z-0">
@@ -1027,7 +1062,7 @@ const Services = () => {
   ];
 
   return (
-    <section ref={sectionRef} className="relative py-10 md:py-16 bg-[#060408] overflow-hidden border-t border-white/5" style={{ perspective: "1500px" }}>
+    <section ref={sectionRef} className="relative min-h-screen flex flex-col justify-center section-spacing bg-[#060408] overflow-hidden border-t border-white/5" style={{ perspective: "1500px" }}>
 
       {/* LAYER 1: Deep Background Atmosphere */}
       <motion.div style={{ y: bgY }} className="absolute inset-0 z-0 pointer-events-none opacity-40 origin-center">
@@ -1162,6 +1197,7 @@ const Services = () => {
 const FeaturedProject = () => {
   const { setIsHoveringCard } = React.useContext(MouseGlowContext);
   const sectionRef = useRef<HTMLElement>(null);
+  const prefersReducedMotion = useReducedMotion();
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -1172,127 +1208,160 @@ const FeaturedProject = () => {
     damping: 30, stiffness: 70, restDelta: 0.001
   });
 
-  // ========== ENVIRONMENTAL PARALLAX LAYERS ==========
-  // Deep Background (Atmosphere/Smoke)
-  const bgY = useTransform(smoothProgress, [0, 1], ["0%", "10%"]);
-  // Midground Objects (Ruins/Crystals)
-  const midLeftY = useTransform(smoothProgress, [0, 1], ["10%", "-15%"]);
-  const midRightY = useTransform(smoothProgress, [0, 1], ["20%", "-20%"]);
-  // Foreground Fast Objects (Shards/Weapons)
-  const fgY1 = useTransform(smoothProgress, [0, 1], ["40%", "-60%"]);
-  const fgRot1 = useTransform(smoothProgress, [0, 1], [-20, 20]);
-  const fgY2 = useTransform(smoothProgress, [0, 1], ["60%", "-80%"]);
-  const fgRot2 = useTransform(smoothProgress, [0, 1], [45, 0]);
+  // ========== AAA CINEMATIC PARALLAX LAYERS ==========
 
-  // ========== CONTENT REVEAL LAYERS ==========
-  const h1Y = useTransform(smoothProgress, [0.1, 0.3], [100, 0]);
-  const h1Clip = useTransform(smoothProgress, [0.1, 0.25], ["inset(100% 0 0 0)", "inset(0% 0 0 0)"]);
+  // 1. Background Sky (Slowest: 10-15%)
+  const skyY = useTransform(smoothProgress, [0, 1], ["0%", "15%"]);
+  const skyScale = useTransform(smoothProgress, [0, 1], [1.05, 1.15]);
 
-  const cardY = useTransform(smoothProgress, [0.2, 0.45], [200, 0]);
-  const cardRotX = useTransform(smoothProgress, [0.2, 0.45], [20, 0]);
-  const cardScale = useTransform(smoothProgress, [0.2, 0.45], [0.9, 1]);
-  const cardClip = useTransform(smoothProgress, [0.2, 0.4], ["inset(100% 0 0 0)", "inset(0% 0 0 0)"]);
+  // 2. Midground Battlefield (Reduced speed: ~10%, Increased Scale)
+  const battlefieldY = useTransform(smoothProgress, [0, 1], ["2%", "-8%"]);
+  const battlefieldX = useTransform(smoothProgress, [0, 1], ["-1%", "1%"]);
+  const battlefieldScale = useTransform(smoothProgress, [0, 1], [1.15, 1.25]);
+
+  // 3. Foreground Knight (~40%)
+  const knightY = useTransform(smoothProgress, [0, 1], ["20%", "-30%"]);
+  const knightRotateX = useTransform(smoothProgress, [0.1, 0.5], [3, 0]);
+  const knightScale = useTransform(smoothProgress, [0, 0.5], [1.1, 1]);
+
+  // 4. Content Reveal (~60%)
+  const textY = useTransform(smoothProgress, [0.1, 0.4], [150, 0]);
+  const textOpacity = useTransform(smoothProgress, [0.1, 0.3], [0, 1]);
+  const textScale = useTransform(smoothProgress, [0.1, 0.4], [0.95, 1]);
+
+  // 5. Atmospheric Enhancements
+  const vignetteOpacity = useTransform(smoothProgress, [0, 0.5, 1], [0.6, 0.9, 0.6]);
+  const lightShift = useTransform(smoothProgress, [0, 1], ["rgba(116,44,134,0.1)", "rgba(199,154,64,0.15)"]);
+
+  const springConfig = { damping: 30, stiffness: 70 };
+  const smoothTextY = useSpring(textY, springConfig);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        ease: [0.22, 1, 0.36, 1]
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] }
+    }
+  };
 
   return (
-    <section ref={sectionRef} className="relative py-10 md:py-16 bg-[#060408] overflow-hidden" style={{ perspective: "1500px" }}>
+    <section ref={sectionRef} className="relative min-h-screen flex flex-col justify-center section-spacing bg-[#060408] overflow-hidden" style={{ perspective: "1500px" }}>
 
-      {/* LAYER 1: Deep Background Atmosphere */}
-      <motion.div style={{ y: bgY }} className="absolute inset-0 z-0 pointer-events-none opacity-40 origin-center">
-        <div className="absolute inset-0 bg-[#060408] opacity-80 z-10" />
-        {/* Placeholder for smoke/fog: */}
-        <div className="absolute top-0 left-[-10%] w-[120%] h-[120%] bg-[radial-gradient(ellipse_at_top,rgba(116,44,134,0.15)_0%,transparent_60%)] blur-[40px]" />
+      {/* LAYER 1: Background Sky */}
+      <motion.div
+        style={{
+          y: prefersReducedMotion ? 0 : skyY,
+          scale: prefersReducedMotion ? 1.05 : skyScale,
+          translateZ: 0
+        }}
+        className="absolute inset-x-[-10%] inset-y-[-20%] z-0 pointer-events-none will-change-transform"
+      >
+        <img src="/sky.png" className="w-full h-full object-cover brightness-[0.4] contrast-[1.1]" alt="" />
       </motion.div>
 
-      {/* LAYER 2: Midground Environment (Ruins / SmokeParticles) */}
-      <motion.div style={{ y: midLeftY }} className="absolute top-[10%] -left-[10%] z-0 pointer-events-none opacity-30">
-        <div className="w-[40vw] h-[50vh] bg-gradient-to-tr from-[#742C86]/20 to-transparent clip-path-polygon-[0%_0%,_100%_20%,_80%_100%,_10%_80%] blur-md rotate-[10deg]" />
-      </motion.div>
-      <motion.div style={{ y: midRightY }} className="absolute top-[30%] right-[0%] z-0 pointer-events-none opacity-40">
-        <div className="w-[30vw] h-[40vh] bg-[radial-gradient(circle_at_center,rgba(199,154,64,0.2)_0%,transparent_60%)] blur-lg border border-[#c79a40]/10 rounded-full" />
+      {/* LAYER 2: Midground Battlefield */}
+      <motion.div
+        style={{
+          y: prefersReducedMotion ? 0 : battlefieldY,
+          x: prefersReducedMotion ? 0 : battlefieldX,
+          scale: prefersReducedMotion ? 1.1 : battlefieldScale,
+          translateZ: 0
+        }}
+        className="absolute inset-0 z-10 pointer-events-none will-change-transform opacity-70 flex items-center justify-center overflow-hidden"
+      >
+        <img src="/battlefield.png" className="w-full h-full object-cover brightness-[0.5] scale-110" alt="" />
       </motion.div>
 
-      <div className="container-1440 relative z-10">
-        <motion.div style={{ y: h1Y, clipPath: h1Clip }} className="mb-8 md:mb-12">
-          <span className="text-[#c79a40] tracking-[0.5em] uppercase text-xs font-bold mb-2 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">CURRENT WORLD</span>
-          <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-white uppercase leading-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
-            FEATURED <span className="text-[#742C86]">PROJECT</span>
-          </h2>
-        </motion.div>
+      {/* ATMOSPHERIC: Floating Particles */}
+      <ParticleSystem count={prefersReducedMotion ? 5 : 30} />
 
+      {/* LAYER 3: Foreground Knight */}
+      <motion.div
+        style={{
+          y: prefersReducedMotion ? 0 : knightY,
+          rotateX: prefersReducedMotion ? 0 : knightRotateX,
+          scale: prefersReducedMotion ? 1 : knightScale,
+          translateZ: 0
+        }}
+        className="absolute bottom-[-10%] right-[5%] w-[45vw] md:w-[35vw] z-30 pointer-events-none will-change-transform origin-bottom drop-shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
+      >
+        <img src="/knight.png" className="w-full h-auto object-contain" alt="Epic Knight" />
+      </motion.div>
+
+      {/* ATMOSPHERIC: Dynamic Vignette */}
+      <motion.div
+        style={{ opacity: vignetteOpacity }}
+        className="absolute inset-0 z-40 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_0%,rgba(6,4,8,0.8)_100%)]"
+      />
+
+      {/* ATMOSPHERIC: Gradient Lighting Shifter */}
+      <motion.div
+        style={{ backgroundColor: lightShift }}
+        className="absolute inset-0 z-20 pointer-events-none mix-blend-overlay"
+      />
+
+      <div className="container-1440 relative z-50">
         <motion.div
-          style={{ y: cardY, rotateX: cardRotX, scale: cardScale, clipPath: cardClip, transformOrigin: "bottom center", transformStyle: "preserve-3d" }}
-          onMouseEnter={() => setIsHoveringCard(true)}
-          onMouseLeave={() => setIsHoveringCard(false)}
-          className="relative group cursor-pointer rounded-3xl overflow-hidden border border-[#742C86]/30 shadow-[0_30px_60px_rgba(0,0,0,0.8)]"
+          style={{ opacity: textOpacity, y: prefersReducedMotion ? 0 : smoothTextY, scale: textScale, translateZ: 0 }}
+          className="max-w-4xl will-change-transform"
         >
-          <MouseParallax factor={40}>
-            {/* Cinematic Image with Slow Zoom */}
-            <div className="aspect-[21/9] overflow-hidden relative">
-              <motion.img
-                src="https://backiee.com/static/wallpapers/1920x1080/430397.jpg"
-                alt="Project Ascent - Medieval Grand Strategy"
-                className="w-full h-full object-cover brightness-50 grayscale-[0.2]"
-                animate={{ scale: [1, 1.05, 1] }}
-                transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
-                referrerPolicy="no-referrer"
-              />
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-10%" }}
+            className="space-y-10"
+          >
+            <motion.div variants={itemVariants} className="space-y-4">
+              <span className="text-[#c79a40] tracking-[0.5em] uppercase text-sm font-bold block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">CURRENT WORLD</span>
+              <h2 className="text-5xl md:text-8xl font-black tracking-tighter text-white uppercase leading-[0.9] drop-shadow-[0_10px_30px_rgba(0,0,0,0.9)]">
+                PROJECT: <br />
+                <span className="text-gradient-aaa">GREEN LEAF</span>
+              </h2>
+            </motion.div>
 
-              {/* Cinematic Overlays */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0F0B14] via-[#0F0B14]/40 to-transparent opacity-90" />
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(15,11,20,0.6)_100%)]" />
+            <motion.p variants={itemVariants} className="text-xl md:text-3xl text-text-muted leading-relaxed font-medium italic max-w-2xl drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)] border-l-4 border-[#742C86] pl-8">
+              "A brutal medieval sandbox where kingdoms rise, alliances fracture, and every decision echoes across generations."
+            </motion.p>
 
-              {/* Glowing crystal effect behind text */}
-              <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-[radial-gradient(circle_at_bottom_left,rgba(116,44,134,0.4)_0%,transparent_70%)] blur-[40px] pointer-events-none" />
+            <motion.div variants={itemVariants} className="flex flex-wrap gap-4 pt-4">
+              {["Grand Strategy", "Medieval Sandbox", "PC"].map((tag, i) => (
+                <span key={i} className="px-8 py-3 bg-black/60 backdrop-blur-xl text-xs font-bold uppercase tracking-[0.3em] border border-white/10 text-white hover:border-[#c79a40]/50 hover:text-[#c79a40] transition-all duration-500 rounded-none shadow-2xl">
+                  {tag}
+                </span>
+              ))}
+              <span className="px-8 py-3 bg-[#742C86]/30 backdrop-blur-xl text-xs font-bold uppercase tracking-[0.3em] border border-[#742C86]/50 text-[#c79a40] rounded-none shadow-[0_0_30px_rgba(116,44,134,0.4)]">
+                IN DEVELOPMENT
+              </span>
+            </motion.div>
 
-              {/* Content Overlay */}
-              <div className="absolute inset-0 p-8 md:p-16 flex flex-col justify-end z-10">
-                <div className="max-w-3xl space-y-8">
-                  <div className="space-y-2">
-                    <h3 className="text-4xl md:text-7xl font-black tracking-tighter text-white uppercase drop-shadow-[0_5px_10px_rgba(0,0,0,0.8)]">
-                      <span className="text-[#c79a40] drop-shadow-[0_0_20px_rgba(198,167,94,0.5)]"> PROJECT:</span> GREEN LEAF
-                    </h3>
-                    <p className="text-xl md:text-2xl text-text-muted leading-relaxed font-medium italic drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                      "A brutal medieval sandbox where kingdoms rise, alliances fracture, and every decision echoes across generations."
-                    </p>
-                  </div>
-
-                  <div className="flex flex-wrap gap-4">
-                    {["Grand Strategy", "Medieval Sandbox", "PC"].map((tag, i) => (
-                      <span key={i} className="px-6 py-2 bg-[#0F0B14]/60 backdrop-blur-md text-[11px] font-bold uppercase tracking-[0.2em] border border-white/20 text-white hover:border-[#c79a40]/50 hover:text-[#c79a40] transition-colors duration-300 rounded-full shadow-[0_0_15px_rgba(0,0,0,0.5)]">
-                        {tag}
-                      </span>
-                    ))}
-                    <span className="px-6 py-2 bg-[#742C86]/20 backdrop-blur-md text-[11px] font-bold uppercase tracking-[0.2em] border border-[#742C86]/50 text-[#c79a40] rounded-full shadow-[0_0_20px_rgba(116,44,134,0.3)]">
-                      IN DEVELOPMENT
-                    </span>
-                  </div>
-
-                  <div className="pt-8">
-                    <motion.button
-                      whileHover={{ x: 10 }}
-                      className="flex items-center gap-4 text-[#c79a40] font-bold uppercase tracking-[0.3em] text-sm group/btn"
-                    >
-                      <span className="relative drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                        THE REALM OPENS SOON
-                        <span className="absolute -bottom-2 left-0 w-0 h-[2px] bg-[#c79a40] group-hover/btn:w-full transition-all duration-500 shadow-[0_0_10px_rgba(198,167,94,0.8)]" />
-                      </span>
-                      <ArrowUpRight className="w-6 h-6 transition-transform group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
-                    </motion.button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </MouseParallax>
+            <motion.div variants={itemVariants} className="pt-12">
+              <motion.button
+                whileHover={{ x: 15, color: "#E5C789" }}
+                className="flex items-center gap-6 text-[#c79a40] font-bold uppercase tracking-[0.4em] text-lg group cursor-pointer transition-colors duration-300"
+              >
+                <span className="relative drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)]">
+                  THE REALM OPENS SOON
+                  <div className="absolute -bottom-4 left-0 w-0 h-[2px] bg-[#c79a40] group-hover:w-full transition-all duration-700 shadow-[0_0_20px_rgba(198,167,94,1)]" />
+                </span>
+                <ArrowUpRight className="w-8 h-8 transition-transform group-hover:translate-x-2 group-hover:-translate-y-2 drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)]" />
+              </motion.button>
+            </motion.div>
+          </motion.div>
         </motion.div>
       </div>
-
-      {/* LAYER 3: Fast Foreground (Floating Shards/Weapons) */}
-      <motion.div style={{ y: fgY1, rotate: fgRot1 }} className="absolute top-[20%] -left-[5%] z-30 pointer-events-none opacity-80 drop-shadow-[20px_10px_30px_rgba(0,0,0,0.8)]">
-        <div className="w-[10vw] h-[25vh] bg-gradient-to-br from-[#742C86]/80 to-transparent clip-path-polygon-[50%_0%,_100%_100%,_0%_100%] blur-[1px] rotate-[-30deg]" />
-      </motion.div>
-      <motion.div style={{ y: fgY2, rotate: fgRot2 }} className="absolute bottom-[10%] right-[5%] z-30 pointer-events-none opacity-90 drop-shadow-[-20px_10px_30px_rgba(0,0,0,0.8)]">
-        <div className="w-[15vw] h-[15vw] border-b-[6px] border-l-[3px] border-[#c79a40] rounded-full blur-[2px] opacity-60" />
-      </motion.div>
 
     </section>
   );
@@ -1360,7 +1429,7 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
   ];
 
   return (
-    <section ref={sectionRef} className="relative py-10 md:py-16 bg-[#0F0B14] overflow-hidden border-t border-white/5" style={{ perspective: "1500px" }}>
+    <section ref={sectionRef} className="relative min-h-screen flex flex-col justify-center section-spacing bg-[#0F0B14] overflow-hidden border-t border-white/5" style={{ perspective: "1500px" }}>
 
       {/* LAYER 1: Deep Background Atmosphere */}
       <motion.div style={{ y: bgY }} className="absolute inset-0 z-0 pointer-events-none opacity-50 origin-center">
@@ -1494,7 +1563,7 @@ const Contact = () => {
   const formClip = useTransform(smoothProgress, [0.1, 0.3], ["inset(100% 0 0 0)", "inset(0% 0 0 0)"]);
 
   return (
-    <section ref={sectionRef} className="relative py-10 md:py-16 bg-[#0F0B14] overflow-hidden border-t border-white/5" style={{ perspective: "1500px" }}>
+    <section ref={sectionRef} className="relative min-h-screen flex flex-col justify-center section-spacing bg-[#0F0B14] overflow-hidden border-t border-white/5" style={{ perspective: "1500px" }}>
 
       {/* LAYER 1: Deep Background Atmosphere */}
       <motion.div style={{ y: bgY }} className="absolute inset-0 z-0 pointer-events-none opacity-40 origin-center">
@@ -1626,11 +1695,11 @@ const Footer = () => {
           <motion.div variants={staggerItem} className="flex flex-wrap items-topleft gap-4 text-[11px] text-text-muted uppercase tracking-[0.3em] font-light">
             <span>© 2026 NYTWOLF. All Rights Reserved.</span>
             <span className="opacity-30">•</span>
-            <a href="#" className="hover:text-[#742C86] transition-colors">Terms</a>
+            <span>Terms</span>
             <span className="opacity-30">•</span>
-            <a href="#" className="hover:text-[#742C86] transition-colors">Privacy</a>
+            <span>Privacy</span>
             <span className="opacity-30">•</span>
-            <a href="#" className="hover:text-[#742C86] transition-colors">Cookies</a>
+            <span>Cookies</span>
           </motion.div>
 
           {/* Right Side: Social Icons */}
@@ -1699,8 +1768,8 @@ export default function App() {
 
     const observerOptions = {
       root: null,
-      rootMargin: '-20% 0px -20% 0px',
-      threshold: 0
+      rootMargin: '-10% 0px -10% 0px',
+      threshold: 0.5
     };
 
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
@@ -1751,22 +1820,22 @@ export default function App() {
           </div>
 
           <main>
-            <div id="home" className={`section-focus-layer relative overflow-hidden flex flex-col justify-center ${activeSectionId === 'home' || scrollingFromId === 'home' ? 'active' : ''}`}>
+            <div id="home" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col justify-center ${activeSectionId === 'home' || scrollingFromId === 'home' ? 'active' : ''}`}>
               <Hero />
             </div>
-            <div id="studio" className={`section-focus-layer relative overflow-hidden flex flex-col justify-center ${activeSectionId === 'studio' || scrollingFromId === 'studio' ? 'active' : ''}`}>
+            <div id="studio" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col justify-center ${activeSectionId === 'studio' || scrollingFromId === 'studio' ? 'active' : ''}`}>
               <About />
             </div>
-            <div id="services" className={`section-focus-layer relative overflow-hidden flex flex-col justify-center ${activeSectionId === 'services' || scrollingFromId === 'services' ? 'active' : ''}`}>
+            <div id="services" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col justify-center ${activeSectionId === 'services' || scrollingFromId === 'services' ? 'active' : ''}`}>
               <Services />
             </div>
-            <div id="projects" className={`section-focus-layer relative overflow-hidden flex flex-col justify-center ${activeSectionId === 'projects' || scrollingFromId === 'projects' ? 'active' : ''}`}>
+            <div id="projects" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col justify-center ${activeSectionId === 'projects' || scrollingFromId === 'projects' ? 'active' : ''}`}>
               <FeaturedProject />
             </div>
-            <div id="careers" className={`section-focus-layer relative overflow-hidden flex flex-col justify-center ${activeSectionId === 'careers' || scrollingFromId === 'careers' ? 'active' : ''}`}>
+            <div id="careers" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col justify-center ${activeSectionId === 'careers' || scrollingFromId === 'careers' ? 'active' : ''}`}>
               <Careers onNavItemClick={scrollToSection} />
             </div>
-            <div id="contact" className={`section-focus-layer relative overflow-hidden flex flex-col justify-center ${activeSectionId === 'contact' || scrollingFromId === 'contact' ? 'active' : ''}`}>
+            <div id="contact" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col justify-center ${activeSectionId === 'contact' || scrollingFromId === 'contact' ? 'active' : ''}`}>
               <Contact />
             </div>
           </main>
