@@ -23,7 +23,6 @@ import {
   Linkedin,
   Instagram,
   Facebook,
-  Twitter,
   Code,
   Paintbrush,
   LayoutGrid
@@ -1295,7 +1294,7 @@ const FeaturedProject = () => {
           scale: prefersReducedMotion ? 1 : knightScale,
           translateZ: 0
         }}
-        className="absolute bottom-[-10%] right-[5%] w-[45vw] md:w-[35vw] z-30 pointer-events-none will-change-transform origin-bottom drop-shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
+        className="absolute bottom-[-20%] md:bottom-[-27%] right-[-10%] md:right-[-5%] w-[75vw] md:w-[65vw] lg:w-[45vw] z-30 pointer-events-none will-change-transform origin-bottom drop-shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
       >
         <img src="/knight.png" className="w-full h-auto object-contain" alt="Epic Knight" />
       </motion.div>
@@ -1325,38 +1324,38 @@ const FeaturedProject = () => {
             className="space-y-10"
           >
             <motion.div variants={itemVariants} className="space-y-4">
-              <span className="text-[#c79a40] tracking-[0.5em] uppercase text-sm font-bold block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">CURRENT WORLD</span>
-              <h2 className="text-5xl md:text-8xl font-black tracking-tighter text-white uppercase leading-[0.9] drop-shadow-[0_10px_30px_rgba(0,0,0,0.9)]">
+              <span className="text-[#c79a40] tracking-[0.3em] md:tracking-[0.5em] uppercase text-[10px] md:text-xs font-bold block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">CURRENT WORLD</span>
+              <h2 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter text-white uppercase leading-[0.9] drop-shadow-[0_10px_30px_rgba(0,0,0,0.9)]">
                 PROJECT: <br />
                 <span className="text-gradient-aaa">GREEN LEAF</span>
               </h2>
             </motion.div>
 
-            <motion.p variants={itemVariants} className="text-xl md:text-3xl text-text-muted leading-relaxed font-medium italic max-w-2xl drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)] border-l-4 border-[#742C86] pl-8">
+            <motion.p variants={itemVariants} className="text-base md:text-xl lg:text-2xl text-text-muted leading-relaxed font-medium italic max-w-2xl drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)] border-l-4 border-[#742C86] pl-6 md:pl-8">
               "A brutal medieval sandbox where kingdoms rise, alliances fracture, and every decision echoes across generations."
             </motion.p>
 
-            <motion.div variants={itemVariants} className="flex flex-wrap gap-4 pt-4">
+            <motion.div variants={itemVariants} className="flex flex-wrap gap-3 md:gap-4 pt-4">
               {["Grand Strategy", "Medieval Sandbox", "PC"].map((tag, i) => (
-                <span key={i} className="px-8 py-3 bg-black/60 backdrop-blur-xl text-xs font-bold uppercase tracking-[0.3em] border border-white/10 text-white hover:border-[#c79a40]/50 hover:text-[#c79a40] transition-all duration-500 rounded-none shadow-2xl">
+                <span key={i} className="px-4 py-1.5 md:px-6 md:py-2.5 bg-black/60 backdrop-blur-xl text-[9px] md:text-[11px] font-bold uppercase tracking-[0.2em] md:tracking-[0.3em] border border-white/10 text-white hover:border-[#c79a40]/50 hover:text-[#c79a40] transition-all duration-500 rounded-none shadow-2xl">
                   {tag}
                 </span>
               ))}
-              <span className="px-8 py-3 bg-[#742C86]/30 backdrop-blur-xl text-xs font-bold uppercase tracking-[0.3em] border border-[#742C86]/50 text-[#c79a40] rounded-none shadow-[0_0_30px_rgba(116,44,134,0.4)]">
+              <span className="px-4 py-1.5 md:px-6 md:py-2.5 bg-[#742C86]/30 backdrop-blur-xl text-[9px] md:text-[11px] font-bold uppercase tracking-[0.2em] md:tracking-[0.3em] border border-[#742C86]/50 text-[#c79a40] rounded-none shadow-[0_0_30px_rgba(116,44,134,0.4)]">
                 IN DEVELOPMENT
               </span>
             </motion.div>
 
-            <motion.div variants={itemVariants} className="pt-12">
+            <motion.div variants={itemVariants} className="pt-8 md:pt-10">
               <motion.button
-                whileHover={{ x: 15, color: "#E5C789" }}
-                className="flex items-center gap-6 text-[#c79a40] font-bold uppercase tracking-[0.4em] text-lg group cursor-pointer transition-colors duration-300"
+                whileHover={{ x: 10, color: "#E5C789" }}
+                className="flex items-center gap-4 md:gap-6 text-[#c79a40] font-bold uppercase tracking-[0.2em] md:tracking-[0.3em] text-xs md:text-base group cursor-pointer transition-colors duration-300"
               >
                 <span className="relative drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)]">
                   THE REALM OPENS SOON
                   <div className="absolute -bottom-4 left-0 w-0 h-[2px] bg-[#c79a40] group-hover:w-full transition-all duration-700 shadow-[0_0_20px_rgba(198,167,94,1)]" />
                 </span>
-                <ArrowUpRight className="w-8 h-8 transition-transform group-hover:translate-x-2 group-hover:-translate-y-2 drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)]" />
+                <ArrowUpRight className="w-4 h-4 md:w-6 md:h-6 transition-transform group-hover:translate-x-2 group-hover:-translate-y-2 drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)]" />
               </motion.button>
             </motion.div>
           </motion.div>
@@ -1493,18 +1492,20 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
         </motion.div>
 
         <motion.div style={{ y: btnY, clipPath: btnClip }} className="flex justify-center">
-          <motion.button
+          <motion.a
+            href="https://www.linkedin.com/in/sandhya-babu-7b11a1195?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+            target="_blank"
+            rel="noopener noreferrer"
             whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(116,44,134,0.6)" }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => onNavItemClick("contact")}
             className="px-12 py-5 bg-gradient-to-r from-[#742C86] to-[#4A1C56] text-white font-bold uppercase tracking-[0.3em] text-sm rounded-full flex items-center gap-4 group border border-[#742C86] shadow-[0_10px_20px_rgba(116,44,134,0.4)] transition-all relative overflow-hidden"
           >
             <span className="relative z-10 flex items-center gap-4">
-              Enter The Guild
+              View Openings
               <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-2" />
             </span>
             <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.2)_50%,transparent_75%)] translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
-          </motion.button>
+          </motion.a>
         </motion.div>
       </div>
 
@@ -1539,6 +1540,65 @@ const Contact = () => {
   const smoothProgress = useSpring(scrollYProgress, {
     damping: 30, stiffness: 70, restDelta: 0.001
   });
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [result, setResult] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+      setResult({ type: 'error', message: 'Please fill in all fields.' });
+      return;
+    }
+
+    setIsSubmitting(true);
+    setResult(null);
+
+    const payload = {
+      NAME: formData.name,
+      EMAIL: formData.email,
+      SUBJECT: formData.subject,
+      MESSAGE: formData.message
+    };
+
+    const webhookUrl = import.meta.env.VITE_WEBHOOK_URL || 'YOUR_WEBHOOK_URL_HERE'; // Fallback for dev
+    console.log(webhookUrl);
+    try {
+      // Send the payload as JSON, but keep no-cors to prevent browser blocking.
+      // Note: Google Apps Script needs to handle POST requests and CORS internally 
+      // (often by having a doPost function return ContentService.createTextOutput().setMimeType(ContentService.MimeType.JSON))
+      await fetch(webhookUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      // With no-cors, we can't read the response properly (it's opaque).
+      // We assume success if the fetch didn't throw a network error.
+      setResult({ type: 'success', message: 'Message sent successfully!' });
+      setFormData({ name: '', email: '', subject: '', message: '' });
+
+    } catch (error) {
+      console.error('Submission error:', error);
+      setResult({ type: 'error', message: 'Connection error. Please try again later.' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   // ========== ENVIRONMENTAL PARALLAX LAYERS ==========
   // Deep Background
@@ -1601,9 +1661,14 @@ const Contact = () => {
                   <div className="w-14 h-14 rounded-xl border border-white/10 bg-[#0F0B14] shadow-[0_10px_20px_rgba(0,0,0,0.5)] flex items-center justify-center text-[#742C86] group-hover:border-[#c79a40]/50 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(199,154,64,0.3)] transition-all duration-300">
                     <Mail className="w-6 h-6" />
                   </div>
-                  <span className="text-xl font-bold text-white tracking-wider group-hover:text-[#c79a40] transition-colors">hello@nytwolfgames.com</span>
+                  <a href="mailto:hello@nytwolfgames.com?subject=Nytwolf%20Website%20Inquiry" className="text-xl font-bold text-white tracking-wider group-hover:text-[#c79a40] transition-colors">
+                    hello@nytwolfgames.com
+                  </a>
                 </div>
-                <div
+                <a
+                  href="https://maps.app.goo.gl/UdhxKFLM2aGkF4ex6"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onMouseEnter={() => setIsHoveringCard(true)}
                   onMouseLeave={() => setIsHoveringCard(false)}
                   className="flex items-center gap-6 group cursor-pointer"
@@ -1612,7 +1677,7 @@ const Contact = () => {
                     <Globe className="w-6 h-6" />
                   </div>
                   <span className="text-xl font-bold text-white tracking-wider group-hover:text-[#c79a40] transition-colors">Coimbatore, India</span>
-                </div>
+                </a>
               </div>
             </motion.div>
           </div>
@@ -1622,6 +1687,7 @@ const Contact = () => {
             className="lg:col-span-6"
           >
             <form
+              onSubmit={handleSubmit}
               onMouseEnter={() => setIsHoveringCard(true)}
               onMouseLeave={() => setIsHoveringCard(false)}
               className="space-y-6 bg-[#0F0B14] p-10 rounded-3xl border border-[#742C86]/30 shadow-[0_40px_80px_rgba(0,0,0,0.8)] relative overflow-hidden group"
@@ -1632,28 +1698,57 @@ const Contact = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
                 <input
                   type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
                   placeholder="NAME"
                   className="bg-black/50 border border-white/10 p-5 text-sm tracking-[0.2em] text-white focus:border-[#c79a40]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-xl shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
                 />
                 <input
                   type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   placeholder="EMAIL"
                   className="bg-black/50 border border-white/10 p-5 text-sm tracking-[0.2em] text-white focus:border-[#c79a40]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-xl shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
                 />
               </div>
               <input
                 type="text"
+                name="subject"
+                value={formData.subject}
+                onChange={handleChange}
                 placeholder="SUBJECT"
                 className="w-full bg-black/50 border border-white/10 p-5 text-sm tracking-[0.2em] text-white focus:border-[#742C86]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-xl shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] relative z-10"
               />
               <textarea
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
                 placeholder="MESSAGE"
                 rows={5}
                 className="w-full bg-black/50 border border-white/10 p-5 text-sm tracking-[0.2em] text-white focus:border-[#742C86]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-xl resize-none shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] relative z-10"
               />
-              <button className="w-full bg-gradient-to-r from-[#742C86] to-[#4A1C56] text-white py-5 font-bold tracking-[0.3em] uppercase text-sm hover:from-[#c79a40] hover:to-[#916b20] transition-all duration-500 rounded-xl shadow-[0_10px_30px_rgba(116,44,134,0.4)] border border-[#742C86]/50 hover:border-[#c79a40]/50 relative z-10 overflow-hidden">
-                <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">SEND MESSAGE</span>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`w-full bg-gradient-to-r from-[#742C86] to-[#4A1C56] text-white py-5 font-bold tracking-[0.3em] uppercase text-sm hover:from-[#c79a40] hover:to-[#916b20] transition-all duration-500 rounded-xl shadow-[0_10px_30px_rgba(116,44,134,0.4)] border border-[#742C86]/50 hover:border-[#c79a40]/50 relative z-10 overflow-hidden ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+              >
+                <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                  {isSubmitting ? 'SENDING...' : 'SEND MESSAGE'}
+                </span>
               </button>
+
+              {result && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`mt-4 p-4 rounded-xl text-center text-sm font-bold tracking-wider relative z-10 ${result.type === 'success' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'
+                    }`}
+                >
+                  {result.message}
+                </motion.div>
+              )}
             </form>
           </motion.div>
         </div>
@@ -1705,14 +1800,23 @@ const Footer = () => {
           {/* Right Side: Social Icons */}
           <motion.div variants={staggerItem} className="flex items-center gap-6">
             {[
-              { icon: <Twitter className="w-4 h-4" />, href: "#" },
-              { icon: <Linkedin className="w-4 h-4" />, href: "#" },
-              { icon: <Instagram className="w-4 h-4" />, href: "#" },
-              { icon: <Facebook className="w-4 h-4" />, href: "#" }
+              {
+                icon: (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932 6.064-6.932zm-1.294 19.497h2.039L6.486 3.24H4.298l13.31 17.41z" />
+                  </svg>
+                ),
+                href: "https://twitter.com/NytwolfGames",
+                target: "_blank"
+              },
+              { icon: <Linkedin className="w-4 h-4" />, href: "https://www.linkedin.com/company/nytwolf-games/", target: "_blank" },
+              { icon: <Facebook className="w-4 h-4" />, href: "https://www.facebook.com/profile.php?id=61551333385719&mibextid=ZbWKwL", target: "_blank" }
             ].map((social, i) => (
               <a
                 key={i}
                 href={social.href}
+                target={social.target}
+                rel={social.target ? "noopener noreferrer" : undefined}
                 onMouseEnter={() => setIsHoveringCard(true)}
                 onMouseLeave={() => setIsHoveringCard(false)}
                 className="w-10 h-10 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-text-muted hover:text-white hover:border-[#742C86]/50 hover:bg-[#742C86]/10 transition-all duration-500"
@@ -1764,17 +1868,18 @@ export default function App() {
   }, [isLoading]);
 
   useEffect(() => {
-    if (isLoading) return;
+
 
     const observerOptions = {
       root: null,
-      rootMargin: '-10% 0px -10% 0px',
-      threshold: 0.5
+      rootMargin: '-20% 0px -20% 0px',
+      threshold: 0.1
     };
 
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
+          console.log(`Intersecting: ${entry.target.id}`);
           if (activeSectionIdRef.current !== entry.target.id) {
             setScrollingFromId(activeSectionIdRef.current);
             setActiveSectionId(entry.target.id);
