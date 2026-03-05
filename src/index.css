@@ -85,13 +85,28 @@
 
 @layer base {
   html {
-    scroll-behavior: smooth;
-    scroll-snap-type: y mandatory;
+    scroll-behavior: auto;
+    height: 100%;
+    overflow-y: scroll;
+    overscroll-behavior-y: none;
+  }
+
+  /* Only apply CSS snapping on touch-friendly devices to prevent JS conflicts on desktop */
+  @media (max-width: 1024px) {
+    html {
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+    }
+
+    .section-focus-layer {
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+    }
   }
 
   body {
     @apply bg-bg-dark text-text-light font-sans antialiased;
-    overscroll-behavior-y: none;
+    height: 100%;
   }
 
   h1,
@@ -143,8 +158,6 @@
   .section-focus-layer {
     transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
     opacity: 1;
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
   }
 
   .section-focus-layer.active {

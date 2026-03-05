@@ -1848,8 +1848,8 @@ export default function App() {
       const currentScroll = window.scrollY;
 
       animate(currentScroll, targetScroll, {
-        duration: 0.6,
-        ease: [0.33, 1, 0.68, 1],
+        duration: 1,
+        ease: "easeOut",
         onUpdate: (latest) => {
           window.scrollTo(0, latest);
         },
@@ -1895,8 +1895,80 @@ export default function App() {
       if (el) observer.observe(el);
     });
 
+    // ========== JS SMOOTH SCROLL SNAPPING (DESKTOP) ==========
+    const handleWheel = (e: WheelEvent) => {
+      if (isLoading) return;
+
+      const currentId = activeSectionIdRef.current;
+      const el = document.getElementById(currentId);
+
+      if (el && !isAnimating.current) {
+        const rect = el.getBoundingClientRect();
+        const isLongSection = el.offsetHeight > window.innerHeight + 10;
+
+        if (isLongSection) {
+          // If we are in a long section, check if we've reached the edge
+          if (e.deltaY > 0) { // Scrolling Down
+            const isAtBottom = rect.bottom <= window.innerHeight + 1;
+            if (!isAtBottom) return; // Allow natural scroll
+          } else { // Scrolling Up
+            const isAtTop = rect.top >= -1;
+            if (!isAtTop) return; // Allow natural scroll
+          }
+        }
+      }
+
+      // Prevent standard browser scroll behavior for the snapping jump
+      e.preventDefault();
+
+      if (isAnimating.current) return;
+
+      const currentIndex = sections.indexOf(currentId);
+      if (e.deltaY > 0 && currentIndex < sections.length - 1) {
+        scrollToSection(sections[currentIndex + 1]);
+      } else if (e.deltaY < 0 && currentIndex > 0) {
+        scrollToSection(sections[currentIndex - 1]);
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (isLoading) return;
+
+      const currentId = activeSectionIdRef.current;
+      const el = document.getElementById(currentId);
+
+      if (el && !isAnimating.current) {
+        const rect = el.getBoundingClientRect();
+        const isLongSection = el.offsetHeight > window.innerHeight + 10;
+
+        if (isLongSection) {
+          if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+            const isAtBottom = rect.bottom <= window.innerHeight + 1;
+            if (!isAtBottom) return; // Allow natural scroll
+          } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+            const isAtTop = rect.top >= -1;
+            if (!isAtTop) return; // Allow natural scroll
+          }
+        }
+      }
+
+      const currentIndex = sections.indexOf(currentId);
+      if ((e.key === 'ArrowDown' || e.key === 'PageDown') && currentIndex < sections.length - 1) {
+        e.preventDefault();
+        scrollToSection(sections[currentIndex + 1]);
+      } else if ((e.key === 'ArrowUp' || e.key === 'PageUp') && currentIndex > 0) {
+        e.preventDefault();
+        scrollToSection(sections[currentIndex - 1]);
+      }
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('keydown', handleKeyDown);
+
     return () => {
       observer.disconnect();
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isLoading]);
 
@@ -1940,11 +2012,13 @@ export default function App() {
             <div id="careers" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col justify-center ${activeSectionId === 'careers' || scrollingFromId === 'careers' ? 'active' : ''}`}>
               <Careers onNavItemClick={scrollToSection} />
             </div>
-            <div id="contact" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col justify-center ${activeSectionId === 'contact' || scrollingFromId === 'contact' ? 'active' : ''}`}>
-              <Contact />
+            <div id="contact" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col justify-between ${activeSectionId === 'contact' || scrollingFromId === 'contact' ? 'active' : ''}`}>
+              <div className="flex-grow flex flex-col justify-center">
+                <Contact />
+              </div>
+              <Footer />
             </div>
           </main>
-          <Footer />
         </motion.div>
       </div>
     </MouseGlowContext.Provider>
