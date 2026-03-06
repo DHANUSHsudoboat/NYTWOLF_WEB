@@ -610,7 +610,7 @@ const Navbar = ({ activeSection, onNavItemClick }: { activeSection: string, onNa
   ];
 
   return (
-    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-bg-dark/90 backdrop-blur-md py-4 border-b border-divider' : 'bg-transparent py-8'}`}>
+    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-bg-dark/90 backdrop-blur-md py-4' : 'bg-transparent py-8'}`}>
       <div className="container-1440 flex justify-between items-center">
         <motion.div
           initial={{ opacity: 0 }}
@@ -633,11 +633,11 @@ const Navbar = ({ activeSection, onNavItemClick }: { activeSection: string, onNa
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className={`text-sm font-medium tracking-widest transition-all duration-300 uppercase relative group ${activeSection === link.id ? 'text-primary' : 'text-text-light/90 hover:text-primary'
+              className={`text-sm font-medium tracking-widest transition-all duration-300 uppercase relative group ${(activeSection === link.id || (link.id === 'services' && activeSection === 'tech')) ? 'text-primary' : 'text-text-light/90 hover:text-primary'
                 }`}
             >
               {link.name}
-              <span className={`absolute -bottom-2 left-0 h-[2px] bg-primary transition-all duration-300 ${activeSection === link.id ? 'w-full' : 'w-0 group-hover:w-full'
+              <span className={`absolute -bottom-2 left-0 h-[2px] bg-primary transition-all duration-300 ${(activeSection === link.id || (link.id === 'services' && activeSection === 'tech')) ? 'w-full' : 'w-0 group-hover:w-full'
                 }`} />
             </motion.a>
           ))}
@@ -656,14 +656,14 @@ const Navbar = ({ activeSection, onNavItemClick }: { activeSection: string, onNa
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-bg-section border-b border-divider overflow-hidden"
+            className="md:hidden bg-bg-section overflow-hidden"
           >
             <div className="flex flex-col p-6 gap-4">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
-                  className={`text-lg font-medium transition-colors ${activeSection === link.id ? 'text-primary' : 'text-text-muted hover:text-primary'
+                  className={`text-lg font-medium transition-colors ${(activeSection === link.id || (link.id === 'services' && activeSection === 'tech')) ? 'text-primary' : 'text-text-muted hover:text-primary'
                     }`}
                   onClick={(e) => {
                     e.preventDefault();
@@ -1061,7 +1061,7 @@ const Services = () => {
   ];
 
   return (
-    <section ref={sectionRef} className="relative min-h-screen flex flex-col justify-center section-spacing bg-[#060408] overflow-hidden border-t border-white/5" style={{ perspective: "1500px" }}>
+    <section ref={sectionRef} className="relative min-h-screen flex flex-col justify-center section-spacing bg-[#060408] overflow-hidden" style={{ perspective: "1500px" }}>
 
       {/* LAYER 1: Deep Background Atmosphere */}
       <motion.div style={{ y: bgY }} className="absolute inset-0 z-0 pointer-events-none opacity-40 origin-center">
@@ -1106,18 +1106,19 @@ const Services = () => {
                   key={i}
                   onMouseEnter={() => setIsHoveringCard(true)}
                   onMouseLeave={() => setIsHoveringCard(false)}
-                  className="group relative p-8 rounded-3xl bg-[#0F0B14] border border-[#742C86]/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:bg-[#140D1B] hover:border-[#742C86]/50 transition-all duration-500 overflow-hidden"
+                  className="relative p-10 border border-white/5 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-md group overflow-hidden transition-all duration-500"
                 >
-                  <div className="absolute top-0 left-0 w-32 h-32 bg-[#742C86]/10 blur-[50px] rounded-full -translate-x-1/2 -translate-y-1/2 group-hover:bg-[#742C86]/30 transition-all duration-700" />
-                  <div className="relative z-10 space-y-6">
-                    <div className="w-14 h-14 rounded-2xl bg-[#742C86]/10 flex items-center justify-center text-[#742C86] group-hover:scale-110 group-hover:shadow-[0_0_30px_rgba(116,44,134,0.3)] transition-all duration-500">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#742C86]/0 via-[#742C86]/10 to-[#742C86]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-[1500ms] ease-in-out" />
+
+                  <div className="relative z-10 flex flex-col items-center text-center space-y-6">
+                    <div className="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#742C86] group-hover:scale-110 group-hover:text-[#c79a40] group-hover:border-[#c79a40]/30 transition-all duration-500">
                       {s.icon}
                     </div>
-                    <div className="space-y-3">
-                      <h3 className="text-xl font-bold uppercase tracking-wider text-white group-hover:text-[#742C86] transition-colors duration-300">
+                    <div className="space-y-4">
+                      <h3 className="text-2xl font-black text-white uppercase tracking-widest group-hover:text-[#c79a40] transition-colors duration-300">
                         {s.title}
                       </h3>
-                      <p className="text-sm text-text-muted leading-relaxed transition-colors duration-500">
+                      <p className="text-white/60 leading-relaxed font-medium transition-colors duration-500 group-hover:text-white/80">
                         {s.desc}
                       </p>
                     </div>
@@ -1128,12 +1129,83 @@ const Services = () => {
           </div>
         </div>
 
-        {/* ====== 2. TECHNOLOGIES ====== */}
+      </div>
+
+      {/* LAYER 3: Fast Foreground (Artifacts/Weapons intersecting content space) */}
+      <motion.div style={{ y: fgY1, x: fgX1, rotate: fgRot1 }} className="absolute bottom-[30%] left-[8%] z-30 pointer-events-none opacity-90 drop-shadow-[20px_20px_30px_rgba(0,0,0,0.8)]">
+        <div className="w-[12vw] h-[40vh] bg-gradient-to-tr from-[#c79a40] to-transparent clip-path-polygon-[50%_0%,_100%_100%,_0%_100%] blur-[2px]" />
+      </motion.div>
+
+      <motion.div style={{ y: fgY2, rotate: fgRot2 }} className="absolute bottom-[60%] right-[10%] z-30 pointer-events-none opacity-80 drop-shadow-[-20px_20px_30px_rgba(0,0,0,0.8)]">
+        <div className="w-[20vw] h-[20vw] border-t-[8px] border-r-[4px] border-[#742C86] rounded-full blur-[1px] opacity-70" />
+      </motion.div>
+
+    </section>
+  );
+};
+
+const PoweringOurWorlds = () => {
+  const { setIsHoveringCard } = React.useContext(MouseGlowContext);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+
+  const smoothProgress = useSpring(scrollYProgress, {
+    damping: 30, stiffness: 70, restDelta: 0.001
+  });
+
+  const bgY = useTransform(smoothProgress, [0, 1], ["0%", "15%"]);
+  const h2Y = useTransform(smoothProgress, [0.1, 0.22], [150, 0]);
+  const h2RotX = useTransform(smoothProgress, [0.1, 0.22], [45, 0]);
+  const h2Clip = useTransform(smoothProgress, [0.1, 0.22], ["inset(100% 0 0 0)", "inset(0% 0 0 0)"]);
+
+  const techY = useTransform(smoothProgress, [0.12, 0.25], [200, 0]);
+  const techRotX = useTransform(smoothProgress, [0.12, 0.25], [30, 0]);
+  const techClip = useTransform(smoothProgress, [0.12, 0.25], ["inset(100% 0 0 0)", "inset(0% 0 0 0)"]);
+
+  const techs = [
+    {
+      name: "Unreal Engine 5",
+      desc: "Cinematic real-time rendering powered by Nanite and Lumen.",
+      icon: "/icons/unreal.svg"
+    },
+    {
+      name: "Unity",
+      desc: "Flexible multi-platform game development engine.",
+      icon: "/icons/unity.svg"
+    },
+    {
+      name: "Figma",
+      desc: "UI/UX prototyping and interface system design.",
+      icon: "/icons/figma.svg"
+    },
+    {
+      name: "Blender",
+      desc: "3D modeling, animation, and asset creation.",
+      icon: "/icons/blender.svg"
+    },
+    {
+      name: "Adobe Creative Suite",
+      desc: "Visual design, branding, and production workflows.",
+      icon: "/icons/adobe.svg"
+    }
+  ];
+
+  return (
+    <section ref={sectionRef} className="relative min-h-screen flex flex-col justify-center section-spacing bg-[#060408] overflow-hidden" style={{ perspective: "1500px" }}>
+      <motion.div style={{ y: bgY }} className="absolute inset-0 z-0 pointer-events-none opacity-40 origin-center">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(116,44,134,0.15)_0%,transparent_70%)] blur-[50px]" />
+      </motion.div>
+
+      <div className="container-1440 relative z-10">
         <motion.div
           style={{ y: h2Y, rotateX: h2RotX, clipPath: h2Clip, transformOrigin: "bottom center", transformStyle: "preserve-3d" }}
           className="text-center mb-6 md:mb-12 relative z-10"
         >
-          <h2 className="text-4xl md:text-9xl font-black tracking-tighter text-white uppercase leading-none mb-6 md:mb-10 drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
+          <h2 className="text-3xl md:text-6xl font-bold tracking-tighter text-white uppercase leading-none mb-6 md:mb-10 drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
             POWERING OUR <span className="text-[#742C86]">WORLDS</span>
           </h2>
           <p className="text-base md:text-xl text-text-muted tracking-[0.2em] md:tracking-[0.4em] uppercase font-bold max-w-4xl mx-auto drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-4">
@@ -1175,20 +1247,7 @@ const Services = () => {
             </div>
           ))}
         </motion.div>
-
       </div>
-
-      {/* LAYER 3: Fast Foreground (Artifacts/Weapons intersecting content space) */}
-      <motion.div style={{ y: fgY1, x: fgX1, rotate: fgRot1 }} className="absolute bottom-[30%] left-[8%] z-30 pointer-events-none opacity-90 drop-shadow-[20px_20px_30px_rgba(0,0,0,0.8)]">
-        {/* Placeholder for uploaded weapon icon: <img src="/weapon_fg.png" className="w-[15vw] h-auto hidden" /> */}
-        <div className="w-[12vw] h-[40vh] bg-gradient-to-tr from-[#c79a40] to-transparent clip-path-polygon-[50%_0%,_100%_100%,_0%_100%] blur-[2px]" />
-      </motion.div>
-
-      <motion.div style={{ y: fgY2, rotate: fgRot2 }} className="absolute bottom-[60%] right-[10%] z-30 pointer-events-none opacity-80 drop-shadow-[-20px_20px_30px_rgba(0,0,0,0.8)]">
-        {/* Placeholder for uploaded artifact: <img src="/artifact_fg.png" className="w-[15vw] h-auto hidden" /> */}
-        <div className="w-[20vw] h-[20vw] border-t-[8px] border-r-[4px] border-[#742C86] rounded-full blur-[1px] opacity-70" />
-      </motion.div>
-
     </section>
   );
 };
@@ -1467,26 +1526,24 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
               key={i}
               onMouseEnter={() => setIsHoveringCard(true)}
               onMouseLeave={() => setIsHoveringCard(false)}
-              className="group relative p-10 rounded-3xl bg-[#0F0B14] border border-[#742C86]/20 shadow-[0_20px_40px_rgba(0,0,0,0.6)] hover:bg-[#140D1B] hover:border-[#c79a40]/60 transition-all duration-500 flex flex-col items-center text-center space-y-6 overflow-hidden"
+              className="group relative p-12 border border-white/5 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-md overflow-hidden transition-all duration-500 flex flex-col items-center text-center space-y-8"
             >
-              {/* Subtle Ambient Glow on Hover */}
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(116,44,134,0.1)_0%,transparent_100%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#742C86]/0 via-[#742C86]/10 to-[#742C86]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-[1500ms] ease-in-out" />
 
-              <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${role.color} flex items-center justify-center text-[#c79a40] group-hover:scale-110 group-hover:shadow-[0_0_40px_rgba(199,154,64,0.4)] transition-all duration-500 border border-white/5`}>
+              <div className={`w-20 h-20 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#c79a40] group-hover:scale-110 group-hover:shadow-[0_0_40px_rgba(199,154,64,0.2)] transition-all duration-500`}>
                 {role.icon}
               </div>
 
               <div className="space-y-4 relative z-10">
-                <h3 className="text-2xl font-bold uppercase tracking-wider text-white group-hover:text-[#c79a40] transition-colors duration-300">
+                <h3 className="text-2xl font-black text-white uppercase tracking-widest group-hover:text-[#c79a40] transition-colors duration-300">
                   {role.title}
                 </h3>
-                <p className="text-text-muted leading-relaxed group-hover:text-white/80 transition-colors duration-500">
+                <p className="text-white/60 leading-relaxed font-medium group-hover:text-white/80 transition-colors duration-500">
                   {role.text}
                 </p>
               </div>
 
-              {/* Decorative corner element resembling stone carving */}
-              <div className="absolute top-0 right-0 w-24 h-24 bg-[#c79a40]/5 blur-[20px] group-hover:bg-[#c79a40]/15 transition-all duration-500 pointer-events-none" />
+              <div className="absolute top-0 right-0 w-24 h-24 bg-[#c79a40]/5 blur-[20px] group-hover:bg-[#c79a40]/10 transition-all duration-500 pointer-events-none" />
             </div>
           ))}
         </motion.div>
@@ -1623,7 +1680,7 @@ const Contact = () => {
   const formClip = useTransform(smoothProgress, [0.1, 0.3], ["inset(100% 0 0 0)", "inset(0% 0 0 0)"]);
 
   return (
-    <section ref={sectionRef} className="relative min-h-screen flex flex-col justify-center section-spacing bg-[#0F0B14] overflow-hidden border-t border-white/5" style={{ perspective: "1500px" }}>
+    <section ref={sectionRef} className="relative min-h-screen flex flex-col justify-between pt-28 pb-8 lg:pt-32 lg:pb-12 bg-[#0F0B14] overflow-hidden" style={{ perspective: "1500px" }}>
 
       {/* LAYER 1: Deep Background Atmosphere */}
       <motion.div style={{ y: bgY }} className="absolute inset-0 z-0 pointer-events-none opacity-40 origin-center">
@@ -1642,14 +1699,14 @@ const Contact = () => {
       </motion.div>
 
       <div className="container-1440 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-20">
           <div className="lg:col-span-6">
             <motion.div style={{ y: contentY, clipPath: contentClip }}>
               <span className="text-[#c79a40] tracking-[0.5em] uppercase text-xs font-bold mb-4 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">SEND A RAVEN</span>
               <h2 className="text-4xl md:text-6xl font-bold mb-6 md:mb-10 uppercase tracking-tighter text-white drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
                 LET'S <span className="text-[#742C86]">TALK</span>.
               </h2>
-              <p className="text-lg md:text-xl text-text-muted mb-8 md:mb-12 max-w-md font-medium leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+              <p className="text-lg md:text-xl text-text-muted mb-6 md:mb-12 max-w-md font-medium leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                 Whether you're a potential partner, a member of the press, or just want to say hello, we'd love to hear from you.
               </p>
               <div className="space-y-8">
@@ -1690,7 +1747,7 @@ const Contact = () => {
               onSubmit={handleSubmit}
               onMouseEnter={() => setIsHoveringCard(true)}
               onMouseLeave={() => setIsHoveringCard(false)}
-              className="space-y-6 bg-[#0F0B14] p-10 rounded-3xl border border-[#742C86]/30 shadow-[0_40px_80px_rgba(0,0,0,0.8)] relative overflow-hidden group"
+              className="space-y-6 bg-[#0F0B14] p-6 md:p-10 rounded-3xl border border-[#742C86]/30 shadow-[0_40px_80px_rgba(0,0,0,0.8)] relative overflow-hidden group"
             >
               {/* Mystical Altar Ambient Glow */}
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(116,44,134,0.15)_0%,transparent_60%)] pointer-events-none" />
@@ -1762,6 +1819,10 @@ const Contact = () => {
         <div className="w-[5vw] h-[20vh] bg-gradient-to-b from-[#742C86] to-transparent clip-path-polygon-[50%_0%,_100%_20%,_50%_100%,_0%_20%] blur-[4px] rotate-[-20deg]" />
       </motion.div>
 
+      <div className="mt-auto">
+        <Footer />
+      </div>
+
     </section>
   );
 }
@@ -1769,11 +1830,10 @@ const Contact = () => {
 const Footer = () => {
   const { setIsHoveringCard } = React.useContext(MouseGlowContext);
   return (
-    <footer className="relative py-20 bg-[#0F0B14] overflow-hidden border-t border-white/5">
-      <CinematicBackground />
-      {/* Large Background Branding */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none opacity-[0.02]">
-        <span className="text-[20vw] font-black tracking-tighter uppercase text-white">
+    <div className="relative py-4 md:py-6 z-20">
+      {/* Large Background Branding - smaller on mobile */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none opacity-[0.01] md:opacity-[0.02]">
+        <span className="text-[12vw] md:text-[20vw] font-black tracking-tighter uppercase text-white">
           NYTWOLF
         </span>
       </div>
@@ -1827,7 +1887,7 @@ const Footer = () => {
           </motion.div>
         </div>
       </motion.div>
-    </footer>
+    </div>
   );
 };
 
@@ -1861,7 +1921,7 @@ export default function App() {
     }
   };
 
-  const sections = ['home', 'studio', 'services', 'projects', 'careers', 'contact'];
+  const sections = ['home', 'studio', 'services', 'tech', 'projects', 'careers', 'contact'];
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -2006,17 +2066,17 @@ export default function App() {
             <div id="services" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col justify-center ${activeSectionId === 'services' || scrollingFromId === 'services' ? 'active' : ''}`}>
               <Services />
             </div>
+            <div id="tech" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col justify-center ${activeSectionId === 'tech' || scrollingFromId === 'tech' ? 'active' : ''}`}>
+              <PoweringOurWorlds />
+            </div>
             <div id="projects" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col justify-center ${activeSectionId === 'projects' || scrollingFromId === 'projects' ? 'active' : ''}`}>
               <FeaturedProject />
             </div>
             <div id="careers" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col justify-center ${activeSectionId === 'careers' || scrollingFromId === 'careers' ? 'active' : ''}`}>
               <Careers onNavItemClick={scrollToSection} />
             </div>
-            <div id="contact" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col justify-between ${activeSectionId === 'contact' || scrollingFromId === 'contact' ? 'active' : ''}`}>
-              <div className="flex-grow flex flex-col justify-center">
-                <Contact />
-              </div>
-              <Footer />
+            <div id="contact" className={`section-focus-layer relative overflow-hidden min-h-screen ${activeSectionId === 'contact' || scrollingFromId === 'contact' ? 'active' : ''}`}>
+              <Contact />
             </div>
           </main>
         </motion.div>
