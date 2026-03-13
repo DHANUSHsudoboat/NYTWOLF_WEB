@@ -25,7 +25,9 @@ import {
   Facebook,
   Code,
   Paintbrush,
-  LayoutGrid
+  LayoutGrid,
+  Compass,
+  Mouse
 } from 'lucide-react';
 
 const MouseGlowContext = React.createContext<{
@@ -264,12 +266,12 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
     const logoTimer = setTimeout(() => setShowLogo(true), 500);
 
     // Stage 2: Start finishing transition (fade out or smooth entry)
-    const finishTimer = setTimeout(() => setIsFinishing(true), 2800);
+    const finishTimer = setTimeout(() => setIsFinishing(true), 2400);
 
     // Stage 3: Complete
     const completeTimer = setTimeout(() => {
       onComplete();
-    }, 3500);
+    }, 4000);
 
     return () => {
       clearTimeout(logoTimer);
@@ -330,20 +332,20 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
           filter: "blur(12px)"
         }}
         animate={{
-          y: showLogo ? 0 : 40,
+          y: showLogo ? (isFinishing ? 0 : 0) : 40,
           opacity: showLogo ? 1 : 0,
-          filter: showLogo ? "blur(0px)" : "blur(12px)"
+          filter: showLogo ? "blur(0px)" : "blur(12px)",
+          scale: isFinishing ? 0.8 : 1
         }}
         transition={{
-          duration: 1.8,
+          duration: isFinishing ? 1.5 : 1.8,
           ease: [0.22, 1, 0.36, 1]
         }}
-        style={{ scale: 1 }}
       >
         <motion.div
-          className="relative w-48 h-48 md:w-64 md:h-64"
+          className="relative w-[240px] h-[240px]"
           animate={{
-            scale: isFinishing ? 0.67 : 1
+            scale: 1
           }}
           transition={{
             duration: 0.8,
@@ -363,7 +365,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
             transition={{ duration: 2, ease: "easeInOut", delay: 0.6 }}
             style={{ bottom: 0, top: 'auto' }}
           >
-            <div className="absolute bottom-0 left-0 w-48 h-48 md:w-64 md:h-64">
+            <div className="absolute bottom-0 left-0 w-[240px] h-[240px]">
               <Logo className="w-full h-full" useGradient={true} />
             </div>
           </motion.div>
@@ -383,10 +385,14 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
         <motion.div
           animate={{
             opacity: showLogo ? 1 : 0,
-            y: showLogo ? 0 : 10
+            y: showLogo ? (isFinishing ? 0 : 0) : 10
           }}
-          transition={{ duration: 1.2, delay: 1.4 }}
-          className="mt-16 text-center"
+          transition={{
+            duration: isFinishing ? 1.5 : 1.2,
+            delay: isFinishing ? 0 : 1.4,
+            ease: [0.22, 1, 0.36, 1]
+          }}
+          className="mt-[60px] text-center"
         >
           <h1 className="text-4xl md:text-6xl font-black tracking-[0.3em] text-white uppercase ml-[0.3em] font-display drop-shadow-[0_0_30px_rgba(116,44,134,0.3)]">
             NYTWOLF <span className="text-[#742C86]">GAMES</span>
@@ -586,6 +592,27 @@ const CinematicBackground = () => {
   );
 };
 
+const FogLayer = ({ opacity = 0.4, speed = 20, color = "rgba(116,44,134,0.15)", className = "", yOffset = "0%" }: { opacity?: number, speed?: number, color?: string, className?: string, yOffset?: string }) => {
+  return (
+    <motion.div
+      initial={{ x: "-10%", opacity: 0 }}
+      animate={{ 
+        x: ["-10%", "10%", "-10%"],
+        opacity: [opacity * 0.5, opacity, opacity * 0.5]
+      }}
+      transition={{
+        duration: speed,
+        repeat: Infinity,
+        ease: "linear"
+      }}
+      style={{ y: yOffset }}
+      className={`absolute inset-0 pointer-events-none ${className}`}
+    >
+      <div className="absolute inset-x-[-20%] bottom-0 h-[60%] bg-[radial-gradient(ellipse_at_center,var(--fog-color),transparent_70%)] blur-[100px]" style={{ '--fog-color': color } as any} />
+    </motion.div>
+  );
+};
+
 const Navbar = ({ activeSection, onNavItemClick }: { activeSection: string, onNavItemClick: (id: string) => void }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -684,6 +711,7 @@ const Navbar = ({ activeSection, onNavItemClick }: { activeSection: string, onNa
 
 const Hero = () => {
   const heroRef = useRef<HTMLElement>(null);
+  const prefersReducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"]
@@ -718,13 +746,23 @@ const Hero = () => {
   const scaleText = useTransform(smoothProgress, [0, 0.4], [1, 1.05]);
   const yText = useTransform(smoothProgress, [0, 0.4], ["0%", "20%"]);
 
+  // Fog Parallax
+  const fogDeepY = useTransform(smoothProgress, [0, 1], ["0%", "5%"]);
+  const fogMidY = useTransform(smoothProgress, [0, 1], ["0%", "15%"]);
+
   return (
     <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden bg-transparent" style={{ perspective: "1000px" }}>
+
+      {/* ===== Atmospheric Fog Deep ===== */}
+      <FogLayer color="rgba(116,44,134,0.12)" speed={35} opacity={0.4} className="z-0" yOffset={fogDeepY as any} />
 
       {/* ===== Layer 2: Statue (Left, distinct, some padding) ===== */}
       <motion.div style={{ y: statueY, scale: statueScale, rotateY: statueRotateY, transformStyle: "preserve-3d" }} className="absolute bottom-[-5%] md:bottom-[-18%] left-[0%] z-10 pointer-events-none origin-bottom">
         <motion.img src="/statue.png" className="h-[185vh] w-auto max-w-[80vw] object-contain object-bottom drop-shadow-[50px_0_30px_rgba(0,0,0,0.3)]" alt="Statue" />
       </motion.div>
+
+      {/* ===== Atmospheric Fog Mid ===== */}
+      <FogLayer color="rgba(199,167,94,0.08)" speed={25} opacity={0.3} className="z-15" yOffset={fogMidY as any} />
 
       {/* ===== Layer 3: Grass Foreground (Bottom Left Edge) ===== */}
       <motion.div style={{ y: grassY, x: grassX, scale: grassScale }} className="absolute bottom-[-4%] md:bottom-[-9%] left-0 z-20 pointer-events-none origin-bottom-left">
@@ -736,23 +774,27 @@ const Hero = () => {
         <motion.img src="/tree.png" className="w-[45vw] min-w-[350px] h-auto object-contain object-bottom drop-shadow-[-20px_0_30px_rgba(0,0,0,0.8)]" alt="Tree" />
       </motion.div>
 
+      {/* ===== Subtle Mystical Particles ===== */}
+      {!prefersReducedMotion && <ParticleSystem count={40} />}
+      {prefersReducedMotion && <ParticleSystem count={10} />}
+
       {/* Main Text Content */}
       <motion.div
         style={{ opacity: opacityText, scale: scaleText, y: yText }}
-        className="relative z-30 flex flex-col items-center text-center px-6 max-w-5xl"
+        className="relative z-30 flex flex-col items-center text-center px-6 max-w-5xl translate-y-[35px]"
       >
-        <div className="mb-8 relative">
+        <div className="mb-12 relative">
           <MouseParallax factor={40}>
             <motion.div animate={{ y: [-10, 0, -10] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}>
-              <Logo className="w-32 h-32 md:w-40 md:h-40 text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]" useGradient={false} />
+              <Logo className="w-32 h-32 md:w-48 md:h-48 text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]" useGradient={false} />
             </motion.div>
           </MouseParallax>
           <div className="absolute inset-0 bg-primary/20 blur-[60px] -z-10 rounded-full" />
         </div>
 
         <div className="flex flex-col items-center">
-          <h1 className="text-3xl md:text-5xl font-bold tracking-[0.3em] text-white uppercase font-display leading-none ml-[0.3em] drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]">
-            NYTWOLF GAMES
+          <h1 className="text-3xl md:text-5xl font-black tracking-[0.3em] text-white uppercase ml-[0.3em] font-display drop-shadow-[0_0_30px_rgba(116,44,134,0.3)]">
+            NYTWOLF <span className="text-[#742C86]">GAMES</span>
           </h1>
 
           <div className="flex flex-col items-center gap-4 mt-6">
@@ -764,20 +806,40 @@ const Hero = () => {
         </div>
       </motion.div>
 
-      {/* Scroll Indicator */}
+      {/* Gaming UI Scroll Indicator */}
       <motion.div
         style={{ opacity: opacityText }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2.5, duration: 1 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2 pointer-events-none"
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-3 pointer-events-none"
       >
-        <span className="text-[10px] uppercase tracking-[0.3em] text-white/40">Initiate</span>
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="w-[1px] h-12 bg-gradient-to-b from-primary/60 to-transparent"
-        />
+        <div className="relative">
+          {/* Main Mouse Frame */}
+          <div className="w-[26px] h-[42px] border-2 border-white rounded-full flex justify-center p-1.5 backdrop-blur-[2px]">
+            {/* Animated Scroll Wheel */}
+            <motion.div 
+              animate={{ 
+                y: [0, 18, 0],
+                opacity: [0.4, 1, 0.4],
+                scale: [1, 1.1, 1]
+              }}
+              transition={{ 
+                duration: 2.5, 
+                repeat: Infinity, 
+                ease: "easeInOut" 
+              }}
+              className="w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_8px_#742C86,0_0_12px_#742C86]"
+            />
+          </div>
+          
+          {/* Pulse Glow Background */}
+          <motion.div
+            animate={{ opacity: [0.1, 0.25, 0.1], scale: [0.9, 1.1, 0.9] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+            className="absolute inset-[-10px] bg-primary/10 blur-xl rounded-full -z-10"
+          />
+        </div>
       </motion.div>
 
     </section>
@@ -1386,7 +1448,7 @@ const FeaturedProject = () => {
               <span className="text-[#c79a40] tracking-[0.3em] md:tracking-[0.5em] uppercase text-[10px] md:text-xs font-bold block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">CURRENT WORLD</span>
               <h2 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter text-white uppercase leading-[0.9] drop-shadow-[0_10px_30px_rgba(0,0,0,0.9)]">
                 PROJECT: <br />
-                <span className="text-gradient-aaa">GREEN LEAF</span>
+                <span className="text-white">GREEN LEAF</span>
               </h2>
             </motion.div>
 
@@ -1400,22 +1462,21 @@ const FeaturedProject = () => {
                   {tag}
                 </span>
               ))}
-              <span className="px-4 py-1.5 md:px-6 md:py-2.5 bg-[#742C86]/30 backdrop-blur-xl text-[9px] md:text-[11px] font-bold uppercase tracking-[0.2em] md:tracking-[0.3em] border border-[#742C86]/50 text-[#c79a40] rounded-none shadow-[0_0_30px_rgba(116,44,134,0.4)]">
-                IN DEVELOPMENT
-              </span>
             </motion.div>
 
-            <motion.div variants={itemVariants} className="pt-8 md:pt-10">
-              <motion.button
-                whileHover={{ x: 10, color: "#E5C789" }}
-                className="flex items-center gap-4 md:gap-6 text-[#c79a40] font-bold uppercase tracking-[0.2em] md:tracking-[0.3em] text-xs md:text-base group cursor-pointer transition-colors duration-300"
-              >
-                <span className="relative drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)]">
-                  THE REALM OPENS SOON
-                  <div className="absolute -bottom-4 left-0 w-0 h-[2px] bg-[#c79a40] group-hover:w-full transition-all duration-700 shadow-[0_0_20px_rgba(198,167,94,1)]" />
-                </span>
-                <ArrowUpRight className="w-4 h-4 md:w-6 md:h-6 transition-transform group-hover:translate-x-2 group-hover:-translate-y-2 drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)]" />
-              </motion.button>
+            <motion.div variants={itemVariants} className="pt-8">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 px-6 py-3 bg-[#742C86]/20 backdrop-blur-md border border-[#742C86]/30 rounded-full shadow-[0_0_30px_rgba(116,44,134,0.2)]">
+                  <motion.div 
+                    animate={{ opacity: [0.4, 1, 0.4] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    className="w-2 h-2 rounded-full bg-[#c79a40] shadow-[0_0_10px_#c79a40]" 
+                  />
+                  <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.4em] text-[#c79a40]">
+                    IN DEVELOPMENT
+                  </span>
+                </div>
+              </div>
             </motion.div>
           </motion.div>
         </motion.div>

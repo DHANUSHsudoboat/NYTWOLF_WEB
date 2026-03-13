@@ -89,6 +89,21 @@
     height: 100%;
     overflow-y: scroll;
     overscroll-behavior-y: none;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  html::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+
+  body {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  body::-webkit-scrollbar {
+    display: none;
   }
 
   /* Only apply CSS snapping on touch-friendly devices to prevent JS conflicts on desktop */
