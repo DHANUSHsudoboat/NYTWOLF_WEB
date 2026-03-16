@@ -126,6 +126,13 @@ const LogoOutline = ({ className = "h-12 w-auto" }: { className?: string }) => (
   </svg>
 );
 
+const WolfEyeO = ({ className = "" }: { className?: string }) => (
+  <svg viewBox="0 0 100 100" className={`h-[0.84em] w-auto inline-block align-middle relative top-[-0.1em] left-[-0.12em] ${className}`} fill="currentColor">
+    <circle cx="50" cy="50" r="42" stroke="currentColor" strokeWidth="16" fill="none" />
+    <path d="M50 25 Q58 50 50 75 Q42 50 50 25 Z" fill="currentColor" />
+  </svg>
+);
+
 const HeroBackground = ({ className = "" }: { className?: string }) => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -428,7 +435,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
           className="mt-[40px] md:mt-[60px] text-center"
         >
           <h1 className="text-4xl md:text-6xl font-black tracking-[0.2em] md:tracking-[0.3em] text-white uppercase font-display drop-shadow-[0_0_30px_rgba(116,44,134,0.3)] flex flex-col lg:flex-row items-center gap-2 lg:gap-4">
-            <span>NYTWOLF</span> <span className="text-[#742C86]">GAMES</span>
+            <span className="flex items-center">NYTW<WolfEyeO />LF</span> <span className="text-[#742C86]">GAMES</span>
           </h1>
         </motion.div>
       </motion.div>
@@ -872,7 +879,7 @@ const Hero = () => {
 
         <div className="flex flex-col items-center">
           <h1 className="text-3xl sm:text-4xl md:text-[3.15rem] lg:text-5xl font-black tracking-[0.15em] md:tracking-[0.25em] lg:tracking-[0.3em] text-white uppercase font-display drop-shadow-[0_0_30px_rgba(116,44,134,0.3)] flex flex-col lg:flex-row items-center gap-2 lg:gap-4 text-center">
-            <span>NYTWOLF</span> <span className="text-[#742C86]">GAMES</span>
+            <span className="flex items-center">NYTW<WolfEyeO />LF</span> <span className="text-[#742C86]">GAMES</span>
           </h1>
 
           <div className="flex flex-col items-center gap-4 mt-6">
@@ -1486,7 +1493,7 @@ const FeaturedProject = () => {
           scale: prefersReducedMotion ? 1 : knightScale,
           translateZ: 0
         }}
-        className="absolute bottom-[2%] md:bottom-[-15%] lg:bottom-[-27%] right-[-20%] md:right-[-5%] w-[95vw] md:w-[75vw] lg:w-[45vw] z-30 pointer-events-none will-change-transform origin-bottom drop-shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
+        className="absolute bottom-[8%] md:bottom-[-8%] lg:bottom-[-18%] right-[-20%] md:right-[-5%] w-[95vw] md:w-[75vw] lg:w-[45vw] z-30 pointer-events-none will-change-transform origin-bottom drop-shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
       >
         <img src="/knight.png" className="w-full h-auto max-h-[60vh] md:max-h-none object-contain" alt="Epic Knight" />
       </motion.div>
@@ -1687,7 +1694,7 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
             rel="noopener noreferrer"
             whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(116,44,134,0.6)" }}
             whileTap={{ scale: 0.95 }}
-            className="px-12 py-5 bg-gradient-to-r from-[#742C86] to-[#4A1C56] text-white font-bold uppercase tracking-[0.3em] text-sm rounded-full flex items-center gap-4 group border border-[#742C86] shadow-[0_10px_20px_rgba(116,44,134,0.4)] transition-all relative overflow-hidden"
+            className="px-12 py-5 bg-gradient-to-r from-[#742C86] to-[#4A1C56] text-white font-bold uppercase tracking-[0.3em] text-sm rounded-3xl flex items-center gap-4 group border border-[#742C86] shadow-[0_10px_20px_rgba(116,44,134,0.4)] transition-all relative overflow-hidden"
           >
             <span className="relative z-10 flex items-center gap-4">
               View Openings
@@ -1812,7 +1819,7 @@ const Contact = () => {
   const formClip = useTransform(smoothProgress, [0.1, 0.3], ["inset(100% 0 0 0)", "inset(-20% -20% -20% -20%)"]);
 
   return (
-    <section ref={sectionRef} className="relative min-h-screen flex flex-col justify-between pt-28 pb-8 lg:pt-32 lg:pb-12 bg-[#0F0B14] overflow-hidden" style={{ perspective: "1500px" }}>
+    <section ref={sectionRef} id="contact" className="relative min-h-screen flex flex-col justify-between pt-24 pb-4 lg:pt-28 lg:pb-6 bg-[#0F0B14] overflow-hidden" style={{ perspective: "1500px" }}>
 
       {/* LAYER 1: Deep Background Atmosphere */}
       <motion.div style={{ y: bgY }} className="absolute inset-0 z-0 pointer-events-none opacity-40 origin-center">
@@ -1838,7 +1845,7 @@ const Contact = () => {
               <h2 className="text-4xl md:text-6xl font-bold mb-6 md:mb-10 uppercase tracking-tighter text-white drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
                 LET'S <span className="text-[#742C86]">TALK</span>.
               </h2>
-              <p className="text-lg md:text-xl text-text-muted mb-6 md:mb-12 max-w-md font-medium leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+              <p className="text-base md:text-lg text-text-muted mb-4 md:mb-8 max-w-sm font-medium leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                 Whether you're a potential partner, a member of the press, or just want to say hello, we'd love to hear from you.
               </p>
               <div className="space-y-8">
@@ -1879,19 +1886,19 @@ const Contact = () => {
               onSubmit={handleSubmit}
               onMouseEnter={() => setIsHoveringCard(true)}
               onMouseLeave={() => setIsHoveringCard(false)}
-              className="space-y-6 bg-[#0F0B14] p-6 md:p-10 rounded-3xl border border-[#742C86]/30 shadow-[0_40px_80px_rgba(0,0,0,0.8)] relative overflow-hidden group"
+              className="space-y-4 bg-black/40 p-5 md:p-8 rounded-2xl border border-[#742C86]/20 shadow-[0_30px_60px_rgba(0,0,0,0.7)] relative overflow-hidden group"
             >
               {/* Mystical Altar Ambient Glow */}
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(116,44,134,0.15)_0%,transparent_60%)] pointer-events-none" />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
                   placeholder="NAME"
-                  className="bg-black/50 border border-white/10 p-5 text-sm tracking-[0.2em] text-white focus:border-[#c79a40]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-xl shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
+                  className="bg-black/50 border border-white/10 p-4 text-xs tracking-[0.2em] text-white focus:border-[#c79a40]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
                 />
                 <input
                   type="email"
@@ -1899,7 +1906,7 @@ const Contact = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="EMAIL"
-                  className="bg-black/50 border border-white/10 p-5 text-sm tracking-[0.2em] text-white focus:border-[#c79a40]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-xl shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
+                  className="bg-black/50 border border-white/10 p-4 text-xs tracking-[0.2em] text-white focus:border-[#c79a40]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
                 />
               </div>
               <input
@@ -1908,20 +1915,20 @@ const Contact = () => {
                 value={formData.subject}
                 onChange={handleChange}
                 placeholder="SUBJECT"
-                className="w-full bg-black/50 border border-white/10 p-5 text-sm tracking-[0.2em] text-white focus:border-[#742C86]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-xl shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] relative z-10"
+                className="w-full bg-black/50 border border-white/10 p-4 text-xs tracking-[0.2em] text-white focus:border-[#742C86]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] relative z-10"
               />
               <textarea
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
                 placeholder="MESSAGE"
-                rows={5}
-                className="w-full bg-black/50 border border-white/10 p-5 text-sm tracking-[0.2em] text-white focus:border-[#742C86]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-xl resize-none shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] relative z-10"
+                rows={3}
+                className="w-full bg-black/50 border border-white/10 p-4 text-xs tracking-[0.2em] text-white focus:border-[#742C86]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg resize-none shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] relative z-10"
               />
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`w-full bg-gradient-to-r from-[#742C86] to-[#4A1C56] text-white py-5 font-bold tracking-[0.3em] uppercase text-sm hover:from-[#c79a40] hover:to-[#916b20] transition-all duration-500 rounded-xl shadow-[0_10px_30px_rgba(116,44,134,0.4)] border border-[#742C86]/50 hover:border-[#c79a40]/50 relative z-10 overflow-hidden ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+                className={`w-full bg-gradient-to-r from-[#742C86] to-[#4A1C56] text-white py-4 font-bold tracking-[0.3em] uppercase text-xs hover:from-[#c79a40] hover:to-[#916b20] transition-all duration-500 rounded-lg shadow-[0_10px_30px_rgba(116,44,134,0.4)] border border-[#742C86]/50 hover:border-[#c79a40]/50 relative z-10 overflow-hidden ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
               >
                 <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                   {isSubmitting ? 'SENDING...' : 'SEND MESSAGE'}
@@ -1951,7 +1958,7 @@ const Contact = () => {
         <div className="w-[5vw] h-[20vh] bg-gradient-to-b from-[#742C86] to-transparent clip-path-polygon-[50%_0%,_100%_20%,_50%_100%,_0%_20%] blur-[4px] rotate-[-20deg]" />
       </motion.div>
 
-      <div className="mt-auto">
+      <div className="mt-4 bg-black/80 border-t border-white/5 backdrop-blur-lg">
         <Footer />
       </div>
 
@@ -1962,10 +1969,10 @@ const Contact = () => {
 const Footer = () => {
   const { setIsHoveringCard } = React.useContext(MouseGlowContext);
   return (
-    <div className="relative py-4 md:py-6 z-20">
+    <div className="relative py-8 md:py-16 z-20">
       {/* Large Background Branding - smaller on mobile */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none opacity-[0.01] md:opacity-[0.02]">
-        <span className="text-[12vw] md:text-[20vw] font-black tracking-tighter uppercase text-white">
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none opacity-[0.02] md:opacity-[0.04]">
+        <span className="text-[10vw] md:text-[15vw] font-black tracking-tighter uppercase text-white">
           NYTWOLF
         </span>
       </div>
