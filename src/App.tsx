@@ -257,6 +257,39 @@ const ParticleSystem = ({ count = 20 }: { count?: number }) => {
   );
 };
 
+const ShineOverlay = ({ delay = 1.5, duration = 6, className = "z-[40]" }: { delay?: number, duration?: number, className?: string }) => {
+  return (
+    <div className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`}>
+      <motion.div
+        initial={{ x: "-150%", y: "-150%" }}
+        animate={{ x: "250%", y: "250%" }}
+        transition={{
+          duration: duration,
+          delay: delay,
+          ease: [0.16, 1, 0.3, 1],
+          repeat: Infinity,
+          repeatDelay: 6
+        }}
+        className="absolute w-[300%] h-[1000px] bg-gradient-to-b from-transparent via-white/[0.12] to-transparent rotate-[-45deg] blur-[150px]"
+        style={{ top: '-100%', left: '-100%' }}
+      />
+      <motion.div
+        initial={{ x: "-150%", y: "-150%" }}
+        animate={{ x: "250%", y: "250%" }}
+        transition={{
+          duration: duration * 1.1,
+          delay: delay + 0.2,
+          ease: [0.16, 1, 0.3, 1],
+          repeat: Infinity,
+          repeatDelay: 6.2
+        }}
+        className="absolute w-[300%] h-[150px] bg-gradient-to-b from-transparent via-white/[0.15] to-transparent rotate-[-45deg] blur-[80px]"
+        style={{ top: '-100%', left: '-100%' }}
+      />
+    </div>
+  );
+};
+
 const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   const [showLogo, setShowLogo] = useState(false);
   const [isFinishing, setIsFinishing] = useState(false);
@@ -613,6 +646,51 @@ const FogLayer = ({ opacity = 0.4, speed = 20, color = "rgba(116,44,134,0.15)", 
   );
 };
 
+const MouseGlow = () => {
+  const mouseX = useMotionValue(-100);
+  const mouseY = useMotionValue(-100);
+  const springX = useSpring(mouseX, { damping: 50, stiffness: 400 });
+  const springY = useSpring(mouseY, { damping: 50, stiffness: 400 });
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isVisible) setIsVisible(true);
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
+    };
+
+    const handleMouseLeave = () => setIsVisible(false);
+    const handleMouseEnter = () => setIsVisible(true);
+
+    window.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseleave", handleMouseLeave);
+    document.addEventListener("mouseenter", handleMouseEnter);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseleave", handleMouseLeave);
+      document.removeEventListener("mouseenter", handleMouseEnter);
+    };
+  }, [isVisible, mouseX, mouseY]);
+
+  return (
+    <motion.div
+      className="fixed top-0 left-0 w-[600px] h-[600px] rounded-full pointer-events-none z-[9999] mix-blend-screen overflow-hidden"
+      style={{
+        x: springX,
+        y: springY,
+        translateX: "-50%",
+        translateY: "-50%",
+        background: "radial-gradient(circle, rgba(116, 44, 134, 0.2) 0%, rgba(116, 44, 134, 0.05) 40%, transparent 70%)",
+        filter: "blur(80px)",
+        opacity: isVisible ? 1 : 0,
+      }}
+      transition={{ opacity: { duration: 0.5 } }}
+    />
+  );
+};
+
 const Navbar = ({ activeSection, onNavItemClick }: { activeSection: string, onNavItemClick: (id: string) => void }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -751,24 +829,27 @@ const Hero = () => {
   return (
     <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden bg-transparent" style={{ perspective: "1000px" }}>
 
+      {/* Cinematic Diagonal Shine Sweep */}
+      <ShineOverlay delay={1.5} duration={3} />
+
       {/* ===== Atmospheric Fog Deep ===== */}
       <FogLayer color="rgba(116,44,134,0.12)" speed={35} opacity={0.4} className="z-0" yOffset={fogDeepY as any} />
 
       {/* ===== Layer 2: Statue (Left, distinct, some padding) ===== */}
-      <motion.div style={{ y: statueY, scale: statueScale, rotateY: statueRotateY, transformStyle: "preserve-3d" }} className="absolute bottom-[-2%] md:bottom-[-10%] lg:bottom-[-18%] left-[-15%] md:left-[-5%] lg:left-[0%] z-10 pointer-events-none origin-bottom">
-        <motion.img src="/statue.png" className="h-[75vh] md:h-[120vh] lg:h-[185vh] w-auto max-w-[100vw] md:max-w-[85vw] lg:max-w-[80vw] object-contain object-bottom drop-shadow-[50px_0_30px_rgba(0,0,0,0.3)] [filter:sepia(0.5)_hue-rotate(240deg)_saturate(2.5)_brightness(0.75)]" alt="Statue" />
+      <motion.div style={{ y: statueY, scale: statueScale, rotateY: statueRotateY, transformStyle: "preserve-3d" }} className="absolute bottom-[4%] md:bottom-[-5%] lg:bottom-[-18%] left-[-15%] md:left-[-5%] lg:left-[0%] z-10 pointer-events-none origin-bottom">
+        <motion.img src="/statue.png" className="h-[85vh] md:h-[135vh] lg:h-[185vh] w-auto max-w-[100vw] md:max-w-[85vw] lg:max-w-[80vw] object-contain object-bottom drop-shadow-[50px_0_30px_rgba(0,0,0,0.3)] [filter:sepia(0.5)_hue-rotate(240deg)_saturate(2.5)_brightness(0.75)]" alt="Statue" />
       </motion.div>
 
       {/* ===== Atmospheric Fog Mid ===== */}
       <FogLayer color="rgba(199,167,94,0.08)" speed={25} opacity={0.3} className="z-15" yOffset={fogMidY as any} />
 
       {/* ===== Layer 3: Grass Foreground (Bottom Left Edge) ===== */}
-      <motion.div style={{ y: grassY, x: grassX, scale: grassScale }} className="absolute bottom-[-2%] md:bottom-[-5%] lg:bottom-[-9%] left-[-5%] z-20 pointer-events-none origin-bottom-left">
+      <motion.div style={{ y: grassY, x: grassX, scale: grassScale }} className="absolute bottom-[2%] md:bottom-[-2%] lg:bottom-[-9%] left-[-5%] z-20 pointer-events-none origin-bottom-left">
         <motion.img src="/grass.png" className="w-[85vw] md:w-[75vw] lg:w-[66vw] min-w-[300px] h-auto object-contain object-bottom drop-shadow-[20px_0_30px_rgba(0,0,0,0.8)] [filter:sepia(0.5)_hue-rotate(240deg)_saturate(2.5)_brightness(0.75)]" alt="Grass" />
       </motion.div>
 
       {/* ===== Layer 4: Right Tree Foreground (Bottom Right Edge) ===== */}
-      <motion.div style={{ y: treeY, x: treeX, rotate: treeRotate, scale: treeScale }} className="absolute bottom-[-2%] md:bottom-[-5%] lg:bottom-[-9%] right-[-15%] md:right-[-10%] lg:right-[-5%] z-20 pointer-events-none origin-bottom-right">
+      <motion.div style={{ y: treeY, x: treeX, rotate: treeRotate, scale: treeScale }} className="absolute bottom-[2%] md:bottom-[-2%] lg:bottom-[-9%] right-[-15%] md:right-[-10%] lg:right-[-5%] z-20 pointer-events-none origin-bottom-right">
         <motion.img src="/tree.png" className="w-[75vw] md:w-[60vw] lg:w-[45vw] min-w-[280px] h-auto object-contain object-bottom drop-shadow-[-20px_0_30px_rgba(0,0,0,0.8)] [filter:sepia(0.5)_hue-rotate(240deg)_saturate(2.5)_brightness(0.75)]" alt="Tree" />
       </motion.div>
 
@@ -888,7 +969,7 @@ const About = () => {
   ];
 
   return (
-    <section ref={sectionRef} className="relative min-h-screen flex flex-col justify-center section-spacing bg-[#060408] overflow-hidden" style={{ perspective: "2000px" }}>
+    <section ref={sectionRef} className="relative min-h-screen flex flex-col justify-center py-12 md:py-20 lg:py-12 bg-[#060408] overflow-hidden" style={{ perspective: "2000px" }}>
 
       {/* ===== LAYER 1: DEEP BACKGROUND (Slow Parallax) ===== */}
       <motion.div style={{ y: bgY }} className="absolute inset-0 pointer-events-none z-0">
@@ -908,8 +989,8 @@ const About = () => {
       </motion.div>
 
       {/* ===== MAIN CONTENT ===== */}
-      <div className="container-1440 relative z-10 py-4 md:py-8 lg:py-0">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center mb-6 lg:mb-10 relative">
+      <div className="container-1440 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center mb-8 lg:mb-12 relative">
 
           {/* Left Column: 3D Heavy Text Reveal */}
           <motion.div
@@ -921,10 +1002,10 @@ const About = () => {
               transformOrigin: "left center",
               transformStyle: "preserve-3d"
             }}
-            className="lg:col-span-6 space-y-8"
+            className="lg:col-span-6 space-y-6"
           >
             <div>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black tracking-tighter text-white leading-[1.1] uppercase mb-4 lg:mb-6 drop-shadow-[0_20px_50px_rgba(116,44,134,0.5)]">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black tracking-tighter text-white leading-[1.05] uppercase mb-4 lg:mb-6 drop-shadow-[0_20px_50px_rgba(116,44,134,0.5)]">
                 WE BUILD WORLDS <br />
                 WHERE <span className="inline-block text-transparent bg-clip-text bg-gradient-to-br from-[#c79a40] to-[#742C86] pb-2">STRATEGY</span> <br />
                 REIGNS.
@@ -932,7 +1013,7 @@ const About = () => {
 
               <div className="w-16 h-1.5 bg-[#742C86] mb-6 lg:mb-8" />
 
-              <p className="text-base md:text-lg lg:text-xl xl:text-2xl text-white/80 leading-relaxed max-w-xl font-medium tracking-wide">
+              <p className="text-sm md:text-base lg:text-lg xl:text-xl text-white/80 leading-relaxed max-w-xl font-medium tracking-wide">
                 NYTWOLF Games is a passionate studio crafting immersive medieval sandbox worlds where every decision matters.
               </p>
             </div>
@@ -948,7 +1029,7 @@ const About = () => {
             }}
             className="hidden lg:block lg:col-span-6"
           >
-            <div className="relative aspect-[4/3] rounded-sm overflow-hidden border-2 border-white/10 group" style={{ transformStyle: "preserve-3d" }}>
+            <div className="relative aspect-[16/9] rounded-sm overflow-hidden border-2 border-white/10 group" style={{ transformStyle: "preserve-3d" }}>
               <motion.div className="absolute inset-0 bg-[#742C86]/20 mix-blend-overlay z-10 pointer-events-none" />
               <motion.img
                 style={{ scale: imageScale }}
@@ -965,13 +1046,13 @@ const About = () => {
         </div>
 
         {/* Feature Blocks: Layered Extrusion */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-12" style={{ perspective: "1500px" }}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8" style={{ perspective: "1500px" }}>
           {features.map((feature, i) => {
             // Group animation so all cards stay cleanly aligned at all scroll points
             // Start at 0.1 and end quickly by 0.35 so they are solid before the center
-            const cardY = useTransform(smoothProgress, [0.1, 0.35, 0.85, 1], [300, 0, 0, -200]);
-            const cardRotateX = useTransform(smoothProgress, [0.1, 0.35], [45, 0]);
-            const cardScale = useTransform(smoothProgress, [0.1, 0.35], [0.8, 1]);
+            const cardY = useTransform(smoothProgress, [0.1, 0.35, 0.85, 1], [200, 0, 0, -150]);
+            const cardRotateX = useTransform(smoothProgress, [0.1, 0.35], [30, 0]);
+            const cardScale = useTransform(smoothProgress, [0.1, 0.35], [0.9, 1]);
             const cardClip = useTransform(smoothProgress, [0.1, 0.35], ["inset(100% 0 0 0)", "inset(-20% -20% -20% -20%)"]);
 
             return (
@@ -986,15 +1067,15 @@ const About = () => {
                 }}
                 onMouseEnter={() => setIsHoveringCard(true)}
                 onMouseLeave={() => setIsHoveringCard(false)}
-                className="relative p-6 lg:p-8 border border-white/5 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-md group overflow-hidden"
+                className="relative p-5 md:p-6 lg:p-7 border border-white/5 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-md group overflow-hidden"
               >
                 {/* Animated hover gradient */}
                 <div className="absolute inset-0 bg-gradient-to-r from-[#742C86]/0 via-[#742C86]/20 to-[#742C86]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
 
-                <h3 className="text-lg md:text-xl lg:text-2xl font-black text-white uppercase tracking-widest mb-2 lg:mb-4 group-hover:text-[#c79a40] transition-colors">
+                <h3 className="text-base md:text-lg lg:text-xl font-black text-white uppercase tracking-widest mb-2 group-hover:text-[#c79a40] transition-colors">
                   {feature.title}
                 </h3>
-                <p className="text-sm md:text-base text-white/60 leading-relaxed font-medium">
+                <p className="text-xs md:text-sm lg:text-base text-white/60 leading-relaxed font-medium">
                   {feature.desc}
                 </p>
               </motion.div>
@@ -1405,9 +1486,9 @@ const FeaturedProject = () => {
           scale: prefersReducedMotion ? 1 : knightScale,
           translateZ: 0
         }}
-        className="absolute bottom-[-5%] md:bottom-[-27%] right-[-20%] md:right-[-5%] w-[85vw] md:w-[65vw] lg:w-[45vw] z-30 pointer-events-none will-change-transform origin-bottom drop-shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
+        className="absolute bottom-[2%] md:bottom-[-15%] lg:bottom-[-27%] right-[-20%] md:right-[-5%] w-[95vw] md:w-[75vw] lg:w-[45vw] z-30 pointer-events-none will-change-transform origin-bottom drop-shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
       >
-        <img src="/knight.png" className="w-full h-auto max-h-[50vh] md:max-h-none object-contain" alt="Epic Knight" />
+        <img src="/knight.png" className="w-full h-auto max-h-[60vh] md:max-h-none object-contain" alt="Epic Knight" />
       </motion.div>
 
       {/* ATMOSPHERIC: Dynamic Vignette */}
@@ -1555,41 +1636,41 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
         <div className="w-[12vw] h-[50vh] bg-gradient-to-b from-[#c79a40]/30 to-transparent clip-path-polygon-[10%_0%,_90%_0%,_100%_100%,_50%_80%,_0%_100%] drop-shadow-[0_20px_30px_rgba(0,0,0,0.8)]" />
       </motion.div>
 
-      <div className="container-1440 relative z-10 py-4 md:py-8 lg:py-0">
-        <div className="text-center mb-6 md:mb-8 lg:mb-10">
+      <div className="container-1440 relative z-10 py-2 lg:py-0">
+        <div className="text-center mb-3 md:mb-4 lg:mb-6">
           <motion.div style={{ y: h1Y, clipPath: h1Clip }}>
             <span className="text-[#c79a40] tracking-[0.5em] uppercase text-[10px] md:text-xs font-bold mb-3 md:mb-4 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">JOIN THE GUILD</span>
             <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 uppercase tracking-tighter text-white leading-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
               BUILD THE <span className="text-[#742C86]">FUTURE</span> <br /> WITH US
             </h2>
-            <p className="text-base md:text-lg text-text-muted max-w-2xl mx-auto leading-relaxed font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-              We are always looking for passionate, talented individuals who want to make their mark on the industry. At NYTWOLF, your voice matters.
+            <p className="text-sm md:text-base text-text-muted max-w-2xl mx-auto leading-relaxed font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-4">
+              We are always looking for passionate, talented individuals. At NYTWOLF, your voice matters.
             </p>
           </motion.div>
         </div>
 
         <motion.div
           style={{ y: cardY, rotateX: cardRotX, scale: cardScale, clipPath: cardClip, transformOrigin: "bottom center", transformStyle: "preserve-3d" }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 mb-4 md:mb-8"
+          className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-4 md:mb-5"
         >
           {roles.map((role, i) => (
             <div
               key={i}
               onMouseEnter={() => setIsHoveringCard(true)}
               onMouseLeave={() => setIsHoveringCard(false)}
-              className="group relative p-8 lg:p-12 border border-white/5 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-md overflow-hidden transition-all duration-500 flex flex-col items-center text-center space-y-6 lg:space-y-8"
+              className="group relative p-4 lg:p-6 border border-white/5 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-md overflow-hidden transition-all duration-500 flex flex-col items-center text-center space-y-3 lg:space-y-4"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-[#742C86]/0 via-[#742C86]/10 to-[#742C86]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-[1500ms] ease-in-out" />
 
-              <div className={`w-20 h-20 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#c79a40] group-hover:scale-110 group-hover:shadow-[0_0_40px_rgba(199,154,64,0.2)] transition-all duration-500`}>
-                {role.icon}
+              <div className={`w-12 h-12 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#c79a40] group-hover:scale-110 group-hover:shadow-[0_0_40px_rgba(199,154,64,0.2)] transition-all duration-500`}>
+                {React.cloneElement(role.icon as React.ReactElement, { size: 24 })}
               </div>
 
-              <div className="space-y-4 relative z-10">
-                <h3 className="text-2xl font-black text-white uppercase tracking-widest group-hover:text-[#c79a40] transition-colors duration-300">
+              <div className="space-y-2 relative z-10">
+                <h3 className="text-xl font-black text-white uppercase tracking-widest group-hover:text-[#c79a40] transition-colors duration-300">
                   {role.title}
                 </h3>
-                <p className="text-white/60 leading-relaxed font-medium group-hover:text-white/80 transition-colors duration-500">
+                <p className="text-xs lg:text-sm text-white/60 leading-relaxed font-medium group-hover:text-white/80 transition-colors duration-500">
                   {role.text}
                 </p>
               </div>
@@ -2132,6 +2213,7 @@ export default function App() {
             </div>
           </main>
         </motion.div>
+        <MouseGlow />
       </div>
     </MouseGlowContext.Provider>
   );
