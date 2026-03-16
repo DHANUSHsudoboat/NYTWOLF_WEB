@@ -743,8 +743,6 @@ const Hero = () => {
 
   // Text content fades out
   const opacityText = useTransform(smoothProgress, [0, 0.4], [1, 0]);
-  const scaleText = useTransform(smoothProgress, [0, 0.4], [1, 1.05]);
-  const yText = useTransform(smoothProgress, [0, 0.4], ["0%", "20%"]);
 
   // Fog Parallax
   const fogDeepY = useTransform(smoothProgress, [0, 1], ["0%", "5%"]);
@@ -758,7 +756,7 @@ const Hero = () => {
 
       {/* ===== Layer 2: Statue (Left, distinct, some padding) ===== */}
       <motion.div style={{ y: statueY, scale: statueScale, rotateY: statueRotateY, transformStyle: "preserve-3d" }} className="absolute bottom-[-2%] md:bottom-[-10%] lg:bottom-[-18%] left-[-15%] md:left-[-5%] lg:left-[0%] z-10 pointer-events-none origin-bottom">
-        <motion.img src="/statue.png" className="h-[75vh] md:h-[120vh] lg:h-[185vh] w-auto max-w-[100vw] md:max-w-[85vw] lg:max-w-[80vw] object-contain object-bottom drop-shadow-[50px_0_30px_rgba(0,0,0,0.3)]" alt="Statue" />
+        <motion.img src="/statue.png" className="h-[75vh] md:h-[120vh] lg:h-[185vh] w-auto max-w-[100vw] md:max-w-[85vw] lg:max-w-[80vw] object-contain object-bottom drop-shadow-[50px_0_30px_rgba(0,0,0,0.3)] [filter:sepia(0.5)_hue-rotate(240deg)_saturate(2.5)_brightness(0.75)]" alt="Statue" />
       </motion.div>
 
       {/* ===== Atmospheric Fog Mid ===== */}
@@ -766,12 +764,12 @@ const Hero = () => {
 
       {/* ===== Layer 3: Grass Foreground (Bottom Left Edge) ===== */}
       <motion.div style={{ y: grassY, x: grassX, scale: grassScale }} className="absolute bottom-[-2%] md:bottom-[-5%] lg:bottom-[-9%] left-[-5%] z-20 pointer-events-none origin-bottom-left">
-        <motion.img src="/grass.png" className="w-[85vw] md:w-[75vw] lg:w-[66vw] min-w-[300px] h-auto object-contain object-bottom drop-shadow-[20px_0_30px_rgba(0,0,0,0.8)]" alt="Grass" />
+        <motion.img src="/grass.png" className="w-[85vw] md:w-[75vw] lg:w-[66vw] min-w-[300px] h-auto object-contain object-bottom drop-shadow-[20px_0_30px_rgba(0,0,0,0.8)] [filter:sepia(0.5)_hue-rotate(240deg)_saturate(2.5)_brightness(0.75)]" alt="Grass" />
       </motion.div>
 
       {/* ===== Layer 4: Right Tree Foreground (Bottom Right Edge) ===== */}
       <motion.div style={{ y: treeY, x: treeX, rotate: treeRotate, scale: treeScale }} className="absolute bottom-[-2%] md:bottom-[-5%] lg:bottom-[-9%] right-[-15%] md:right-[-10%] lg:right-[-5%] z-20 pointer-events-none origin-bottom-right">
-        <motion.img src="/tree.png" className="w-[75vw] md:w-[60vw] lg:w-[45vw] min-w-[280px] h-auto object-contain object-bottom drop-shadow-[-20px_0_30px_rgba(0,0,0,0.8)]" alt="Tree" />
+        <motion.img src="/tree.png" className="w-[75vw] md:w-[60vw] lg:w-[45vw] min-w-[280px] h-auto object-contain object-bottom drop-shadow-[-20px_0_30px_rgba(0,0,0,0.8)] [filter:sepia(0.5)_hue-rotate(240deg)_saturate(2.5)_brightness(0.75)]" alt="Tree" />
       </motion.div>
 
       {/* ===== Subtle Mystical Particles ===== */}
@@ -779,9 +777,7 @@ const Hero = () => {
       {prefersReducedMotion && <ParticleSystem count={10} />}
 
       {/* Main Text Content */}
-      <motion.div
-        style={{ scale: scaleText, y: yText }}
-        initial={false}
+      <div
         className="relative z-30 flex flex-col items-center text-center px-6 max-w-5xl translate-y-[35px]"
       >
         <div className="mb-12 relative animate-none">
@@ -805,7 +801,7 @@ const Hero = () => {
             </p>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Scroll Indicator - Three Cascading Chevrons */}
       <motion.div
@@ -1559,14 +1555,14 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
         <div className="w-[12vw] h-[50vh] bg-gradient-to-b from-[#c79a40]/30 to-transparent clip-path-polygon-[10%_0%,_90%_0%,_100%_100%,_50%_80%,_0%_100%] drop-shadow-[0_20px_30px_rgba(0,0,0,0.8)]" />
       </motion.div>
 
-      <div className="container-1440 relative z-10">
-        <div className="text-center mb-10 lg:mb-16">
+      <div className="container-1440 relative z-10 py-4 md:py-8 lg:py-0">
+        <div className="text-center mb-6 md:mb-8 lg:mb-10">
           <motion.div style={{ y: h1Y, clipPath: h1Clip }}>
-            <span className="text-[#c79a40] tracking-[0.5em] uppercase text-[10px] md:text-xs font-bold mb-4 md:mb-6 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">JOIN THE GUILD</span>
-            <h2 className="text-3xl md:text-6xl font-bold mb-4 md:mb-6 uppercase tracking-tighter text-white leading-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
+            <span className="text-[#c79a40] tracking-[0.5em] uppercase text-[10px] md:text-xs font-bold mb-3 md:mb-4 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">JOIN THE GUILD</span>
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 uppercase tracking-tighter text-white leading-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
               BUILD THE <span className="text-[#742C86]">FUTURE</span> <br /> WITH US
             </h2>
-            <p className="text-xl text-text-muted max-w-2xl mx-auto leading-relaxed font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+            <p className="text-base md:text-lg text-text-muted max-w-2xl mx-auto leading-relaxed font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
               We are always looking for passionate, talented individuals who want to make their mark on the industry. At NYTWOLF, your voice matters.
             </p>
           </motion.div>
@@ -2109,6 +2105,7 @@ export default function App() {
             {/* Top Fade Gradient for Navbar visibility */}
             <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-b from-[#060408] to-transparent z-10" />
             <img src="/bg_ruins.png" className="w-full h-screen object-cover object-bottom grayscale-[0.05] contrast-[1.1] brightness-[0.7]" alt="Deep Background" />
+            <div className="absolute inset-0 bg-purple-900/50 mix-blend-multiply z-[1]" />
           </div>
 
           <main>
