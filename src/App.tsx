@@ -383,7 +383,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
         }}
       >
         <motion.div
-          className="relative w-[160px] h-[160px] md:w-[240px] md:h-[240px]"
+          className="relative w-[160px] h-[160px] md:w-[200px] md:h-[200px] lg:w-[240px] lg:h-[240px]"
           animate={{
             scale: 1
           }}
@@ -405,7 +405,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
             transition={{ duration: 2, ease: "easeInOut", delay: 0.6 }}
             style={{ bottom: 0, top: 'auto' }}
           >
-            <div className="absolute bottom-0 left-0 w-[160px] h-[160px] md:w-[240px] md:h-[240px]">
+            <div className="absolute bottom-0 left-0 w-[160px] h-[160px] md:w-[200px] md:h-[200px] lg:w-[240px] lg:h-[240px]">
               <Logo className="w-full h-full" useGradient={true} />
             </div>
           </motion.div>
@@ -434,7 +434,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
           }}
           className="mt-[40px] md:mt-[60px] text-center"
         >
-          <h1 className="text-4xl md:text-6xl font-black tracking-[0.2em] md:tracking-[0.3em] text-white uppercase font-display drop-shadow-[0_0_30px_rgba(116,44,134,0.3)] flex flex-col lg:flex-row items-center gap-2 lg:gap-4">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-[0.2em] md:tracking-[0.3em] text-white uppercase font-display drop-shadow-[0_0_30px_rgba(116,44,134,0.3)] flex flex-col lg:flex-row items-center gap-2 lg:gap-4">
             <span className="flex items-center">NYTW<WolfEyeO />LF</span> <span className="text-[#742C86]">GAMES</span>
           </h1>
         </motion.div>
@@ -843,21 +843,21 @@ const Hero = () => {
       <FogLayer color="rgba(116,44,134,0.12)" speed={35} opacity={0.4} className="z-0" yOffset={fogDeepY as any} />
 
       {/* ===== Layer 2: Statue (Left, distinct, some padding) ===== */}
-      <motion.div style={{ y: statueY, scale: statueScale, rotateY: statueRotateY, transformStyle: "preserve-3d" }} className="absolute bottom-[4%] md:bottom-[-5%] lg:bottom-[-18%] left-[-15%] md:left-[-5%] lg:left-[0%] z-10 pointer-events-none origin-bottom">
-        <motion.img src="/statue.png" className="h-[85vh] md:h-[135vh] lg:h-[185vh] w-auto max-w-[100vw] md:max-w-[85vw] lg:max-w-[80vw] object-contain object-bottom drop-shadow-[50px_0_30px_rgba(0,0,0,0.3)] [filter:sepia(0.5)_hue-rotate(240deg)_saturate(2.5)_brightness(0.75)]" alt="Statue" />
+      <motion.div style={{ y: statueY, scale: statueScale, rotateY: statueRotateY, transformStyle: "preserve-3d" }} className="hidden min-[450px]:block absolute bottom-[0%] md:bottom-[-5%] lg:bottom-[-18%] left-[-15%] md:left-[-5%] lg:left-[0%] z-10 pointer-events-none origin-bottom">
+        <motion.img src="/statue.png" className="h-[135vh] md:h-[135vh] lg:h-[185vh] w-auto max-w-[100vw] md:max-w-[85vw] lg:max-w-[80vw] object-contain object-bottom drop-shadow-[50px_0_30px_rgba(0,0,0,0.3)] [filter:sepia(0.5)_hue-rotate(240deg)_saturate(2.5)_brightness(0.75)]" alt="Statue" />
       </motion.div>
 
       {/* ===== Atmospheric Fog Mid ===== */}
       <FogLayer color="rgba(199,167,94,0.08)" speed={25} opacity={0.3} className="z-15" yOffset={fogMidY as any} />
 
       {/* ===== Layer 3: Grass Foreground (Bottom Left Edge) ===== */}
-      <motion.div style={{ y: grassY, x: grassX, scale: grassScale }} className="absolute bottom-[2%] md:bottom-[-2%] lg:bottom-[-9%] left-[-5%] z-20 pointer-events-none origin-bottom-left">
-        <motion.img src="/grass.png" className="w-[85vw] md:w-[75vw] lg:w-[66vw] min-w-[300px] h-auto object-contain object-bottom drop-shadow-[20px_0_30px_rgba(0,0,0,0.8)] [filter:sepia(0.5)_hue-rotate(240deg)_saturate(2.5)_brightness(0.75)]" alt="Grass" />
+      <motion.div style={{ y: grassY, x: grassX, scale: grassScale }} className="hidden min-[450px]:block absolute bottom-[-2%] md:bottom-[-2%] lg:bottom-[-9%] left-[-5%] z-20 pointer-events-none origin-bottom-left">
+        <motion.img src="/grass.png" className="w-[120vw] md:w-[75vw] lg:w-[66vw] min-w-[300px] h-auto object-contain object-bottom drop-shadow-[20px_0_30px_rgba(0,0,0,0.8)] [filter:sepia(0.5)_hue-rotate(240deg)_saturate(2.5)_brightness(0.75)]" alt="Grass" />
       </motion.div>
 
       {/* ===== Layer 4: Right Tree Foreground (Bottom Right Edge) ===== */}
-      <motion.div style={{ y: treeY, x: treeX, rotate: treeRotate, scale: treeScale }} className="absolute bottom-[2%] md:bottom-[-2%] lg:bottom-[-9%] right-[-15%] md:right-[-10%] lg:right-[-5%] z-20 pointer-events-none origin-bottom-right">
-        <motion.img src="/tree.png" className="w-[75vw] md:w-[60vw] lg:w-[45vw] min-w-[280px] h-auto object-contain object-bottom drop-shadow-[-20px_0_30px_rgba(0,0,0,0.8)] [filter:sepia(0.5)_hue-rotate(240deg)_saturate(2.5)_brightness(0.75)]" alt="Tree" />
+      <motion.div style={{ y: treeY, x: treeX, rotate: treeRotate, scale: treeScale }} className="hidden min-[450px]:block absolute bottom-[-2%] md:bottom-[-2%] lg:bottom-[-9%] right-[-15%] md:right-[-10%] lg:right-[-5%] z-20 pointer-events-none origin-bottom-right">
+        <motion.img src="/tree.png" className="w-[110vw] md:w-[60vw] lg:w-[45vw] min-w-[280px] h-auto object-contain object-bottom drop-shadow-[-20px_0_30px_rgba(0,0,0,0.8)] [filter:sepia(0.5)_hue-rotate(240deg)_saturate(2.5)_brightness(0.75)]" alt="Tree" />
       </motion.div>
 
       {/* ===== Subtle Mystical Particles ===== */}
@@ -871,20 +871,20 @@ const Hero = () => {
         <div className="mb-12 relative animate-none">
           <MouseParallax factor={40}>
             <div className="relative">
-              <Logo className="w-32 h-32 md:w-48 md:h-48 text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]" useGradient={false} />
+              <Logo className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]" useGradient={false} />
             </div>
           </MouseParallax>
           <div className="absolute inset-0 bg-primary/20 blur-[60px] -z-10 rounded-full" />
         </div>
 
         <div className="flex flex-col items-center">
-          <h1 className="text-3xl sm:text-4xl md:text-[3.15rem] lg:text-5xl font-black tracking-[0.15em] md:tracking-[0.25em] lg:tracking-[0.3em] text-white uppercase font-display drop-shadow-[0_0_30px_rgba(116,44,134,0.3)] flex flex-col lg:flex-row items-center gap-2 lg:gap-4 text-center">
+          <h1 className="text-3xl sm:text-4xl md:text-[2.5rem] lg:text-5xl font-black tracking-[0.15em] md:tracking-[0.25em] lg:tracking-[0.3em] text-white uppercase font-display drop-shadow-[0_0_30px_rgba(116,44,134,0.3)] flex flex-col lg:flex-row items-center gap-2 lg:gap-4 text-center">
             <span className="flex items-center">NYTW<WolfEyeO />LF</span> <span className="text-[#742C86]">GAMES</span>
           </h1>
 
           <div className="flex flex-col items-center gap-4 mt-6">
             <div className="h-[1px] w-8 bg-[#c79a40]/40" />
-            <p className="text-sm md:text-base text-[#c79a40] tracking-[0.2em] font-medium uppercase drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)]">
+            <p className="text-[11px] sm:text-sm lg:text-base text-[#c79a40] tracking-[0.2em] font-medium uppercase drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)]">
               Strategic Worlds. Controlled Execution.
             </p>
           </div>
@@ -913,7 +913,7 @@ const Hero = () => {
               delay: i * 0.22,
             }}
           >
-            <svg width="22" height="13" viewBox="0 0 22 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg className="w-[16px] md:w-[18px] lg:w-[22px] h-auto" viewBox="0 0 22 13" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M1 1L11 11L21 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </motion.div>
@@ -955,9 +955,9 @@ const About = () => {
   // Enter by 0.2, hold until 0.8, then exit
   const textY = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [300, 0, 0, -300]);
   const textRotateX = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [60, 0, 0, -60]);
-  const textScale = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0.5, 1, 1, 0.7]);
+  const textScale = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0.85, 1, 1, 0.7]);
   const textClip = useTransform(smoothProgress, [0, 0.2, 0.8, 1],
-    ["inset(100% 0 -50% 0)", "inset(-50% -20% -50% -20%)", "inset(-50% -20% -50% -20%)", "inset(-50% 0 100% 0)"]
+    ["inset(0 0 0 0)", "inset(-50% -20% -50% -20%)", "inset(-50% -20% -50% -20%)", "inset(-50% 0 100% 0)"]
   );
 
   // Hero Right Image
@@ -976,7 +976,7 @@ const About = () => {
   ];
 
   return (
-    <section ref={sectionRef} className="relative min-h-screen flex flex-col justify-center py-12 md:py-20 lg:py-12 bg-[#060408] overflow-hidden" style={{ perspective: "2000px" }}>
+    <section ref={sectionRef} className="relative min-h-screen flex flex-col justify-center pt-32 pb-20 md:py-20 lg:py-12 bg-[#060408] overflow-hidden" style={{ perspective: "2000px" }}>
 
       {/* ===== LAYER 1: DEEP BACKGROUND (Slow Parallax) ===== */}
       <motion.div style={{ y: bgY }} className="absolute inset-0 pointer-events-none z-0">
@@ -1060,7 +1060,7 @@ const About = () => {
             const cardY = useTransform(smoothProgress, [0.1, 0.35, 0.85, 1], [200, 0, 0, -150]);
             const cardRotateX = useTransform(smoothProgress, [0.1, 0.35], [30, 0]);
             const cardScale = useTransform(smoothProgress, [0.1, 0.35], [0.9, 1]);
-            const cardClip = useTransform(smoothProgress, [0.1, 0.35], ["inset(100% 0 0 0)", "inset(-20% -20% -20% -20%)"]);
+            const cardClip = useTransform(smoothProgress, [0.1, 0.35], ["inset(0 0 0 0)", "inset(-20% -20% -20% -20%)"]);
 
             return (
               <motion.div
@@ -1819,7 +1819,7 @@ const Contact = () => {
   const formClip = useTransform(smoothProgress, [0.1, 0.3], ["inset(100% 0 0 0)", "inset(-20% -20% -20% -20%)"]);
 
   return (
-    <section ref={sectionRef} id="contact" className="relative min-h-screen flex flex-col justify-between pt-24 pb-4 lg:pt-28 lg:pb-6 bg-[#0F0B14] overflow-hidden" style={{ perspective: "1500px" }}>
+    <section ref={sectionRef} id="contact" className="relative min-h-screen flex flex-col justify-between pt-32 pb-20 md:pt-24 md:pb-4 lg:pt-28 lg:pb-6 bg-[#0F0B14] overflow-hidden" style={{ perspective: "1500px" }}>
 
       {/* LAYER 1: Deep Background Atmosphere */}
       <motion.div style={{ y: bgY }} className="absolute inset-0 z-0 pointer-events-none opacity-40 origin-center">
