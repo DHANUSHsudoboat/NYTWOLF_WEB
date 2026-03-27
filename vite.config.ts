@@ -17,8 +17,28 @@ export default defineConfig(({mode}) => {
     },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
+      // Do not modify—file watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
+    },
+    build: {
+      // Target modern browsers — smaller, faster output
+      target: 'es2020',
+      // Minify CSS in production
+      cssMinify: true,
+      rollupOptions: {
+        output: {
+          // Split vendor chunks for better long-term caching
+          manualChunks: {
+            'vendor': ['react', 'react-dom'],
+            'motion': ['motion/react'],
+            'icons': ['lucide-react'],
+          },
+        },
+      },
+    },
+    // Pre-bundle heavy deps to avoid waterfall requests in dev
+    optimizeDeps: {
+      include: ['react', 'react-dom', 'motion/react', 'lucide-react'],
     },
   };
 });

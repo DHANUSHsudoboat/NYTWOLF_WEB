@@ -3,11 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="NYTWOLF Games — A premium AAA gaming studio crafting the next generation of cinematic interactive experiences." />
+    <meta name="theme-color" content="#0F0B14" />
     <title>NYTWOLF Games</title>
+
+    <!-- Preconnect to Google Fonts to reduce DNS/TLS handshake latency -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Preload critical hero background image (LCP element) -->
+    <link rel="preload" href="/bg_ruins.png" as="image" fetchpriority="high" />
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-

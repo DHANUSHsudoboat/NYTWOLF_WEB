@@ -38,7 +38,7 @@ const MouseGlowContext = React.createContext<{
   setIsHoveringCard: () => { },
 });
 
-const HeaderLogo = ({ className = "h-12 w-auto" }: { className?: string }) => (
+const HeaderLogo = React.memo(({ className = "h-12 w-auto" }: { className?: string }) => (
   <svg
     width="533"
     height="200"
@@ -54,9 +54,9 @@ const HeaderLogo = ({ className = "h-12 w-auto" }: { className?: string }) => (
     <path d="M265.265 91.8L231.785 61.56L234.365 63L234.545 90H225.725V44.1H226.085L258.845 74.22L256.925 73.38L256.745 45.84H265.505V91.8H265.265ZM288.338 76.26L272.078 45.84H282.818L294.218 68.76L291.638 68.94L302.858 45.84H313.598L297.038 76.26V90H288.338V76.26ZM317.179 45.84H346.939V54.24H336.199V90H327.499V54.24H317.179V45.84ZM351.555 46.14H361.755L371.175 73.86L369.795 73.26L378.015 52.8L382.035 64.74L369.315 92.04L351.555 46.14ZM373.695 46.14H382.335L393.195 72.96L391.635 72.72L399.735 46.14H409.095L392.055 91.92L373.695 46.14ZM410.467 67.98C410.467 64.94 411.047 62.06 412.207 59.34C413.367 56.62 414.967 54.22 417.007 52.14C419.087 50.02 421.487 48.36 424.207 47.16C426.927 45.96 429.847 45.36 432.967 45.36C436.047 45.36 438.947 45.96 441.667 47.16C444.387 48.36 446.787 50.02 448.867 52.14C450.987 54.22 452.627 56.62 453.787 59.34C454.987 62.06 455.587 64.94 455.587 67.98C455.587 71.1 454.987 74.02 453.787 76.74C452.627 79.46 450.987 81.86 448.867 83.94C446.787 85.98 444.387 87.58 441.667 88.74C438.947 89.9 436.047 90.48 432.967 90.48C429.847 90.48 426.927 89.9 424.207 88.74C421.487 87.58 419.087 85.98 417.007 83.94C414.967 81.86 413.367 79.46 412.207 76.74C411.047 74.02 410.467 71.1 410.467 67.98ZM419.467 67.98C419.467 69.94 419.807 71.78 420.487 73.5C421.207 75.18 422.187 76.68 423.427 78C424.707 79.28 426.167 80.28 427.807 81C429.487 81.72 431.307 82.08 433.267 82.08C435.147 82.08 436.887 81.72 438.487 81C440.127 80.28 441.547 79.28 442.747 78C443.947 76.68 444.887 75.18 445.567 73.5C446.247 71.78 446.587 69.94 446.587 67.98C446.587 65.98 446.227 64.12 445.507 62.4C444.827 60.68 443.867 59.18 442.627 57.9C441.427 56.58 440.007 55.56 438.367 54.84C436.727 54.12 434.947 53.76 433.027 53.76C431.107 53.76 429.327 54.12 427.687 54.84C426.047 55.56 424.607 56.58 423.367 57.9C422.127 59.18 421.167 60.68 420.487 62.4C419.807 64.12 419.467 65.98 419.467 67.98ZM464.261 45.84H472.961V81.6H493.721V90H464.261V45.84ZM502.698 45.84H530.298V54.24H511.398V64.26H527.778V72.66H511.398V90H502.698V45.84ZM331.075 142.04C330.728 142.413 330.181 142.8 329.435 143.2C328.688 143.573 327.821 143.92 326.835 144.24C325.875 144.56 324.888 144.813 323.875 145C322.861 145.213 321.901 145.32 320.995 145.32C318.595 145.32 316.435 144.973 314.515 144.28C312.595 143.56 310.955 142.573 309.595 141.32C308.235 140.04 307.195 138.533 306.475 136.8C305.755 135.067 305.395 133.173 305.395 131.12C305.395 128.427 305.795 126.093 306.595 124.12C307.421 122.12 308.528 120.467 309.915 119.16C311.328 117.827 312.941 116.84 314.755 116.2C316.595 115.56 318.515 115.24 320.515 115.24C322.408 115.24 324.141 115.453 325.715 115.88C327.288 116.28 328.621 116.787 329.715 117.4L327.835 122.8C327.355 122.533 326.715 122.267 325.915 122C325.115 121.733 324.301 121.52 323.475 121.36C322.648 121.173 321.915 121.08 321.275 121.08C319.675 121.08 318.261 121.28 317.035 121.68C315.808 122.08 314.768 122.68 313.915 123.48C313.088 124.28 312.461 125.28 312.035 126.48C311.608 127.653 311.395 129.027 311.395 130.6C311.395 131.987 311.635 133.24 312.115 134.36C312.595 135.453 313.261 136.387 314.115 137.16C314.995 137.933 316.021 138.52 317.195 138.92C318.395 139.32 319.715 139.52 321.155 139.52C321.981 139.52 322.741 139.467 323.435 139.36C324.128 139.227 324.715 139.027 325.195 138.76V135.2H320.115V129.6H331.075V142.04ZM334.343 145L347.623 114.4H347.943L361.223 145H354.503L346.023 123.48L350.223 120.6L340.063 145H334.343ZM343.423 134.36H352.263L354.303 139.24H341.623L343.423 134.36ZM365.515 145V114.36H365.555L381.915 137.56L379.435 137L395.755 114.36H395.835V145H390.035V127.44L390.395 130.44L380.435 144.6H380.355L370.115 130.44L371.115 127.68V145H365.515ZM403.445 115.56H423.525V121.16H409.245V127.44H421.885V133.04H409.245V139.4H424.085V145H403.445V115.56ZM445.805 122.68C444.685 122.067 443.538 121.56 442.365 121.16C441.218 120.76 440.138 120.56 439.125 120.56C437.872 120.56 436.885 120.813 436.165 121.32C435.445 121.827 435.085 122.587 435.085 123.6C435.085 124.293 435.352 124.92 435.885 125.48C436.445 126.013 437.152 126.493 438.005 126.92C438.885 127.347 439.792 127.733 440.725 128.08C441.578 128.4 442.418 128.787 443.245 129.24C444.098 129.667 444.858 130.213 445.525 130.88C446.192 131.52 446.725 132.333 447.125 133.32C447.525 134.28 447.725 135.467 447.725 136.88C447.725 138.373 447.338 139.76 446.565 141.04C445.792 142.32 444.658 143.36 443.165 144.16C441.672 144.933 439.832 145.32 437.645 145.32C436.525 145.32 435.378 145.213 434.205 145C433.058 144.76 431.925 144.413 430.805 143.96C429.685 143.48 428.605 142.88 427.565 142.16L430.125 137.64C430.818 138.147 431.565 138.6 432.365 139C433.192 139.373 434.018 139.667 434.845 139.88C435.672 140.093 436.432 140.2 437.125 140.2C437.818 140.2 438.512 140.107 439.205 139.92C439.925 139.707 440.512 139.36 440.965 138.88C441.445 138.4 441.685 137.733 441.685 136.88C441.685 136.293 441.485 135.76 441.085 135.28C440.712 134.8 440.192 134.36 439.525 133.96C438.885 133.56 438.178 133.213 437.405 132.92C436.498 132.573 435.565 132.173 434.605 131.72C433.645 131.267 432.738 130.72 431.885 130.08C431.058 129.413 430.378 128.6 429.845 127.64C429.338 126.653 429.085 125.453 429.085 124.04C429.085 122.333 429.458 120.853 430.205 119.6C430.978 118.347 432.058 117.36 433.445 116.64C434.832 115.893 436.432 115.48 438.245 115.4C440.618 115.4 442.538 115.68 444.005 116.24C445.498 116.8 446.832 117.467 448.005 118.24L445.805 122.68Z" fill="currentColor" />
     <path d="M433.226 56C428.95 65.3195 428.899 70.5783 433.226 80C437.554 70.5783 437.502 65.3195 433.226 56Z" fill="currentColor" />
   </svg>
-);
+));
 
-const AnimatedLogo = ({ className = "h-12 w-auto" }: { className?: string }) => (
+const AnimatedLogo = React.memo(({ className = "h-12 w-auto" }: { className?: string }) => (
   <svg
     width="200"
     height="200"
@@ -86,9 +86,9 @@ const AnimatedLogo = ({ className = "h-12 w-auto" }: { className?: string }) => 
       fill="currentColor"
     />
   </svg>
-);
+));
 
-const Logo = ({ className = "h-12 w-auto", useGradient = false }: { className?: string, useGradient?: boolean }) => (
+const Logo = React.memo(({ className = "h-12 w-auto", useGradient = false }: { className?: string, useGradient?: boolean }) => (
   <svg
     width="200"
     height="200"
@@ -108,9 +108,9 @@ const Logo = ({ className = "h-12 w-auto", useGradient = false }: { className?: 
     <path fillRule="evenodd" clipRule="evenodd" d="M55.0595 134.673L41.9179 135.783C41.9179 135.783 60.6013 112.723 64.1013 109.223C67.6013 105.723 69.6013 104.223 69.6013 104.223C69.6013 104.223 65.8783 102.522 62.1013 99.7231C56.7561 95.7624 50.8014 90.2363 50.8022 89.694C50.8037 88.7686 61.5361 83.586 68.2009 81.1798C74.8657 78.7736 85.5996 74.8867 85.5996 74.8867L80.0468 73.591C80.0468 73.591 103.552 47.4918 107.626 46.9378C111.699 46.3837 126.32 45.2719 126.32 45.2719C126.32 45.2719 151.124 20.1006 153.158 21.0248C155.193 21.9491 159.967 27.378 162.228 32.6857C165.319 39.9419 163.153 52.8607 163.153 52.8607C163.153 52.8607 158.527 46.7527 157.6 45.2719C156.674 43.7912 141.499 79.8842 143.719 78.7736C145.938 77.6631 152.62 73.1155 155.75 67.483C157.6 64.1513 157.101 59.7231 157.101 59.7231C157.101 59.7231 160.601 61.7231 162.228 64.1513C162.228 64.1513 163.398 63.8909 163.601 63.2231C163.805 62.5554 163.101 57.7231 163.101 57.7231C163.101 57.7231 165.601 59.2231 167.101 61.2231C168.601 63.2231 171.525 67.9468 170.601 70.7231C170.185 71.9734 165.628 76.3398 161.479 79.9987C156.415 84.465 150.516 89.6682 148.531 93.0257C147.367 94.9937 146.565 96.2388 145.958 97.1811C144.682 99.1634 144.268 99.806 143.165 103.021C140.633 110.399 139.342 119.349 140.017 119.124C140.602 118.928 142.303 118.05 143.5 115.654C144.57 113.513 145.014 110.795 145.014 110.795C145.014 110.795 148.783 123.085 149.641 133.654C150.5 144.223 148.531 157.154 148.531 157.154C147.051 151.563 146.002 149.086 143.719 145.777C143.719 145.777 143.491 163.244 138.351 172.615C134.826 179.043 126.135 186.867 126.135 186.867C126.135 186.867 131.026 168.176 130.5 154.848C130.282 149.327 129.339 144.012 128.5 139.654C128.192 138.057 127.644 136.303 127.072 134.473C126.137 131.478 125.138 128.281 125.024 125.232C124.653 115.237 132 96.7528 132 96.7528C119.561 102.585 113.643 113.856 112.5 120.309C106.93 106.331 95.7708 98.3602 90.6013 96.2231C90.6013 96.2231 74.1013 114.223 80.6013 130.723C83.3927 137.809 88.3609 141.927 93.4538 146.148C100.22 151.756 107.207 157.547 109.601 170.723C114.601 160.771 111.808 150.223 110.587 147.629C109.106 144.483 119.286 154.848 119.286 154.848C119.286 154.848 125.209 161.326 122.988 175.208C120.767 189.09 112.438 196.309 112.438 196.309C112.438 196.309 107.027 186.336 102.258 180.946C94.4962 172.173 89.052 166.89 77.8258 163.547C71.8279 161.761 61.5 161.654 61.5 161.654C62.2369 158.558 63.1663 156.181 67.8308 151.701L55.7998 157.069C55.7998 157.069 46.0023 160.12 39.5117 160.771C34.2614 161.297 26 160.771 26 160.771L55.0595 134.673ZM87.1013 87.2231C87.1013 87.2231 72.1013 88.2231 65.4245 93.0257C66.3168 94.2582 69.9013 97.4231 77.1013 100.223C79.268 97.2231 84.3013 90.4231 87.1013 87.2231ZM104.851 65.078C104.851 65.078 112.995 54.1551 115.216 52.8607C117.437 51.5663 128.913 52.8607 128.913 52.8607L118.601 64.1513L120.582 57.6743L104.851 65.078ZM152.049 28.4297C150.94 28.7999 149.088 35.6483 149.088 35.6483C149.088 35.6483 158.157 34.539 158.342 33.6123C158.527 32.6857 153.158 28.0596 152.049 28.4297Z" fill={useGradient ? "url(#wolf-gradient)" : "currentColor"} />
     <path d="M120.582 119.568C119.103 128.822 122.433 144 122.433 144C109.186 136.607 104.093 130.585 99.7817 116.007C99.7817 116.007 96.7463 130.071 101 142.098C101 142.098 91.5 137.598 86.5 125.098C82.985 116.311 88.3447 103.448 88.8006 102.305C89.2565 101.162 90.1982 98.0936 90.6013 97.1629C92.6501 97.2893 108.837 112.917 112.5 123.253C114.239 117.887 120.226 105.495 131 98C128.966 100.89 121.861 111.565 120.582 119.568Z" fill={useGradient ? "url(#wolf-gradient)" : "currentColor"} />
   </svg>
-);
+));
 
-const LogoOutline = ({ className = "h-12 w-auto" }: { className?: string }) => (
+const LogoOutline = React.memo(({ className = "h-12 w-auto" }: { className?: string }) => (
   <svg
     width="200"
     height="200"
@@ -124,14 +124,14 @@ const LogoOutline = ({ className = "h-12 w-auto" }: { className?: string }) => (
     <path fillRule="evenodd" clipRule="evenodd" d="M55.0595 134.673L41.9179 135.783C41.9179 135.783 60.6013 112.723 64.1013 109.223C67.6013 105.723 69.6013 104.223 69.6013 104.223C69.6013 104.223 65.8783 102.522 62.1013 99.7231C56.7561 95.7624 50.8014 90.2363 50.8022 89.694C50.8037 88.7686 61.5361 83.586 68.2009 81.1798C74.8657 78.7736 85.5996 74.8867 85.5996 74.8867L80.0468 73.591C80.0468 73.591 103.552 47.4918 107.626 46.9378C111.699 46.3837 126.32 45.2719 126.32 45.2719C126.32 45.2719 151.124 20.1006 153.158 21.0248C155.193 21.9491 159.967 27.378 162.228 32.6857C165.319 39.9419 163.153 52.8607 163.153 52.8607C163.153 52.8607 158.527 46.7527 157.6 45.2719C156.674 43.7912 141.499 79.8842 143.719 78.7736C145.938 77.6631 152.62 73.1155 155.75 67.483C157.6 64.1513 157.101 59.7231 157.101 59.7231C157.101 59.7231 160.601 61.7231 162.228 64.1513C162.228 64.1513 163.398 63.8909 163.601 63.2231C163.805 62.5554 163.101 57.7231 163.101 57.7231C163.101 57.7231 165.601 59.2231 167.101 61.2231C168.601 63.2231 171.525 67.9468 170.601 70.7231C170.185 71.9734 165.628 76.3398 161.479 79.9987C156.415 84.465 150.516 89.6682 148.531 93.0257C147.367 94.9937 146.565 96.2388 145.958 97.1811C144.682 99.1634 144.268 99.806 143.165 103.021C140.633 110.399 139.342 119.349 140.017 119.124C140.602 118.928 142.303 118.05 143.5 115.654C144.57 113.513 145.014 110.795 145.014 110.795C145.014 110.795 148.783 123.085 149.641 133.654C150.5 144.223 148.531 157.154 148.531 157.154C147.051 151.563 146.002 149.086 143.719 145.777C143.719 145.777 143.491 163.244 138.351 172.615C134.826 179.043 126.135 186.867 126.135 186.867C126.135 186.867 131.026 168.176 130.5 154.848C130.282 149.327 129.339 144.012 128.5 139.654C128.192 138.057 127.644 136.303 127.072 134.473C126.137 131.478 125.138 128.281 125.024 125.232C124.653 115.237 132 96.7528 132 96.7528C119.561 102.585 113.643 113.856 112.5 120.309C106.93 106.331 95.7708 98.3602 90.6013 96.2231C90.6013 96.2231 74.1013 114.223 80.6013 130.723C83.3927 137.809 88.3609 141.927 93.4538 146.148C100.22 151.756 107.207 157.547 109.601 170.723C114.601 160.771 111.808 150.223 110.587 147.629C109.106 144.483 119.286 154.848 119.286 154.848C119.286 154.848 125.209 161.326 122.988 175.208C120.767 189.09 112.438 196.309 112.438 196.309C112.438 196.309 107.027 186.336 102.258 180.946C94.4962 172.173 89.052 166.89 77.8258 163.547C71.8279 161.761 61.5 161.654 61.5 161.654C62.2369 158.558 63.1663 156.181 67.8308 151.701L55.7998 157.069C55.7998 157.069 46.0023 160.12 39.5117 160.771C34.2614 161.297 26 160.771 26 160.771L55.0595 134.673ZM87.1013 87.2231C87.1013 87.2231 72.1013 88.2231 65.4245 93.0257C66.3168 94.2582 69.9013 97.4231 77.1013 100.223C79.268 97.2231 84.3013 90.4231 87.1013 87.2231ZM104.851 65.078C104.851 65.078 112.995 54.1551 115.216 52.8607C117.437 51.5663 128.913 52.8607 128.913 52.8607L118.601 64.1513L120.582 57.6743L104.851 65.078ZM152.049 28.4297C150.94 28.7999 149.088 35.6483 149.088 35.6483C149.088 35.6483 158.157 34.539 158.342 33.6123C158.527 32.6857 153.158 28.0596 152.049 28.4297Z" stroke="currentColor" strokeWidth="1" fill="none" />
     <path d="M120.582 119.568C119.103 128.822 122.433 144 122.433 144C109.186 136.607 104.093 130.585 99.7817 116.007C99.7817 116.007 96.7463 130.071 101 142.098C101 142.098 91.5 137.598 86.5 125.098C82.985 116.311 88.3447 103.448 88.8006 102.305C89.2565 101.162 90.1982 98.0936 90.6013 97.1629C92.6501 97.2893 108.837 112.917 112.5 123.253C114.239 117.887 120.226 105.495 131 98C128.966 100.89 121.861 111.565 120.582 119.568Z" stroke="currentColor" strokeWidth="1" fill="none" />
   </svg>
-);
+));
 
-const WolfEyeO = ({ className = "" }: { className?: string }) => (
+const WolfEyeO = React.memo(({ className = "" }: { className?: string }) => (
   <svg viewBox="0 0 100 100" className={`h-[0.84em] w-auto inline-block align-middle relative top-[-0.1em] left-[-0.12em] ${className}`} fill="currentColor">
     <circle cx="50" cy="50" r="42" stroke="currentColor" strokeWidth="16" fill="none" />
     <path d="M50 25 Q58 50 50 75 Q42 50 50 25 Z" fill="currentColor" />
   </svg>
-);
+));
 
 const HeroBackground = ({ className = "" }: { className?: string }) => {
   const mouseX = useMotionValue(0);
@@ -158,7 +158,7 @@ const HeroBackground = ({ className = "" }: { className?: string }) => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [mouseX, mouseY]);
 
-  const particles = Array.from({ length: 40 });
+  const particles = Array.from({ length: 20 });
 
   return (
     <div className={`absolute inset-0 z-0 overflow-hidden bg-[#000000] ${className}`}>
@@ -235,25 +235,37 @@ const HeroBackground = ({ className = "" }: { className?: string }) => {
   );
 };
 
-const ParticleSystem = ({ count = 20 }: { count?: number }) => {
-  const particles = Array.from({ length: count });
+const ParticleSystem = React.memo(({ count = 20 }: { count?: number }) => {
+  // Memoize random positions so they remain stable across re-renders
+  const particles = React.useMemo(
+    () =>
+      Array.from({ length: count }, () => ({
+        x: Math.random() * 100,
+        y0: Math.random() * 100,
+        y1: Math.random() * 100,
+        opacity: Math.random() * 0.5 + 0.2,
+        duration: Math.random() * 10 + 10,
+      })),
+    [count]
+  );
+
   return (
     <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
-      {particles.map((_, i) => (
+      {particles.map((p, i) => (
         <motion.div
           key={i}
           className="absolute w-1 h-1 bg-[#c79a40]/40 rounded-full blur-[1px]"
           initial={{
-            x: `${Math.random() * 100}%`,
-            y: `${Math.random() * 100}%`,
-            opacity: Math.random() * 0.5 + 0.2
+            x: `${p.x}%`,
+            y: `${p.y0}%`,
+            opacity: p.opacity
           }}
           animate={{
-            y: [`${Math.random() * 100}%`, `${Math.random() * 100}%`],
+            y: [`${p.y0}%`, `${p.y1}%`],
             opacity: [0.2, 0.5, 0.2]
           }}
           transition={{
-            duration: Math.random() * 10 + 10,
+            duration: p.duration,
             repeat: Infinity,
             ease: "linear"
           }}
@@ -262,9 +274,9 @@ const ParticleSystem = ({ count = 20 }: { count?: number }) => {
       ))}
     </div>
   );
-};
+});
 
-const ShineOverlay = ({ delay = 1.5, duration = 6, className = "z-[40]" }: { delay?: number, duration?: number, className?: string }) => {
+const ShineOverlay = React.memo(({ delay = 1.5, duration = 6, className = "z-[40]" }: { delay?: number, duration?: number, className?: string }) => {
   return (
     <div className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`}>
       <motion.div
@@ -295,7 +307,7 @@ const ShineOverlay = ({ delay = 1.5, duration = 6, className = "z-[40]" }: { del
       />
     </div>
   );
-};
+});
 
 const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   const [showLogo, setShowLogo] = useState(false);
@@ -341,7 +353,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
 
       {/* Subtle Floating Particles */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: 25 }).map((_, i) => (
+        {Array.from({ length: 12 }).map((_, i) => (
           <motion.div
             key={i}
             className="absolute w-[2px] h-[2px] bg-white/10 rounded-full blur-[1px]"
@@ -604,7 +616,7 @@ const CinematicBackground = () => {
 
       {/* Floating Cinematic Dust Particles */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        {Array.from({ length: 15 }).map((_, i) => (
+        {Array.from({ length: 8 }).map((_, i) => (
           <motion.div
             key={i}
             initial={{
@@ -632,7 +644,7 @@ const CinematicBackground = () => {
   );
 };
 
-const FogLayer = ({ opacity = 0.4, speed = 20, color = "rgba(116,44,134,0.15)", className = "", yOffset = "0%" }: { opacity?: number, speed?: number, color?: string, className?: string, yOffset?: string }) => {
+const FogLayer = React.memo(({ opacity = 0.4, speed = 20, color = "rgba(116,44,134,0.15)", className = "", yOffset = "0%" }: { opacity?: number, speed?: number, color?: string, className?: string, yOffset?: string }) => {
   return (
     <motion.div
       initial={{ x: "-10%", opacity: 0 }}
@@ -651,7 +663,7 @@ const FogLayer = ({ opacity = 0.4, speed = 20, color = "rgba(116,44,134,0.15)", 
       <div className="absolute inset-x-[-20%] bottom-0 h-[60%] bg-[radial-gradient(ellipse_at_center,var(--fog-color),transparent_70%)] blur-[100px]" style={{ '--fog-color': color } as any} />
     </motion.div>
   );
-};
+});
 
 const MouseGlow = ({ activeSectionId }: { activeSectionId: string }) => {
   const mouseX = useMotionValue(-100);
@@ -721,7 +733,7 @@ const Navbar = ({ activeSection, onNavItemClick }: { activeSection: string, onNa
   }, []);
 
   useEffect(() => {
-    console.log("Active Section ID:", activeSection);
+    // Section tracking — keep for dev visibility if needed
   }, [activeSection]);
 
   const navLinks = [
@@ -873,7 +885,7 @@ const Hero = ({ mouseX, mouseY }: { mouseX: any, mouseY: any }) => {
         }}
         className="hidden min-[450px]:block absolute bottom-[0%] md:bottom-[-5%] lg:bottom-[-18%] left-[-10vw] md:left-[-5vw] lg:left-[2vw] z-10 pointer-events-none origin-bottom will-change-transform"
       >
-        <motion.img src="/statue.png" className="h-[135vh] md:h-[135vh] lg:h-[185vh] w-auto max-w-[100vw] md:max-w-[85vw] lg:max-w-[80vw] object-contain object-bottom drop-shadow-[50px_0_30px_rgba(0,0,0,0.3)]" alt="Statue" />
+        <motion.img src="/statue.png" className="h-[135vh] md:h-[135vh] lg:h-[185vh] w-auto max-w-[100vw] md:max-w-[85vw] lg:max-w-[80vw] object-contain object-bottom drop-shadow-[50px_0_30px_rgba(0,0,0,0.3)]" alt="Statue" loading="eager" decoding="async" />
       </motion.div>
 
       {/* ===== Atmospheric Fog Mid ===== */}
@@ -890,7 +902,7 @@ const Hero = ({ mouseX, mouseY }: { mouseX: any, mouseY: any }) => {
         }}
         className="hidden min-[450px]:block absolute bottom-[-2%] md:bottom-[-2%] lg:bottom-[-9%] left-[-2vw] z-20 pointer-events-none origin-bottom-left will-change-transform"
       >
-        <motion.img src="/grass.png" className="w-[120vw] md:w-[75vw] lg:w-[66vw] min-w-[300px] h-auto object-contain object-bottom drop-shadow-[20px_0_30px_rgba(0,0,0,0.8)]" alt="Grass" />
+        <motion.img src="/grass.png" className="w-[120vw] md:w-[75vw] lg:w-[66vw] min-w-[300px] h-auto object-contain object-bottom drop-shadow-[20px_0_30px_rgba(0,0,0,0.8)]" alt="Grass" loading="eager" decoding="async" />
       </motion.div>
 
       {/* ===== Layer 4: Right Tree Foreground (Bottom Right Edge) ===== */}
@@ -905,12 +917,11 @@ const Hero = ({ mouseX, mouseY }: { mouseX: any, mouseY: any }) => {
         }}
         className="hidden min-[450px]:block absolute bottom-[0%] md:bottom-[-2%] lg:bottom-[-9%] right-[-5vw] md:right-[-2vw] lg:right-[-5vw] z-20 pointer-events-none origin-bottom-right will-change-transform"
       >
-        <motion.img src="/tree.png" className="w-[110vw] md:w-[60vw] lg:w-[45vw] min-w-[280px] h-auto object-contain object-bottom drop-shadow-[-20px_0_30px_rgba(0,0,0,0.8)]" alt="Tree" />
+        <motion.img src="/tree.png" className="w-[110vw] md:w-[60vw] lg:w-[45vw] min-w-[280px] h-auto object-contain object-bottom drop-shadow-[-20px_0_30px_rgba(0,0,0,0.8)]" alt="Tree" loading="eager" decoding="async" />
       </motion.div>
 
       {/* ===== Subtle Mystical Particles ===== */}
-      {!prefersReducedMotion && <ParticleSystem count={40} />}
-      {prefersReducedMotion && <ParticleSystem count={10} />}
+      <ParticleSystem count={prefersReducedMotion ? 8 : 20} />
 
       {/* Main Text Content */}
       <div
@@ -969,6 +980,34 @@ const Hero = ({ mouseX, mouseY }: { mouseX: any, mouseY: any }) => {
     </section>
   );
 };
+
+// Extracted so hooks (useTransform) are called at component level, not inside .map()
+const FeatureCard = React.memo(({ feature, smoothProgress, setIsHoveringCard }: {
+  feature: { title: string; desc: string };
+  smoothProgress: any;
+  setIsHoveringCard: (v: boolean) => void;
+}) => {
+  const cardY = useTransform(smoothProgress, [0.1, 0.35, 0.85, 1], [200, 0, 0, -150]);
+  const cardRotateX = useTransform(smoothProgress, [0.1, 0.35], [30, 0]);
+  const cardScale = useTransform(smoothProgress, [0.1, 0.35], [0.9, 1]);
+  const cardClip = useTransform(smoothProgress, [0.1, 0.35], ["inset(0 0 0 0)", "inset(-20% -20% -20% -20%)"]);
+  return (
+    <motion.div
+      style={{ y: cardY, rotateX: cardRotateX, scale: cardScale, clipPath: cardClip, transformOrigin: "bottom center" }}
+      onMouseEnter={() => setIsHoveringCard(true)}
+      onMouseLeave={() => setIsHoveringCard(false)}
+      className="relative p-5 md:p-6 lg:p-7 border border-white/5 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-md group overflow-hidden"
+    >
+      <div className="absolute inset-0 bg-gradient-to-r from-[#742C86]/0 via-[#742C86]/20 to-[#742C86]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
+      <h3 className="text-base md:text-lg lg:text-xl font-black text-white uppercase tracking-widest mb-2 group-hover:text-[#c79a40] transition-colors">
+        {feature.title}
+      </h3>
+      <p className="text-xs md:text-sm lg:text-base text-white/60 leading-relaxed font-medium">
+        {feature.desc}
+      </p>
+    </motion.div>
+  );
+});
 
 const About = () => {
   const { setIsHoveringCard } = React.useContext(MouseGlowContext);
@@ -1091,40 +1130,14 @@ const About = () => {
 
         {/* Feature Blocks: Layered Extrusion */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8" style={{ perspective: "1500px" }}>
-          {features.map((feature, i) => {
-            // Group animation so all cards stay cleanly aligned at all scroll points
-            // Start at 0.1 and end quickly by 0.35 so they are solid before the center
-            const cardY = useTransform(smoothProgress, [0.1, 0.35, 0.85, 1], [200, 0, 0, -150]);
-            const cardRotateX = useTransform(smoothProgress, [0.1, 0.35], [30, 0]);
-            const cardScale = useTransform(smoothProgress, [0.1, 0.35], [0.9, 1]);
-            const cardClip = useTransform(smoothProgress, [0.1, 0.35], ["inset(0 0 0 0)", "inset(-20% -20% -20% -20%)"]);
-
-            return (
-              <motion.div
-                key={i}
-                style={{
-                  y: cardY,
-                  rotateX: cardRotateX,
-                  scale: cardScale,
-                  clipPath: cardClip,
-                  transformOrigin: "bottom center"
-                }}
-                onMouseEnter={() => setIsHoveringCard(true)}
-                onMouseLeave={() => setIsHoveringCard(false)}
-                className="relative p-5 md:p-6 lg:p-7 border border-white/5 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-md group overflow-hidden"
-              >
-                {/* Animated hover gradient */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#742C86]/0 via-[#742C86]/20 to-[#742C86]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
-
-                <h3 className="text-base md:text-lg lg:text-xl font-black text-white uppercase tracking-widest mb-2 group-hover:text-[#c79a40] transition-colors">
-                  {feature.title}
-                </h3>
-                <p className="text-xs md:text-sm lg:text-base text-white/60 leading-relaxed font-medium">
-                  {feature.desc}
-                </p>
-              </motion.div>
-            );
-          })}
+          {features.map((feature, i) => (
+            <FeatureCard
+              key={i}
+              feature={feature}
+              smoothProgress={smoothProgress}
+              setIsHoveringCard={setIsHoveringCard}
+            />
+          ))}
         </div>
       </div>
 
@@ -1620,7 +1633,7 @@ const FeaturedProject = () => {
         }}
         className="absolute inset-x-[-10%] inset-y-[-20%] z-0 pointer-events-none will-change-transform"
       >
-        <img src="/sky.png" className="w-full h-full object-cover brightness-[0.4] contrast-[1.1]" alt="" />
+        <img src="/sky.png" className="w-full h-full object-cover brightness-[0.4] contrast-[1.1]" alt="" loading="lazy" decoding="async" />
       </motion.div>
 
       {/* LAYER 2: Midground Battlefield */}
@@ -1633,11 +1646,11 @@ const FeaturedProject = () => {
         }}
         className="absolute inset-0 z-10 pointer-events-none will-change-transform opacity-70 flex items-center justify-center overflow-hidden"
       >
-        <img src="/battlefield.png" className="w-full h-full object-cover brightness-[0.5] scale-110" alt="" />
+        <img src="/battlefield.png" className="w-full h-full object-cover brightness-[0.5] scale-110" alt="" loading="lazy" decoding="async" />
       </motion.div>
 
       {/* ATMOSPHERIC: Floating Particles */}
-      <ParticleSystem count={prefersReducedMotion ? 5 : 30} />
+      <ParticleSystem count={prefersReducedMotion ? 5 : 18} />
 
       {/* LAYER 3: Foreground Knight */}
       <motion.div
@@ -1649,7 +1662,7 @@ const FeaturedProject = () => {
         }}
         className="hidden md:block absolute bottom-[8%] md:bottom-[-14%] lg:bottom-[-18%] right-[-20%] md:right-[-5%] w-[95vw] md:w-[75vw] lg:w-[45vw] z-30 pointer-events-none will-change-transform origin-bottom drop-shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
       >
-        <img src="/knight.png" className="w-full h-auto max-h-[60vh] md:max-h-none object-contain" alt="Epic Knight" />
+        <img src="/knight.png" className="w-full h-auto max-h-[60vh] md:max-h-none object-contain" alt="Epic Knight" loading="lazy" decoding="async" />
       </motion.div>
 
       {/* ATMOSPHERIC: Dynamic Vignette */}
@@ -2256,7 +2269,6 @@ export default function App() {
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          console.log(`Intersecting: ${entry.target.id}`);
           if (activeSectionIdRef.current !== entry.target.id) {
             setScrollingFromId(activeSectionIdRef.current);
             setActiveSectionId(entry.target.id);
@@ -2579,6 +2591,8 @@ export default function App() {
               src="/bg_ruins.png"
               className="w-[140vw] h-[140vh] left-[0vw] top-[-40vh] object-cover object-bottom grayscale-[0.05] contrast-[1.1] brightness-[0.7] absolute will-change-transform"
               alt="Deep Background"
+              fetchPriority="high"
+              decoding="async"
             />
 
             {/* Cinematic Black Overlay for Readability */}
