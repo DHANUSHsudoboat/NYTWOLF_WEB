@@ -914,7 +914,7 @@ const Hero = ({ mouseX, mouseY }: { mouseX: any, mouseY: any }) => {
 
       {/* Main Text Content */}
       <div
-        className="relative z-30 flex flex-col items-center text-center px-6 max-w-5xl translate-y-[15px]"
+        className="relative z-30 flex flex-col items-center text-center px-6 max-w-5xl -translate-y-3 md:translate-y-[15px]"
       >
         <div className="mb-12 relative animate-none">
           <MouseParallax factor={40}>
@@ -940,10 +940,10 @@ const Hero = ({ mouseX, mouseY }: { mouseX: any, mouseY: any }) => {
       {/* Scroll Indicator - Three Cascading Chevrons */}
       <motion.div
         style={{ opacity: opacityText }}
-        initial={{ opacity: 0 }}
+        initial={{ opacity: 1 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2.5, duration: 1 }}
-        className="absolute bottom-8 sm:bottom-10 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-0 pointer-events-none"
+        className="absolute bottom-24 sm:bottom-10 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-0 pointer-events-none"
       >
         {[0, 1, 2].map((i) => (
           <motion.div
@@ -1324,7 +1324,48 @@ const Services = () => {
 const PoweringOurWorlds = () => {
   const { setIsHoveringCard } = React.useContext(MouseGlowContext);
   const sectionRef = useRef<HTMLElement>(null);
-  const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+  const [randomPos, setRandomPos] = useState({ x: 50, y: 50 });
+
+  // Use Motion Values for unified coordinate tracking
+  const attractorX = useMotionValue(0);
+  const attractorY = useMotionValue(0);
+  
+  // High-response Springs for instant cursor tracking
+  const glowX = useSpring(attractorX, { damping: 30, stiffness: 250 });
+  const glowY = useSpring(attractorY, { damping: 30, stiffness: 250 });
+
+  // Periodic Random Target Update
+  useEffect(() => {
+    if (isHovered) return;
+    
+    const updateRandom = () => {
+       setRandomPos({
+         x: 10 + Math.random() * 80,
+         y: 20 + Math.random() * 60
+       });
+    };
+
+    updateRandom(); // Set initial
+    const interval = setInterval(updateRandom, 5000);
+    return () => clearInterval(interval);
+  }, [isHovered]);
+
+  // Update attractor target based on state
+  useEffect(() => {
+    if (!sectionRef.current) return;
+    const rect = sectionRef.current.getBoundingClientRect();
+
+    if (isHovered) {
+      attractorX.set(mousePos.x);
+      attractorY.set(mousePos.y);
+    } else {
+      // Map percentage randomPos to current section pixels
+      attractorX.set((randomPos.x / 100) * rect.width);
+      attractorY.set((randomPos.y / 100) * rect.height);
+    }
+  }, [isHovered, mousePos, randomPos, attractorX, attractorY]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!sectionRef.current) return;
@@ -1345,6 +1386,21 @@ const PoweringOurWorlds = () => {
   });
 
   const bgY = useTransform(smoothProgress, [0, 1], ["0%", "20%"]);
+  
+  // Mask string state for the spotlight
+  const [maskStyle, setMaskStyle] = useState("");
+
+  // Sync mask string with spring values manually to avoid re-rendering the whole img
+  useEffect(() => {
+    const unsubX = glowX.on("change", (latestX) => {
+       setMaskStyle(`radial-gradient(circle 450px at ${latestX}px ${glowY.get()}px, black 0%, transparent 80%)`);
+    });
+    const unsubY = glowY.on("change", (latestY) => {
+       setMaskStyle(`radial-gradient(circle 450px at ${glowX.get()}px ${latestY}px, black 0%, transparent 80%)`);
+    });
+    return () => { unsubX(); unsubY(); };
+  }, [glowX, glowY]);
+
   const h2Y = useTransform(smoothProgress, [0.1, 0.22], [150, 0]);
   const h2RotX = useTransform(smoothProgress, [0.1, 0.22], [45, 0]);
   const h2Clip = useTransform(smoothProgress, [0.1, 0.22], ["inset(100% 0 0 0)", "inset(0% 0 0 0)"]);
@@ -1382,28 +1438,53 @@ const PoweringOurWorlds = () => {
   ];
 
   return (
-    <section 
-      ref={sectionRef} 
+    <section
+      ref={sectionRef}
       onMouseMove={handleMouseMove}
-      className="relative min-h-screen flex flex-col justify-center section-spacing bg-[#060408] overflow-hidden" 
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="relative min-h-screen flex flex-col justify-center section-spacing bg-[#060408] overflow-hidden"
       style={{ perspective: "1500px" }}
     >
       {/* ===== Interactive Tech Room Background Spotlight ===== */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        {/* Low Opacity Base Image */}
-        <div className="absolute inset-0 opacity-[0.05] grayscale brightness-50">
-          <img src="/tech_room.png" className="w-full h-full object-cover" alt="" />
-        </div>
-        
-        {/* Interactive Spotlight Overlay */}
+        {/* Base Image Layer - Always slightly visible */}
         <motion.div 
-          className="absolute inset-0 z-10 opacity-30 grayscale-0 brightness-150"
-          style={{
-            WebkitMaskImage: `radial-gradient(circle 350px at ${mousePos.x}px ${mousePos.y}px, black 0%, transparent 80%)`,
-            maskImage: `radial-gradient(circle 350px at ${mousePos.x}px ${mousePos.y}px, black 0%, transparent 80%)`,
-          }}
+          animate={{ opacity: isHovered ? 0.35 : 0.15 }}
+          transition={{ duration: 1.2 }}
+          className="absolute inset-0 grayscale brightness-50 contrast-125"
         >
           <img src="/tech_room.png" className="w-full h-full object-cover" alt="" />
+        </motion.div>
+
+        {/* Ambient Wandering / Following Purple Glow */}
+        <motion.div
+           style={{ 
+             left: glowX, 
+             top: glowY,
+           }}
+           animate={{ 
+             scale: isHovered ? 1 : [0.8, 1.1, 0.8]
+           }}
+           transition={{ 
+             scale: { duration: 6, repeat: Infinity, ease: "easeInOut" }
+           }}
+           className="absolute w-[600px] h-[600px] -translate-x-1/2 -translate-y-1/2 z-10"
+        >
+          <div className="w-full h-full bg-[radial-gradient(circle_at_center,rgba(116,44,134,0.3)_0%,rgba(116,44,134,0.1)_30%,transparent_70%)] blur-[80px]" />
+        </motion.div>
+
+        {/* Interactive Spotlight Overlay - Intensifies on hover */}
+        <motion.div
+          className="absolute inset-0 z-20"
+          animate={{ opacity: isHovered ? 0.65 : 0.3 }}
+          transition={{ duration: 1.2 }}
+          style={{
+            WebkitMaskImage: maskStyle,
+            maskImage: maskStyle,
+          }}
+        >
+          <img src="/tech_room.png" className="w-full h-full object-cover filter brightness-[1.6] contrast-[1.2] grayscale-0" alt="" />
         </motion.div>
 
         {/* Ambient Glow */}
@@ -1566,7 +1647,7 @@ const FeaturedProject = () => {
           scale: prefersReducedMotion ? 1 : knightScale,
           translateZ: 0
         }}
-        className="absolute bottom-[8%] md:bottom-[-8%] lg:bottom-[-18%] right-[-20%] md:right-[-5%] w-[95vw] md:w-[75vw] lg:w-[45vw] z-30 pointer-events-none will-change-transform origin-bottom drop-shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
+        className="hidden md:block absolute bottom-[8%] md:bottom-[-8%] lg:bottom-[-18%] right-[-20%] md:right-[-5%] w-[95vw] md:w-[75vw] lg:w-[45vw] z-30 pointer-events-none will-change-transform origin-bottom drop-shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
       >
         <img src="/knight.png" className="w-full h-auto max-h-[60vh] md:max-h-none object-contain" alt="Epic Knight" />
       </motion.div>
@@ -2278,13 +2359,192 @@ export default function App() {
       }
     };
 
+    // ========== TOUCH SNAP LOGIC (MOBILE) ==========
+    let touchStartY = 0;
+    let touchStartTime = 0;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0].clientY;
+      touchStartTime = Date.now();
+    };
+
+    const snapToMostVisible = () => {
+      if (isAnimating.current) return;
+
+      let maxVisibleHeight = 0;
+      let mostVisibleId = sections[0];
+      let visibleSectionsCount = 0;
+
+      sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          const visibleHeight = Math.max(0, Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0));
+          
+          if (visibleHeight > 20) { // Using a 20px threshold for 'both are visible' check
+            visibleSectionsCount++;
+          }
+
+          if (visibleHeight > maxVisibleHeight) {
+            maxVisibleHeight = visibleHeight;
+            mostVisibleId = id;
+          }
+        }
+      });
+
+      // ONLY snap if we are actually split between 2 or more sections (in-between state)
+      if (visibleSectionsCount >= 2) {
+        const targetEl = document.getElementById(mostVisibleId);
+        if (targetEl) {
+          const rect = targetEl.getBoundingClientRect();
+          const isLong = targetEl.offsetHeight > window.innerHeight + 10;
+          
+          // If it's a long section, only snap to top if we are closer to the top than the bottom
+          if (isLong) {
+            const distToTop = Math.abs(rect.top);
+            const distToBottom = Math.abs(rect.bottom - window.innerHeight);
+            
+            // If we are closer to the bottom, just let it rest there (or snap specifically to bottom)
+            if (distToBottom < distToTop) {
+               // Near bottom - if we are within range, align to bottom
+               if (distToBottom > 5 && distToBottom < 100) {
+                 const targetScroll = targetEl.offsetTop + targetEl.offsetHeight - window.innerHeight;
+                 const currentScroll = window.scrollY;
+                 isAnimating.current = true;
+                 animate(currentScroll, targetScroll, {
+                   duration: 0.6,
+                   ease: "easeOut",
+                   onUpdate: (latest) => window.scrollTo(0, latest),
+                   onComplete: () => { isAnimating.current = false; }
+                 });
+               }
+               return; 
+            }
+          }
+
+          // Otherwise (standard section OR near top of long section), snap to top
+          if (Math.abs(rect.top) > 5) {
+            scrollToSection(mostVisibleId);
+          }
+        }
+      }
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (isLoading) return;
+
+      const touchEndY = e.changedTouches[0].clientY;
+      const deltaY = touchStartY - touchEndY;
+      const deltaTime = Date.now() - touchStartTime;
+      const velocity = Math.abs(deltaY) / deltaTime;
+
+      const threshold = 40;
+      const velocityThreshold = 0.8;
+
+      const now = Date.now();
+      const isCooldownActive = now - lastScrollTime.current < SCROLL_COOLDOWN;
+
+      // Track if we've handled a snap transition
+      let snapped = false;
+
+      if (Math.abs(deltaY) > threshold && !isAnimating.current && !isCooldownActive) {
+        const currentId = activeSectionIdRef.current;
+        const currentIndex = sections.indexOf(currentId);
+        const el = document.getElementById(currentId);
+
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          const isLongSection = el.offsetHeight > window.innerHeight + 10;
+          const isQuickFlick = velocity > velocityThreshold;
+
+          // Snap to NEXT (Scroll Down)
+          if (deltaY > 0 && currentIndex < sections.length - 1) {
+            if (isLongSection) {
+              const isAtBottom = rect.bottom <= window.innerHeight + 15;
+              // Quick flick OR already at the bottom edge = move to next section
+              if (isQuickFlick || isAtBottom) {
+                lastScrollTime.current = now;
+                scrollToSection(sections[currentIndex + 1]);
+                snapped = true;
+              }
+            } else {
+              lastScrollTime.current = now;
+              scrollToSection(sections[currentIndex + 1]);
+              snapped = true;
+            }
+          }
+          // Snap to PREV (Scroll Up)
+          else if (deltaY < 0 && currentIndex > 0) {
+            if (isLongSection) {
+              const isAtTop = rect.top >= -15;
+              // Quick flick OR already at the top edge = move to prev section
+              if (isQuickFlick || isAtTop) {
+                lastScrollTime.current = now;
+                scrollToSection(sections[currentIndex - 1]);
+                snapped = true;
+              }
+            } else {
+              lastScrollTime.current = now;
+              scrollToSection(sections[currentIndex - 1]);
+              snapped = true;
+            }
+          }
+        }
+      }
+
+      // If we didn't swipe enough for a directional snap, snap to whichever is most visible
+      if (!snapped && !isAnimating.current) {
+        // Delay slightly to allow any native momentum to finish if it's a long section
+        setTimeout(snapToMostVisible, 50);
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (isAnimating.current) {
+        e.preventDefault();
+        return;
+      }
+
+      const currentId = activeSectionIdRef.current;
+      const el = document.getElementById(currentId);
+      if (el) {
+        const isLongSection = el.offsetHeight > window.innerHeight + 10;
+
+        if (!isLongSection) {
+          e.preventDefault();
+        } else {
+          // In long sections, ONLY prevent default if we've completely finished the internal scroll
+          const rect = el.getBoundingClientRect();
+          const touchY = e.touches[0].clientY;
+          const isAtTop = rect.top >= -5;
+          const isAtBottom = rect.bottom <= window.innerHeight + 5;
+
+          // Trying to scroll to NEXT (swiping up) BUT already at the bottom
+          if (touchStartY > touchY && isAtBottom) {
+            e.preventDefault();
+          }
+          // Trying to scroll to PREV (swiping down) BUT already at the top
+          else if (touchStartY < touchY && isAtTop) {
+            e.preventDefault();
+          }
+          // Otherwise, allow the browser to handle the native momentum scroll smoothly
+        }
+      }
+    };
+
     window.addEventListener('wheel', handleWheel, { passive: false });
     window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
 
     return () => {
       observer.disconnect();
       window.removeEventListener('wheel', handleWheel);
       window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('touchmove', handleTouchMove);
     };
   }, [isLoading]);
 
