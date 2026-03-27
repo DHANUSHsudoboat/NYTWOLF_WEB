@@ -1259,15 +1259,15 @@ const Services = () => {
       <div className="container-1440 relative z-10 block">
 
         {/* ====== 1. CORE CAPABILITIES ====== */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-6 lg:mb-10 px-6 md:px-0">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-4 md:mb-6 lg:mb-10 px-6 md:px-0">
           <div className="lg:col-span-5 relative z-10 lg:translate-y-12" style={{ perspective: "1000px" }}>
             <motion.div style={{ y: h1Y, rotateX: h1RotX, scale: h1Scale, clipPath: h1Clip, transformOrigin: "bottom center", transformStyle: "preserve-3d" }}>
-              <span className="text-[#c79a40] tracking-[0.3em] md:tracking-[0.5em] uppercase text-[10px] md:text-xs font-bold mb-4 md:mb-6 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">OUR EXPERTISE</span>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black leading-none mb-4 md:mb-6 uppercase tracking-tighter drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
+              <span className="text-[#c79a40] tracking-[0.3em] md:tracking-[0.5em] uppercase text-[10px] md:text-xs font-bold mb-2 md:mb-3 lg:mb-6 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">OUR EXPERTISE</span>
+              <h2 className="text-3xl sm:text-4xl md:text-4xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black leading-none mb-2 md:mb-3 lg:mb-6 uppercase tracking-tighter drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
                 CORE <br />
                 <span className="text-[#b347d1] drop-shadow-[0_0_20px_rgba(179,71,209,0.3)]">CAPABILITIES</span>
               </h2>
-              <p className="text-sm md:text-base text-white/90 leading-relaxed max-w-md font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+              <p className="text-sm md:text-sm lg:text-base text-white/90 leading-relaxed max-w-md font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                 We engineer worlds, systems, and experiences that push the boundaries of immersive strategy gaming.
               </p>
             </motion.div>
@@ -1276,26 +1276,26 @@ const Services = () => {
           <div className="lg:col-span-7">
             <motion.div
               style={{ y: cardsY, rotateX: cardsRotX, clipPath: cardsClip, transformOrigin: "bottom center" }}
-              className="grid grid-cols-1 md:grid-cols-2 gap-6"
+              className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6"
             >
               {services.map((s, i) => (
                 <div
                   key={i}
                   onMouseEnter={() => setIsHoveringCard(true)}
                   onMouseLeave={() => setIsHoveringCard(false)}
-                  className="relative p-5 md:p-6 border border-white/5 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-md group overflow-hidden transition-all duration-500"
+                  className="relative p-4 border border-white/5 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-md group overflow-hidden transition-all duration-500"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-[#742C86]/0 via-[#742C86]/10 to-[#742C86]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-[1500ms] ease-in-out" />
 
-                  <div className="relative z-10 flex flex-col items-center text-center space-y-3">
-                    <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#742C86] group-hover:scale-110 group-hover:text-[#c79a40] group-hover:border-[#c79a40]/30 transition-all duration-500">
-                      {s.icon}
+                  <div className="relative z-10 flex flex-col items-center text-center space-y-2">
+                    <div className="w-10 h-10 md:w-11 md:h-11 lg:w-14 lg:h-14 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#742C86] group-hover:scale-110 group-hover:text-[#c79a40] group-hover:border-[#c79a40]/30 transition-all duration-500">
+                      {React.cloneElement(s.icon as React.ReactElement, { className: "w-5 h-5 md:w-6 md:h-6" })}
                     </div>
                     <div className="space-y-1">
-                      <h3 className="text-base md:text-lg font-black text-white uppercase tracking-wider transition-all duration-500 group-hover:text-[#c79a40]">
+                      <h3 className="text-sm md:text-[13px] lg:text-lg font-black text-white uppercase tracking-wider transition-all duration-500 group-hover:text-[#c79a40]">
                         {s.title}
                       </h3>
-                      <p className="text-[10px] md:text-[11px] text-white/40 leading-relaxed font-medium transition-colors duration-500 group-hover:text-white/70">
+                      <p className="text-[9px] md:text-[10px] lg:text-[11px] text-white/40 leading-relaxed font-medium transition-colors duration-500 group-hover:text-white/70">
                         {s.desc}
                       </p>
                     </div>
@@ -1331,7 +1331,7 @@ const PoweringOurWorlds = () => {
   // Use Motion Values for unified coordinate tracking
   const attractorX = useMotionValue(0);
   const attractorY = useMotionValue(0);
-  
+
   // High-response Springs for instant cursor tracking
   const glowX = useSpring(attractorX, { damping: 30, stiffness: 250 });
   const glowY = useSpring(attractorY, { damping: 30, stiffness: 250 });
@@ -1339,12 +1339,12 @@ const PoweringOurWorlds = () => {
   // Periodic Random Target Update
   useEffect(() => {
     if (isHovered) return;
-    
+
     const updateRandom = () => {
-       setRandomPos({
-         x: 10 + Math.random() * 80,
-         y: 20 + Math.random() * 60
-       });
+      setRandomPos({
+        x: 10 + Math.random() * 80,
+        y: 20 + Math.random() * 60
+      });
     };
 
     updateRandom(); // Set initial
@@ -1386,17 +1386,17 @@ const PoweringOurWorlds = () => {
   });
 
   const bgY = useTransform(smoothProgress, [0, 1], ["0%", "20%"]);
-  
+
   // Mask string state for the spotlight
   const [maskStyle, setMaskStyle] = useState("");
 
   // Sync mask string with spring values manually to avoid re-rendering the whole img
   useEffect(() => {
     const unsubX = glowX.on("change", (latestX) => {
-       setMaskStyle(`radial-gradient(circle 450px at ${latestX}px ${glowY.get()}px, black 0%, transparent 80%)`);
+      setMaskStyle(`radial-gradient(circle 450px at ${latestX}px ${glowY.get()}px, black 0%, transparent 80%)`);
     });
     const unsubY = glowY.on("change", (latestY) => {
-       setMaskStyle(`radial-gradient(circle 450px at ${glowX.get()}px ${latestY}px, black 0%, transparent 80%)`);
+      setMaskStyle(`radial-gradient(circle 450px at ${glowX.get()}px ${latestY}px, black 0%, transparent 80%)`);
     });
     return () => { unsubX(); unsubY(); };
   }, [glowX, glowY]);
@@ -1443,13 +1443,13 @@ const PoweringOurWorlds = () => {
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative min-h-screen flex flex-col justify-center section-spacing bg-[#060408] overflow-hidden"
+      className="relative min-h-screen flex flex-col justify-center section-spacing lg:py-12 bg-[#060408] overflow-hidden"
       style={{ perspective: "1500px" }}
     >
       {/* ===== Interactive Tech Room Background Spotlight ===== */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         {/* Base Image Layer - Always slightly visible */}
-        <motion.div 
+        <motion.div
           animate={{ opacity: isHovered ? 0.35 : 0.15 }}
           transition={{ duration: 1.2 }}
           className="absolute inset-0 grayscale brightness-50 contrast-125"
@@ -1459,17 +1459,17 @@ const PoweringOurWorlds = () => {
 
         {/* Ambient Wandering / Following Purple Glow */}
         <motion.div
-           style={{ 
-             left: glowX, 
-             top: glowY,
-           }}
-           animate={{ 
-             scale: isHovered ? 1 : [0.8, 1.1, 0.8]
-           }}
-           transition={{ 
-             scale: { duration: 6, repeat: Infinity, ease: "easeInOut" }
-           }}
-           className="absolute w-[600px] h-[600px] -translate-x-1/2 -translate-y-1/2 z-10"
+          style={{
+            left: glowX,
+            top: glowY,
+          }}
+          animate={{
+            scale: isHovered ? 1 : [0.8, 1.1, 0.8]
+          }}
+          transition={{
+            scale: { duration: 6, repeat: Infinity, ease: "easeInOut" }
+          }}
+          className="absolute w-[600px] h-[600px] -translate-x-1/2 -translate-y-1/2 z-10"
         >
           <div className="w-full h-full bg-[radial-gradient(circle_at_center,rgba(116,44,134,0.3)_0%,rgba(116,44,134,0.1)_30%,transparent_70%)] blur-[80px]" />
         </motion.div>
@@ -1496,26 +1496,26 @@ const PoweringOurWorlds = () => {
       <div className="container-1440 relative z-10">
         <motion.div
           style={{ y: h2Y, rotateX: h2RotX, clipPath: h2Clip, transformOrigin: "bottom center", transformStyle: "preserve-3d" }}
-          className="text-center mb-6 lg:mb-10 relative z-10"
+          className="text-center mb-4 lg:mb-6 relative z-10"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black tracking-tighter text-white uppercase leading-none mb-6 lg:mb-8 drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-black tracking-tighter text-white uppercase leading-none mb-4 lg:mb-5 drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
             POWERING OUR <span className="text-[#742C86]">WORLDS</span>
           </h2>
-          <p className="text-sm md:text-lg lg:text-xl text-text-muted tracking-[0.15em] md:tracking-[0.4em] uppercase font-bold max-w-4xl mx-auto drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-6">
+          <p className="text-sm md:text-lg lg:text-base text-text-muted tracking-[0.15em] md:tracking-[0.4em] uppercase font-bold max-w-4xl mx-auto drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-6">
             Built with industry-leading tools. Executed with precision.
           </p>
         </motion.div>
 
         <motion.div
           style={{ y: techY, rotateX: techRotX, clipPath: techClip, transformOrigin: "bottom center" }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 max-w-7xl mx-auto relative z-10 px-4 md:px-0"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-4 max-w-7xl mx-auto relative z-10 px-4 md:px-0"
         >
           {techs.map((tech, i) => (
             <div
               key={i}
               onMouseEnter={() => setIsHoveringCard(true)}
               onMouseLeave={() => setIsHoveringCard(false)}
-              className="relative p-5 md:p-6 bg-black/40 backdrop-blur-sm border border-white/5 overflow-hidden transition-all duration-700 group cursor-default h-full flex flex-col items-start hover:border-[#efb034]/20"
+              className="relative p-4 md:p-5 lg:p-4 bg-black/40 backdrop-blur-sm border border-white/5 overflow-hidden transition-all duration-700 group cursor-default h-full flex flex-col items-start hover:border-[#efb034]/20"
             >
               {/* Icon Container - Border disappears on hover */}
               <div className="mb-4 w-12 h-12 md:w-14 md:h-14 border border-white/10 flex items-center justify-center relative group-hover:border-transparent transition-all duration-500">
@@ -1647,7 +1647,7 @@ const FeaturedProject = () => {
           scale: prefersReducedMotion ? 1 : knightScale,
           translateZ: 0
         }}
-        className="hidden md:block absolute bottom-[8%] md:bottom-[-8%] lg:bottom-[-18%] right-[-20%] md:right-[-5%] w-[95vw] md:w-[75vw] lg:w-[45vw] z-30 pointer-events-none will-change-transform origin-bottom drop-shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
+        className="hidden md:block absolute bottom-[8%] md:bottom-[-14%] lg:bottom-[-18%] right-[-20%] md:right-[-5%] w-[95vw] md:w-[75vw] lg:w-[45vw] z-30 pointer-events-none will-change-transform origin-bottom drop-shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
       >
         <img src="/knight.png" className="w-full h-auto max-h-[60vh] md:max-h-none object-contain" alt="Epic Knight" />
       </motion.div>
@@ -1797,10 +1797,10 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
       </motion.div>
 
       <div className="container-1440 relative z-10 py-2 lg:py-0">
-        <div className="text-center mb-3 md:mb-4 lg:mb-6">
+        <div className="text-center mb-2 md:mb-3 lg:mb-6">
           <motion.div style={{ y: h1Y, clipPath: h1Clip }}>
-            <span className="text-[#c79a40] tracking-[0.5em] uppercase text-[10px] md:text-xs font-bold mb-3 md:mb-4 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">JOIN THE GUILD</span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black mb-3 md:mb-4 uppercase tracking-tighter text-white leading-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
+            <span className="text-[#c79a40] tracking-[0.5em] uppercase text-[10px] md:text-xs font-bold mb-2 md:mb-3 lg:mb-4 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">JOIN THE GUILD</span>
+            <h2 className="text-3xl sm:text-4xl md:text-4xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black mb-2 md:mb-3 lg:mb-4 uppercase tracking-tighter text-white leading-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
               BUILD THE <span className="text-[#742C86]">FUTURE</span> <br /> WITH US
             </h2>
             <p className="text-sm md:text-base text-text-muted max-w-2xl mx-auto leading-relaxed font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-4">
@@ -1811,24 +1811,24 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
 
         <motion.div
           style={{ y: cardY, rotateX: cardRotX, scale: cardScale, clipPath: cardClip, transformOrigin: "bottom center", transformStyle: "preserve-3d" }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 mb-8 md:mb-12 max-w-7xl mx-auto px-6"
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 mb-4 md:mb-6 lg:mb-12 max-w-7xl mx-auto px-6"
         >
           {roles.map((role, i) => (
             <div
               key={i}
               onMouseEnter={() => setIsHoveringCard(true)}
               onMouseLeave={() => setIsHoveringCard(false)}
-              className="group relative p-8 md:p-10 border border-white/5 bg-[#0F0B14]/40 backdrop-blur-md transition-all duration-500 flex flex-col items-center text-center cursor-default hover:border-[#742C86]/50 hover:bg-[#0F0B14]/60"
+              className="group relative p-5 md:p-6 lg:p-10 border border-white/5 bg-[#0F0B14]/40 backdrop-blur-md transition-all duration-500 flex flex-col items-center text-center cursor-default hover:border-[#742C86]/50 hover:bg-[#0F0B14]/60"
             >
-              <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#c79a40] group-hover:scale-110 group-hover:border-[#c79a40]/40 transition-all duration-500 mb-6">
-                {React.cloneElement(role.icon as React.ReactElement, { size: 28 })}
+              <div className="w-10 h-10 md:w-9 md:h-9 lg:w-16 lg:h-16 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#c79a40] group-hover:scale-110 group-hover:border-[#c79a40]/40 transition-all duration-500 mb-4 md:mb-6">
+                {React.cloneElement(role.icon as React.ReactElement, { size: 24, className: "w-5 h-5 md:w-4 md:h-4 lg:w-7 lg:h-7" })}
               </div>
 
-              <div className="space-y-3 relative z-10">
-                <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-widest group-hover:text-[#c79a40] transition-colors duration-300">
+              <div className="space-y-2 md:space-y-3 relative z-10">
+                <h3 className="text-lg md:text-sm lg:text-2xl font-black text-white uppercase tracking-widest group-hover:text-[#c79a40] transition-colors duration-300">
                   {role.title}
                 </h3>
-                <p className="text-sm md:text-base text-white/50 leading-relaxed font-medium transition-colors duration-500 group-hover:text-white/80 max-w-[280px]">
+                <p className="text-[11px] md:text-[12px] lg:text-base text-white/50 leading-relaxed font-medium transition-colors duration-500 group-hover:text-white/80 max-w-[280px]">
                   {role.text}
                 </p>
               </div>
@@ -1847,11 +1847,11 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
             rel="noopener noreferrer"
             whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(116,44,134,0.6)" }}
             whileTap={{ scale: 0.95 }}
-            className="px-12 py-5 bg-gradient-to-r from-[#742C86] to-[#4A1C56] text-white font-bold uppercase tracking-[0.3em] text-sm rounded-3xl flex items-center gap-4 group border border-[#742C86] shadow-[0_10px_20px_rgba(116,44,134,0.4)] transition-all relative overflow-hidden"
+            className="px-8 py-3 md:px-7 md:py-3.5 lg:px-12 lg:py-5 bg-gradient-to-r from-[#742C86] to-[#4A1C56] text-white font-bold uppercase tracking-[0.3em] text-[10px] md:text-[12px] lg:text-sm rounded-3xl flex items-center gap-4 group border border-[#742C86] shadow-[0_10px_20px_rgba(116,44,134,0.4)] transition-all relative overflow-hidden"
           >
             <span className="relative z-10 flex items-center gap-4">
               View Openings
-              <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-2" />
+              <ChevronRight className="w-4 h-4 md:w-3.5 md:h-3.5 lg:w-5 lg:h-5 transition-transform group-hover:translate-x-2" />
             </span>
             <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.2)_50%,transparent_75%)] translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
           </motion.a>
@@ -2380,7 +2380,7 @@ export default function App() {
         if (el) {
           const rect = el.getBoundingClientRect();
           const visibleHeight = Math.max(0, Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0));
-          
+
           if (visibleHeight > 20) { // Using a 20px threshold for 'both are visible' check
             visibleSectionsCount++;
           }
@@ -2398,27 +2398,27 @@ export default function App() {
         if (targetEl) {
           const rect = targetEl.getBoundingClientRect();
           const isLong = targetEl.offsetHeight > window.innerHeight + 10;
-          
+
           // If it's a long section, only snap to top if we are closer to the top than the bottom
           if (isLong) {
             const distToTop = Math.abs(rect.top);
             const distToBottom = Math.abs(rect.bottom - window.innerHeight);
-            
+
             // If we are closer to the bottom, just let it rest there (or snap specifically to bottom)
             if (distToBottom < distToTop) {
-               // Near bottom - if we are within range, align to bottom
-               if (distToBottom > 5 && distToBottom < 100) {
-                 const targetScroll = targetEl.offsetTop + targetEl.offsetHeight - window.innerHeight;
-                 const currentScroll = window.scrollY;
-                 isAnimating.current = true;
-                 animate(currentScroll, targetScroll, {
-                   duration: 0.6,
-                   ease: "easeOut",
-                   onUpdate: (latest) => window.scrollTo(0, latest),
-                   onComplete: () => { isAnimating.current = false; }
-                 });
-               }
-               return; 
+              // Near bottom - if we are within range, align to bottom
+              if (distToBottom > 5 && distToBottom < 100) {
+                const targetScroll = targetEl.offsetTop + targetEl.offsetHeight - window.innerHeight;
+                const currentScroll = window.scrollY;
+                isAnimating.current = true;
+                animate(currentScroll, targetScroll, {
+                  duration: 0.6,
+                  ease: "easeOut",
+                  onUpdate: (latest) => window.scrollTo(0, latest),
+                  onComplete: () => { isAnimating.current = false; }
+                });
+              }
+              return;
             }
           }
 
