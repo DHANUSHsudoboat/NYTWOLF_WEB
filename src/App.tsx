@@ -653,12 +653,19 @@ const FogLayer = ({ opacity = 0.4, speed = 20, color = "rgba(116,44,134,0.15)", 
   );
 };
 
-const MouseGlow = () => {
+const MouseGlow = ({ activeSectionId }: { activeSectionId: string }) => {
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
   const springX = useSpring(mouseX, { damping: 50, stiffness: 400 });
   const springY = useSpring(mouseY, { damping: 50, stiffness: 400 });
   const [isVisible, setIsVisible] = useState(false);
+
+  // Responsive settings based on active section
+  const isHidden = activeSectionId === 'home';
+  const glowColor = activeSectionId === 'projects'
+    ? "radial-gradient(circle, rgba(239, 176, 52, 0.25) 0%, rgba(239, 176, 52, 0.1) 40%, transparent 70%)"
+    : "radial-gradient(circle, rgba(116, 44, 134, 0.2) 0%, rgba(116, 44, 134, 0.05) 40%, transparent 70%)";
+  const glowSize = activeSectionId === 'projects' ? '700px' : '600px';
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -681,19 +688,24 @@ const MouseGlow = () => {
     };
   }, [isVisible, mouseX, mouseY]);
 
+  if (isHidden) return null;
+
   return (
     <motion.div
-      className="fixed top-0 left-0 w-[600px] h-[600px] rounded-full pointer-events-none z-[9999] mix-blend-screen overflow-hidden"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: isVisible ? 1 : 0 }}
+      className="fixed top-0 left-0 rounded-full pointer-events-none z-[9999] mix-blend-screen overflow-hidden"
       style={{
         x: springX,
         y: springY,
+        width: glowSize,
+        height: glowSize,
         translateX: "-50%",
         translateY: "-50%",
-        background: "radial-gradient(circle, rgba(116, 44, 134, 0.2) 0%, rgba(116, 44, 134, 0.05) 40%, transparent 70%)",
+        background: glowColor,
         filter: "blur(80px)",
-        opacity: isVisible ? 1 : 0,
       }}
-      transition={{ opacity: { duration: 0.5 } }}
+      transition={{ duration: 0.8 }}
     />
   );
 };
@@ -733,7 +745,7 @@ const Navbar = ({ activeSection, onNavItemClick }: { activeSection: string, onNa
         </motion.div>
 
         {/* Desktop Nav */}
-        <div className="hidden lg:flex gap-6 xl:gap-10 items-center">
+        <div className="hidden lg:flex gap-6 xl:gap-10 items-center ">
           {navLinks.map((link, i) => (
             <motion.a
               key={link.name}
@@ -794,7 +806,7 @@ const Navbar = ({ activeSection, onNavItemClick }: { activeSection: string, onNa
   );
 };
 
-const Hero = () => {
+const Hero = ({ mouseX, mouseY }: { mouseX: any, mouseY: any }) => {
   const heroRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
@@ -810,19 +822,29 @@ const Hero = () => {
   const bgY = "0%";
   const bgScale = 1;
 
+  // Mouse Parallax Transforms for layers
+  const mouseStatueX = useTransform(mouseX, [0, 1], ["-1%", "1%"]);
+  const mouseStatueY = useTransform(mouseY, [0, 1], ["-0.5%", "0.5%"]);
+
+  const mouseGrassX = useTransform(mouseX, [0, 1], ["-2%", "2%"]);
+  const mouseGrassY = useTransform(mouseY, [0, 1], ["-1%", "1%"]);
+
+  const mouseTreeX = useTransform(mouseX, [0, 1], ["-1.5%", "1.5%"]);
+  const mouseTreeY = useTransform(mouseY, [0, 1], ["-0.75%", "0.75%"]);
+
   // Layer 2: Statue Mid - Slight depth
-  const statueY = useTransform(smoothProgress, [0, 0.6], ["0%", "-5%"]);
+  const statueYScroll = useTransform(smoothProgress, [0, 0.6], ["0%", "-5%"]);
   const statueScale = useTransform(smoothProgress, [0, 6], [1, 1.01]);
   const statueRotateY = useTransform(smoothProgress, [0, 0.6], [0, 1]);
 
   // Layer 3: Grass Foreground - Moderate depth
-  const grassY = useTransform(smoothProgress, [0, 0.6], ["0%", "-10%"]);
-  const grassX = useTransform(smoothProgress, [0, 0.6], ["0%", "-2%"]);
+  const grassYScroll = useTransform(smoothProgress, [0, 0.6], ["0%", "-10%"]);
+  const grassXScroll = useTransform(smoothProgress, [0, 0.6], ["0%", "-2%"]);
   const grassScale = useTransform(smoothProgress, [0, 0.6], [1, 1.03]);
 
   // Layer 4: Right Tree - Moderate depth
-  const treeY = useTransform(smoothProgress, [0, 0.6], ["0%", "-8%"]);
-  const treeX = useTransform(smoothProgress, [0, 0.6], ["0%", "-1%"]);
+  const treeYScroll = useTransform(smoothProgress, [0, 0.6], ["0%", "-8%"]);
+  const treeXScroll = useTransform(smoothProgress, [0, 0.6], ["0%", "-1%"]);
   const treeRotate = useTransform(smoothProgress, [0, 0.6], [0, -1]);
   const treeScale = useTransform(smoothProgress, [0, 0.6], [1, 1.02]);
 
@@ -839,25 +861,51 @@ const Hero = () => {
       {/* Cinematic Diagonal Shine Sweep */}
       <ShineOverlay delay={1.5} duration={3} />
 
-      {/* ===== Atmospheric Fog Deep ===== */}
-      <FogLayer color="rgba(116,44,134,0.12)" speed={35} opacity={0.4} className="z-0" yOffset={fogDeepY as any} />
-
       {/* ===== Layer 2: Statue (Left, distinct, some padding) ===== */}
-      <motion.div style={{ y: statueY, scale: statueScale, rotateY: statueRotateY, transformStyle: "preserve-3d" }} className="hidden min-[450px]:block absolute bottom-[0%] md:bottom-[-5%] lg:bottom-[-18%] left-[-15%] md:left-[-5%] lg:left-[0%] z-10 pointer-events-none origin-bottom">
-        <motion.img src="/statue.png" className="h-[135vh] md:h-[135vh] lg:h-[185vh] w-auto max-w-[100vw] md:max-w-[85vw] lg:max-w-[80vw] object-contain object-bottom drop-shadow-[50px_0_30px_rgba(0,0,0,0.3)] [filter:sepia(0.5)_hue-rotate(240deg)_saturate(2.5)_brightness(0.75)]" alt="Statue" />
+      <motion.div
+        style={{
+          y: statueYScroll,
+          x: mouseStatueX,
+          translateY: mouseStatueY,
+          scale: statueScale,
+          rotateY: statueRotateY,
+          transformStyle: "preserve-3d"
+        }}
+        className="hidden min-[450px]:block absolute bottom-[0%] md:bottom-[-5%] lg:bottom-[-18%] left-[-10vw] md:left-[-5vw] lg:left-[2vw] z-10 pointer-events-none origin-bottom will-change-transform"
+      >
+        <motion.img src="/statue.png" className="h-[135vh] md:h-[135vh] lg:h-[185vh] w-auto max-w-[100vw] md:max-w-[85vw] lg:max-w-[80vw] object-contain object-bottom drop-shadow-[50px_0_30px_rgba(0,0,0,0.3)]" alt="Statue" />
       </motion.div>
 
       {/* ===== Atmospheric Fog Mid ===== */}
-      <FogLayer color="rgba(199,167,94,0.08)" speed={25} opacity={0.3} className="z-15" yOffset={fogMidY as any} />
+      <FogLayer color="rgba(255,255,255,0.02)" speed={25} opacity={0.1} className="z-15" yOffset={fogMidY as any} />
 
       {/* ===== Layer 3: Grass Foreground (Bottom Left Edge) ===== */}
-      <motion.div style={{ y: grassY, x: grassX, scale: grassScale }} className="hidden min-[450px]:block absolute bottom-[-2%] md:bottom-[-2%] lg:bottom-[-9%] left-[-5%] z-20 pointer-events-none origin-bottom-left">
-        <motion.img src="/grass.png" className="w-[120vw] md:w-[75vw] lg:w-[66vw] min-w-[300px] h-auto object-contain object-bottom drop-shadow-[20px_0_30px_rgba(0,0,0,0.8)] [filter:sepia(0.5)_hue-rotate(240deg)_saturate(2.5)_brightness(0.75)]" alt="Grass" />
+      <motion.div
+        style={{
+          y: grassYScroll,
+          x: useTransform(smoothProgress, [0, 0.6], ["0%", "-2%"]), // Original logic
+          translateX: mouseGrassX,
+          translateY: mouseGrassY,
+          scale: grassScale
+        }}
+        className="hidden min-[450px]:block absolute bottom-[-2%] md:bottom-[-2%] lg:bottom-[-9%] left-[-2vw] z-20 pointer-events-none origin-bottom-left will-change-transform"
+      >
+        <motion.img src="/grass.png" className="w-[120vw] md:w-[75vw] lg:w-[66vw] min-w-[300px] h-auto object-contain object-bottom drop-shadow-[20px_0_30px_rgba(0,0,0,0.8)]" alt="Grass" />
       </motion.div>
 
       {/* ===== Layer 4: Right Tree Foreground (Bottom Right Edge) ===== */}
-      <motion.div style={{ y: treeY, x: treeX, rotate: treeRotate, scale: treeScale }} className="hidden min-[450px]:block absolute bottom-[-2%] md:bottom-[-2%] lg:bottom-[-9%] right-[-15%] md:right-[-10%] lg:right-[-5%] z-20 pointer-events-none origin-bottom-right">
-        <motion.img src="/tree.png" className="w-[110vw] md:w-[60vw] lg:w-[45vw] min-w-[280px] h-auto object-contain object-bottom drop-shadow-[-20px_0_30px_rgba(0,0,0,0.8)] [filter:sepia(0.5)_hue-rotate(240deg)_saturate(2.5)_brightness(0.75)]" alt="Tree" />
+      <motion.div
+        style={{
+          y: treeYScroll,
+          x: useTransform(smoothProgress, [0, 0.6], ["0%", "-1%"]), // Original logic
+          translateX: mouseTreeX,
+          translateY: mouseTreeY,
+          rotate: treeRotate,
+          scale: treeScale
+        }}
+        className="hidden min-[450px]:block absolute bottom-[0%] md:bottom-[-2%] lg:bottom-[-9%] right-[-5vw] md:right-[-2vw] lg:right-[-5vw] z-20 pointer-events-none origin-bottom-right will-change-transform"
+      >
+        <motion.img src="/tree.png" className="w-[110vw] md:w-[60vw] lg:w-[45vw] min-w-[280px] h-auto object-contain object-bottom drop-shadow-[-20px_0_30px_rgba(0,0,0,0.8)]" alt="Tree" />
       </motion.div>
 
       {/* ===== Subtle Mystical Particles ===== */}
@@ -866,7 +914,7 @@ const Hero = () => {
 
       {/* Main Text Content */}
       <div
-        className="relative z-30 flex flex-col items-center text-center px-6 max-w-5xl translate-y-[35px]"
+        className="relative z-30 flex flex-col items-center text-center px-6 max-w-5xl translate-y-[15px]"
       >
         <div className="mb-12 relative animate-none">
           <MouseParallax factor={40}>
@@ -874,7 +922,6 @@ const Hero = () => {
               <Logo className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]" useGradient={false} />
             </div>
           </MouseParallax>
-          <div className="absolute inset-0 bg-primary/20 blur-[60px] -z-10 rounded-full" />
         </div>
 
         <div className="flex flex-col items-center">
@@ -882,10 +929,9 @@ const Hero = () => {
             <span className="flex items-center">NYTW<WolfEyeO />LF</span> <span className="text-[#742C86]">GAMES</span>
           </h1>
 
-          <div className="flex flex-col items-center gap-4 mt-6">
-            <div className="h-[1px] w-8 bg-[#c79a40]/40" />
+          <div className="flex flex-col items-center gap-1 mt-2">
             <p className="text-[11px] sm:text-sm lg:text-base text-[#c79a40] tracking-[0.2em] font-medium uppercase drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)]">
-              Strategic Worlds. Controlled Execution.
+              Strategic Worlds Controlled Execution
             </p>
           </div>
         </div>
@@ -1026,30 +1072,21 @@ const About = () => {
             </div>
           </motion.div>
 
-          {/* Right Column: Portal/Image Parallax Container */}
-          <motion.div
-            style={{
-              y: imageY,
-              rotateY: imageRotateY,
-              clipPath: imageClip,
-              transformStyle: "preserve-3d"
-            }}
-            className="hidden lg:block lg:col-span-6"
-          >
-            <div className="relative aspect-[16/9] rounded-sm overflow-hidden border-2 border-white/10 group" style={{ transformStyle: "preserve-3d" }}>
-              <motion.div className="absolute inset-0 bg-[#742C86]/20 mix-blend-overlay z-10 pointer-events-none" />
-              <motion.img
-                style={{ scale: imageScale }}
+          {/* Right Column: Static Image with Hover Animation */}
+          <div className="hidden lg:block lg:col-span-6">
+            <div className="relative aspect-[16/9] rounded-sm overflow-hidden border-2 border-white/10 group">
+              <div className="absolute inset-0 bg-[#742C86]/20 mix-blend-overlay z-10 pointer-events-none" />
+              <img
                 src="https://i.pinimg.com/736x/78/e8/10/78e81059f1e19ddbf772424da5409863.jpg"
                 alt="Cinematic Medieval Landscape"
-                className="w-full h-full object-cover brightness-[0.8] contrast-125 saturate-50 transition-transform duration-[2000ms] group-hover:scale-[1.3] group-hover:saturate-100"
+                className="w-full h-full object-cover brightness-[0.8] contrast-125 saturate-50 transition-all duration-[1000ms] group-hover:scale-[1.1] group-hover:saturate-100"
                 referrerPolicy="no-referrer"
               />
               {/* Sci-fi/Fantasy UI Crosshairs */}
               <div className="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-[#c79a40] z-20" />
               <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-[#c79a40] z-20" />
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* Feature Blocks: Layered Extrusion */}
@@ -1223,14 +1260,14 @@ const Services = () => {
 
         {/* ====== 1. CORE CAPABILITIES ====== */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-6 lg:mb-10 px-6 md:px-0">
-          <div className="lg:col-span-5 relative z-10" style={{ perspective: "1000px" }}>
+          <div className="lg:col-span-5 relative z-10 lg:translate-y-12" style={{ perspective: "1000px" }}>
             <motion.div style={{ y: h1Y, rotateX: h1RotX, scale: h1Scale, clipPath: h1Clip, transformOrigin: "bottom center", transformStyle: "preserve-3d" }}>
               <span className="text-[#c79a40] tracking-[0.3em] md:tracking-[0.5em] uppercase text-[10px] md:text-xs font-bold mb-4 md:mb-6 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">OUR EXPERTISE</span>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-[0.9] mb-4 md:mb-6 uppercase tracking-tighter drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black leading-none mb-4 md:mb-6 uppercase tracking-tighter drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
                 CORE <br />
-                <span className="text-[#742C86]">CAPABILITIES</span>
+                <span className="text-[#b347d1] drop-shadow-[0_0_20px_rgba(179,71,209,0.3)]">CAPABILITIES</span>
               </h2>
-              <p className="text-base md:text-lg lg:text-xl text-text-muted leading-relaxed max-w-md font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+              <p className="text-sm md:text-base text-white/90 leading-relaxed max-w-md font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                 We engineer worlds, systems, and experiences that push the boundaries of immersive strategy gaming.
               </p>
             </motion.div>
@@ -1246,19 +1283,19 @@ const Services = () => {
                   key={i}
                   onMouseEnter={() => setIsHoveringCard(true)}
                   onMouseLeave={() => setIsHoveringCard(false)}
-                  className="relative p-6 lg:p-8 border border-white/5 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-md group overflow-hidden transition-all duration-500"
+                  className="relative p-5 md:p-6 border border-white/5 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-md group overflow-hidden transition-all duration-500"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-[#742C86]/0 via-[#742C86]/10 to-[#742C86]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-[1500ms] ease-in-out" />
 
-                  <div className="relative z-10 flex flex-col items-center text-center space-y-4">
-                    <div className="w-12 h-12 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#742C86] group-hover:scale-110 group-hover:text-[#c79a40] group-hover:border-[#c79a40]/30 transition-all duration-500">
+                  <div className="relative z-10 flex flex-col items-center text-center space-y-3">
+                    <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#742C86] group-hover:scale-110 group-hover:text-[#c79a40] group-hover:border-[#c79a40]/30 transition-all duration-500">
                       {s.icon}
                     </div>
-                    <div className="space-y-2">
-                      <h3 className="text-lg lg:text-xl font-black text-white uppercase tracking-widest group-hover:text-[#c79a40] transition-colors duration-300">
+                    <div className="space-y-1">
+                      <h3 className="text-base md:text-lg font-black text-white uppercase tracking-wider transition-all duration-500 group-hover:text-[#c79a40]">
                         {s.title}
                       </h3>
-                      <p className="text-sm lg:text-base text-white/60 leading-relaxed font-medium transition-colors duration-500 group-hover:text-white/80">
+                      <p className="text-[10px] md:text-[11px] text-white/40 leading-relaxed font-medium transition-colors duration-500 group-hover:text-white/70">
                         {s.desc}
                       </p>
                     </div>
@@ -1272,7 +1309,7 @@ const Services = () => {
       </div>
 
       {/* LAYER 3: Fast Foreground (Artifacts/Weapons intersecting content space) */}
-      <motion.div style={{ y: fgY1, x: fgX1, rotate: fgRot1 }} className="absolute bottom-[30%] left-[8%] z-30 pointer-events-none opacity-90 drop-shadow-[20px_20px_30px_rgba(0,0,0,0.8)]">
+      <motion.div style={{ y: fgY1, x: fgX1, rotate: fgRot1 }} className="absolute bottom-[20%] left-[8%] z-30 pointer-events-none opacity-90 drop-shadow-[20px_20px_30px_rgba(0,0,0,0.8)]">
         <div className="w-[12vw] h-[40vh] bg-gradient-to-tr from-[#c79a40] to-transparent clip-path-polygon-[50%_0%,_100%_100%,_0%_100%] blur-[2px]" />
       </motion.div>
 
@@ -1287,6 +1324,16 @@ const Services = () => {
 const PoweringOurWorlds = () => {
   const { setIsHoveringCard } = React.useContext(MouseGlowContext);
   const sectionRef = useRef<HTMLElement>(null);
+  const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!sectionRef.current) return;
+    const rect = sectionRef.current.getBoundingClientRect();
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    });
+  };
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -1297,7 +1344,7 @@ const PoweringOurWorlds = () => {
     damping: 30, stiffness: 70, restDelta: 0.001
   });
 
-  const bgY = useTransform(smoothProgress, [0, 1], ["0%", "15%"]);
+  const bgY = useTransform(smoothProgress, [0, 1], ["0%", "20%"]);
   const h2Y = useTransform(smoothProgress, [0.1, 0.22], [150, 0]);
   const h2RotX = useTransform(smoothProgress, [0.1, 0.22], [45, 0]);
   const h2Clip = useTransform(smoothProgress, [0.1, 0.22], ["inset(100% 0 0 0)", "inset(0% 0 0 0)"]);
@@ -1335,17 +1382,42 @@ const PoweringOurWorlds = () => {
   ];
 
   return (
-    <section ref={sectionRef} className="relative min-h-screen flex flex-col justify-center section-spacing bg-[#060408] overflow-hidden" style={{ perspective: "1500px" }}>
-      <motion.div style={{ y: bgY }} className="absolute inset-0 z-0 pointer-events-none opacity-40 origin-center">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(116,44,134,0.15)_0%,transparent_70%)] blur-[50px]" />
-      </motion.div>
+    <section 
+      ref={sectionRef} 
+      onMouseMove={handleMouseMove}
+      className="relative min-h-screen flex flex-col justify-center section-spacing bg-[#060408] overflow-hidden" 
+      style={{ perspective: "1500px" }}
+    >
+      {/* ===== Interactive Tech Room Background Spotlight ===== */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        {/* Low Opacity Base Image */}
+        <div className="absolute inset-0 opacity-[0.05] grayscale brightness-50">
+          <img src="/tech_room.png" className="w-full h-full object-cover" alt="" />
+        </div>
+        
+        {/* Interactive Spotlight Overlay */}
+        <motion.div 
+          className="absolute inset-0 z-10 opacity-30 grayscale-0 brightness-150"
+          style={{
+            WebkitMaskImage: `radial-gradient(circle 350px at ${mousePos.x}px ${mousePos.y}px, black 0%, transparent 80%)`,
+            maskImage: `radial-gradient(circle 350px at ${mousePos.x}px ${mousePos.y}px, black 0%, transparent 80%)`,
+          }}
+        >
+          <img src="/tech_room.png" className="w-full h-full object-cover" alt="" />
+        </motion.div>
+
+        {/* Ambient Glow */}
+        <motion.div style={{ y: bgY }} className="absolute inset-0 z-0 opacity-40 origin-center">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(116,44,134,0.15)_0%,transparent_70%)] blur-[50px]" />
+        </motion.div>
+      </div>
 
       <div className="container-1440 relative z-10">
         <motion.div
           style={{ y: h2Y, rotateX: h2RotX, clipPath: h2Clip, transformOrigin: "bottom center", transformStyle: "preserve-3d" }}
           className="text-center mb-6 lg:mb-10 relative z-10"
         >
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tighter text-white uppercase leading-none mb-6 lg:mb-8 drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black tracking-tighter text-white uppercase leading-none mb-6 lg:mb-8 drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
             POWERING OUR <span className="text-[#742C86]">WORLDS</span>
           </h2>
           <p className="text-sm md:text-lg lg:text-xl text-text-muted tracking-[0.15em] md:tracking-[0.4em] uppercase font-bold max-w-4xl mx-auto drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-6">
@@ -1362,28 +1434,29 @@ const PoweringOurWorlds = () => {
               key={i}
               onMouseEnter={() => setIsHoveringCard(true)}
               onMouseLeave={() => setIsHoveringCard(false)}
-              className="relative p-8 border-l-2 border-[#742C86]/30 bg-[#0F0B14] shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:bg-[#140D1B] hover:border-[#c79a40] transition-colors group cursor-default"
+              className="relative p-5 md:p-6 bg-black/40 backdrop-blur-sm border border-white/5 overflow-hidden transition-all duration-700 group cursor-default h-full flex flex-col items-start hover:border-[#efb034]/20"
             >
-              <div className="absolute top-0 left-0 w-[4px] h-0 bg-[#c79a40] group-hover:h-full transition-all duration-500" />
-              <div className="flex flex-col items-start space-y-6">
-                <div className="text-[#742C86] opacity-60 group-hover:opacity-100 group-hover:scale-110 group-hover:text-[#c79a40] transition-all duration-500">
-                  <img
-                    src={tech.icon}
-                    alt={tech.name}
-                    className="w-12 h-12 object-contain filter brightness-0 invert opacity-70 
-                  group-hover:opacity-100 group-hover:scale-110 
-                  transition-all duration-500"
-                  />
-                </div>
-                <div className="space-y-3">
-                  <h3 className="text-xl font-bold text-white uppercase tracking-widest transition-colors duration-300 group-hover:text-[#c79a40]">
-                    {tech.name}
-                  </h3>
-                  <p className="text-sm text-text-muted leading-relaxed transition-colors duration-500 group-hover:text-white/80">
-                    {tech.desc}
-                  </p>
-                </div>
+              {/* Icon Container - Border disappears on hover */}
+              <div className="mb-4 w-12 h-12 md:w-14 md:h-14 border border-white/10 flex items-center justify-center relative group-hover:border-transparent transition-all duration-500">
+                <img
+                  src={tech.icon}
+                  alt={tech.name}
+                  className="w-6 h-6 md:w-7 md:h-7 object-contain filter brightness-0 invert opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 z-10"
+                />
               </div>
+
+              {/* Typography Structure */}
+              <div className="space-y-1 relative z-10">
+                <h3 className="text-base md:text-lg font-black text-white/90 uppercase tracking-wider transition-all duration-500 group-hover:text-[#efb034] group-hover:tracking-[0.12em]">
+                  {tech.name}
+                </h3>
+                <p className="text-[10px] md:text-[11px] text-white/30 leading-relaxed font-medium transition-colors duration-500 group-hover:text-white/60 max-w-xs">
+                  {tech.desc}
+                </p>
+              </div>
+
+              {/* Subtle Scanline Overlay */}
+              <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[length:100%_4px] pointer-events-none opacity-20" />
             </div>
           ))}
         </motion.div>
@@ -1524,13 +1597,13 @@ const FeaturedProject = () => {
           >
             <motion.div variants={itemVariants} className="space-y-4">
               <span className="text-[#c79a40] tracking-[0.3em] md:tracking-[0.5em] uppercase text-[10px] md:text-xs font-bold block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">CURRENT WORLD</span>
-              <h2 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter text-white uppercase leading-[0.9] drop-shadow-[0_10px_30px_rgba(0,0,0,0.9)]">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black tracking-tighter text-white uppercase leading-[1.05] drop-shadow-[0_10px_30px_rgba(0,0,0,0.9)]">
                 PROJECT: <br />
                 <span className="text-white">GREEN LEAF</span>
               </h2>
             </motion.div>
 
-            <motion.p variants={itemVariants} className="text-base md:text-xl lg:text-2xl text-text-muted leading-relaxed font-medium italic max-w-2xl drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)] border-l-4 border-[#742C86] pl-6 md:pl-8">
+            <motion.p variants={itemVariants} className="text-base md:text-xl lg:text-2xl text-text-muted leading-relaxed font-medium italic max-w-2xl drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)] border-l-4 border-[#efb034]/70 pl-6 md:pl-8">
               "A brutal medieval sandbox where kingdoms rise, alliances fracture, and every decision echoes across generations."
             </motion.p>
 
@@ -1544,13 +1617,13 @@ const FeaturedProject = () => {
 
             <motion.div variants={itemVariants} className="pt-8">
               <div className="flex items-center gap-4">
-                <div className="flex items-center gap-3 px-6 py-3 bg-[#742C86]/20 backdrop-blur-md border border-[#742C86]/30 rounded-full shadow-[0_0_30px_rgba(116,44,134,0.2)]">
+                <div className="flex items-center gap-3 px-6 py-3 bg-[#efb034]/15 backdrop-blur-md border border-[#efb034]/40 rounded-full shadow-[0_0_40px_rgba(239,176,52,0.25)]">
                   <motion.div
-                    animate={{ opacity: [0.4, 1, 0.4] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    className="w-2 h-2 rounded-full bg-[#c79a40] shadow-[0_0_10px_#c79a40]"
+                    animate={{ opacity: [0.6, 1, 0.6] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                    className="w-2.5 h-2.5 rounded-full bg-[#efb034] shadow-[0_0_15px_#efb034]"
                   />
-                  <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.4em] text-[#c79a40]">
+                  <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.4em] text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">
                     IN DEVELOPMENT
                   </span>
                 </div>
@@ -1636,18 +1709,17 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
       </motion.div>
 
       {/* LAYER 2: Midground Environment (Hanging Banners / Notice Boards) */}
-      <motion.div style={{ y: midLeftY }} className="absolute top-[5%] left-[5%] z-0 pointer-events-none opacity-40">
-        <div className="w-[10vw] h-[60vh] bg-gradient-to-b from-[#742C86]/40 to-transparent clip-path-polygon-[10%_0%,_90%_0%,_100%_100%,_50%_90%,_0%_100%] drop-shadow-[0_20px_30px_rgba(0,0,0,0.8)]" />
-      </motion.div>
-      <motion.div style={{ y: midRightY }} className="absolute top-[15%] right-[5%] z-0 pointer-events-none opacity-50">
-        <div className="w-[12vw] h-[50vh] bg-gradient-to-b from-[#c79a40]/30 to-transparent clip-path-polygon-[10%_0%,_90%_0%,_100%_100%,_50%_80%,_0%_100%] drop-shadow-[0_20px_30px_rgba(0,0,0,0.8)]" />
+      {/* LAYER 2: Subtle Atmospheric Depth */}
+      <motion.div style={{ y: midLeftY }} className="absolute inset-0 z-0 pointer-events-none opacity-30">
+        <div className="absolute top-[20%] left-[10%] w-[40vw] h-[40vw] bg-[radial-gradient(circle_at_center,rgba(116,44,134,0.05)_0%,transparent_70%)] blur-[100px]" />
+        <div className="absolute bottom-[20%] right-[10%] w-[30vw] h-[30vw] bg-[radial-gradient(circle_at_center,rgba(199,154,64,0.03)_0%,transparent_70%)] blur-[80px]" />
       </motion.div>
 
       <div className="container-1440 relative z-10 py-2 lg:py-0">
         <div className="text-center mb-3 md:mb-4 lg:mb-6">
           <motion.div style={{ y: h1Y, clipPath: h1Clip }}>
             <span className="text-[#c79a40] tracking-[0.5em] uppercase text-[10px] md:text-xs font-bold mb-3 md:mb-4 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">JOIN THE GUILD</span>
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 uppercase tracking-tighter text-white leading-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black mb-3 md:mb-4 uppercase tracking-tighter text-white leading-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
               BUILD THE <span className="text-[#742C86]">FUTURE</span> <br /> WITH US
             </h2>
             <p className="text-sm md:text-base text-text-muted max-w-2xl mx-auto leading-relaxed font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-4">
@@ -1658,31 +1730,31 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
 
         <motion.div
           style={{ y: cardY, rotateX: cardRotX, scale: cardScale, clipPath: cardClip, transformOrigin: "bottom center", transformStyle: "preserve-3d" }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-4 md:mb-5"
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 mb-8 md:mb-12 max-w-7xl mx-auto px-6"
         >
           {roles.map((role, i) => (
             <div
               key={i}
               onMouseEnter={() => setIsHoveringCard(true)}
               onMouseLeave={() => setIsHoveringCard(false)}
-              className="group relative p-4 lg:p-6 border border-white/5 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-md overflow-hidden transition-all duration-500 flex flex-col items-center text-center space-y-3 lg:space-y-4"
+              className="group relative p-8 md:p-10 border border-white/5 bg-[#0F0B14]/40 backdrop-blur-md transition-all duration-500 flex flex-col items-center text-center cursor-default hover:border-[#742C86]/50 hover:bg-[#0F0B14]/60"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-[#742C86]/0 via-[#742C86]/10 to-[#742C86]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-[1500ms] ease-in-out" />
-
-              <div className={`w-12 h-12 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#c79a40] group-hover:scale-110 group-hover:shadow-[0_0_40px_rgba(199,154,64,0.2)] transition-all duration-500`}>
-                {React.cloneElement(role.icon as React.ReactElement, { size: 24 })}
+              <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#c79a40] group-hover:scale-110 group-hover:border-[#c79a40]/40 transition-all duration-500 mb-6">
+                {React.cloneElement(role.icon as React.ReactElement, { size: 28 })}
               </div>
 
-              <div className="space-y-2 relative z-10">
-                <h3 className="text-xl font-black text-white uppercase tracking-widest group-hover:text-[#c79a40] transition-colors duration-300">
+              <div className="space-y-3 relative z-10">
+                <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-widest group-hover:text-[#c79a40] transition-colors duration-300">
                   {role.title}
                 </h3>
-                <p className="text-xs lg:text-sm text-white/60 leading-relaxed font-medium group-hover:text-white/80 transition-colors duration-500">
+                <p className="text-sm md:text-base text-white/50 leading-relaxed font-medium transition-colors duration-500 group-hover:text-white/80 max-w-[280px]">
                   {role.text}
                 </p>
               </div>
 
-              <div className="absolute top-0 right-0 w-24 h-24 bg-[#c79a40]/5 blur-[20px] group-hover:bg-[#c79a40]/10 transition-all duration-500 pointer-events-none" />
+              {/* Hover Glow Accent */}
+              <div className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-[#742C86] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-[radial-gradient(circle_at_50%_100%,rgba(116,44,134,0.1),transparent_70%)] transition-opacity duration-700 pointer-events-none" />
             </div>
           ))}
         </motion.div>
@@ -1819,7 +1891,7 @@ const Contact = () => {
   const formClip = useTransform(smoothProgress, [0.1, 0.3], ["inset(100% 0 0 0)", "inset(-20% -20% -20% -20%)"]);
 
   return (
-    <section ref={sectionRef} id="contact" className="relative min-h-screen flex flex-col justify-between pt-32 pb-20 md:pt-24 md:pb-4 lg:pt-28 lg:pb-6 bg-[#0F0B14] overflow-hidden" style={{ perspective: "1500px" }}>
+    <section ref={sectionRef} id="contact" className="relative min-h-screen flex flex-col pt-20 md:pt-0 pb-0 bg-[#0F0B14] overflow-hidden" style={{ perspective: "1500px" }}>
 
       {/* LAYER 1: Deep Background Atmosphere */}
       <motion.div style={{ y: bgY }} className="absolute inset-0 z-0 pointer-events-none opacity-40 origin-center">
@@ -1837,116 +1909,118 @@ const Contact = () => {
         <div className="w-[40vw] h-[40vw] bg-[radial-gradient(circle_at_center,rgba(199,154,64,0.05)_0%,transparent_60%)] blur-2xl" />
       </motion.div>
 
-      <div className="container-1440 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-20">
-          <div className="lg:col-span-6">
-            <motion.div style={{ y: contentY, clipPath: contentClip }}>
-              <span className="text-[#c79a40] tracking-[0.5em] uppercase text-xs font-bold mb-4 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">SEND A RAVEN</span>
-              <h2 className="text-4xl md:text-6xl font-bold mb-6 md:mb-10 uppercase tracking-tighter text-white drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
-                LET'S <span className="text-[#742C86]">TALK</span>.
-              </h2>
-              <p className="text-base md:text-lg text-text-muted mb-4 md:mb-8 max-w-sm font-medium leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                Whether you're a potential partner, a member of the press, or just want to say hello, we'd love to hear from you.
-              </p>
-              <div className="space-y-8">
-                <div
-                  onMouseEnter={() => setIsHoveringCard(true)}
-                  onMouseLeave={() => setIsHoveringCard(false)}
-                  className="flex items-center gap-6 group cursor-pointer"
-                >
-                  <div className="w-14 h-14 rounded-xl border border-white/10 bg-[#0F0B14] shadow-[0_10px_20px_rgba(0,0,0,0.5)] flex items-center justify-center text-[#742C86] group-hover:border-[#c79a40]/50 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(199,154,64,0.3)] transition-all duration-300">
-                    <Mail className="w-6 h-6" />
+      <div className="flex-1 flex items-center z-10">
+        <div className="container-1440 relative w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-20">
+            <div className="lg:col-span-6">
+              <motion.div style={{ y: contentY, clipPath: contentClip }}>
+                <span className="text-[#c79a40] tracking-[0.5em] uppercase text-xs font-bold mb-4 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">SEND A RAVEN</span>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black mb-6 md:mb-10 uppercase tracking-tighter text-white leading-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
+                  LET'S <span className="text-[#742C86]">TALK</span>.
+                </h2>
+                <p className="text-base md:text-lg text-text-muted mb-4 md:mb-8 max-w-sm font-medium leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                  Whether you're a potential partner, a member of the press, or just want to say hello, we'd love to hear from you.
+                </p>
+                <div className="space-y-8">
+                  <div
+                    onMouseEnter={() => setIsHoveringCard(true)}
+                    onMouseLeave={() => setIsHoveringCard(false)}
+                    className="flex items-center gap-6 group cursor-pointer"
+                  >
+                    <div className="w-14 h-14 rounded-xl border border-white/10 bg-[#0F0B14] shadow-[0_10px_20px_rgba(0,0,0,0.5)] flex items-center justify-center text-[#742C86] group-hover:border-[#c79a40]/50 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(199,154,64,0.3)] transition-all duration-300">
+                      <Mail className="w-6 h-6" />
+                    </div>
+                    <a href="mailto:hello@nytwolfgames.com?subject=Nytwolf%20Website%20Inquiry" className="text-xl font-bold text-white tracking-wider group-hover:text-[#c79a40] transition-colors">
+                      hello@nytwolfgames.com
+                    </a>
                   </div>
-                  <a href="mailto:hello@nytwolfgames.com?subject=Nytwolf%20Website%20Inquiry" className="text-xl font-bold text-white tracking-wider group-hover:text-[#c79a40] transition-colors">
-                    hello@nytwolfgames.com
+                  <a
+                    href="https://maps.app.goo.gl/UdhxKFLM2aGkF4ex6"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onMouseEnter={() => setIsHoveringCard(true)}
+                    onMouseLeave={() => setIsHoveringCard(false)}
+                    className="flex items-center gap-6 group cursor-pointer"
+                  >
+                    <div className="w-14 h-14 rounded-xl border border-white/10 bg-[#0F0B14] shadow-[0_10px_20px_rgba(0,0,0,0.5)] flex items-center justify-center text-[#742C86] group-hover:border-[#c79a40]/50 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(199,154,64,0.3)] transition-all duration-300">
+                      <Globe className="w-6 h-6" />
+                    </div>
+                    <span className="text-xl font-bold text-white tracking-wider group-hover:text-[#c79a40] transition-colors">Coimbatore, India</span>
                   </a>
                 </div>
-                <a
-                  href="https://maps.app.goo.gl/UdhxKFLM2aGkF4ex6"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onMouseEnter={() => setIsHoveringCard(true)}
-                  onMouseLeave={() => setIsHoveringCard(false)}
-                  className="flex items-center gap-6 group cursor-pointer"
-                >
-                  <div className="w-14 h-14 rounded-xl border border-white/10 bg-[#0F0B14] shadow-[0_10px_20px_rgba(0,0,0,0.5)] flex items-center justify-center text-[#742C86] group-hover:border-[#c79a40]/50 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(199,154,64,0.3)] transition-all duration-300">
-                    <Globe className="w-6 h-6" />
-                  </div>
-                  <span className="text-xl font-bold text-white tracking-wider group-hover:text-[#c79a40] transition-colors">Coimbatore, India</span>
-                </a>
-              </div>
-            </motion.div>
-          </div>
+              </motion.div>
+            </div>
 
-          <motion.div
-            style={{ y: formY, rotateX: formRotX, scale: formScale, clipPath: formClip, transformOrigin: "bottom center", transformStyle: "preserve-3d" }}
-            className="lg:col-span-6"
-          >
-            <form
-              onSubmit={handleSubmit}
-              onMouseEnter={() => setIsHoveringCard(true)}
-              onMouseLeave={() => setIsHoveringCard(false)}
-              className="space-y-4 bg-black/40 p-5 md:p-8 rounded-2xl border border-[#742C86]/20 shadow-[0_30px_60px_rgba(0,0,0,0.7)] relative overflow-hidden group"
+            <motion.div
+              style={{ y: formY, rotateX: formRotX, scale: formScale, clipPath: formClip, transformOrigin: "bottom center", transformStyle: "preserve-3d" }}
+              className="lg:col-span-6"
             >
-              {/* Mystical Altar Ambient Glow */}
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(116,44,134,0.15)_0%,transparent_60%)] pointer-events-none" />
+              <form
+                onSubmit={handleSubmit}
+                onMouseEnter={() => setIsHoveringCard(true)}
+                onMouseLeave={() => setIsHoveringCard(false)}
+                className="space-y-4 bg-black/40 p-5 md:p-8 rounded-2xl border border-[#742C86]/20 shadow-[0_30px_60px_rgba(0,0,0,0.7)] relative overflow-hidden group"
+              >
+                {/* Mystical Altar Ambient Glow */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(116,44,134,0.15)_0%,transparent_60%)] pointer-events-none" />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="NAME"
+                    className="bg-black/50 border border-white/10 p-4 text-xs tracking-[0.2em] text-white focus:border-[#c79a40]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
+                  />
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="EMAIL"
+                    className="bg-black/50 border border-white/10 p-4 text-xs tracking-[0.2em] text-white focus:border-[#c79a40]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
+                  />
+                </div>
                 <input
                   type="text"
-                  name="name"
-                  value={formData.name}
+                  name="subject"
+                  value={formData.subject}
                   onChange={handleChange}
-                  placeholder="NAME"
-                  className="bg-black/50 border border-white/10 p-4 text-xs tracking-[0.2em] text-white focus:border-[#c79a40]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
+                  placeholder="SUBJECT"
+                  className="w-full bg-black/50 border border-white/10 p-4 text-xs tracking-[0.2em] text-white focus:border-[#742C86]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] relative z-10"
                 />
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
+                <textarea
+                  name="message"
+                  value={formData.message}
                   onChange={handleChange}
-                  placeholder="EMAIL"
-                  className="bg-black/50 border border-white/10 p-4 text-xs tracking-[0.2em] text-white focus:border-[#c79a40]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
+                  placeholder="MESSAGE"
+                  rows={3}
+                  className="w-full bg-black/50 border border-white/10 p-4 text-xs tracking-[0.2em] text-white focus:border-[#742C86]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg resize-none shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] relative z-10"
                 />
-              </div>
-              <input
-                type="text"
-                name="subject"
-                value={formData.subject}
-                onChange={handleChange}
-                placeholder="SUBJECT"
-                className="w-full bg-black/50 border border-white/10 p-4 text-xs tracking-[0.2em] text-white focus:border-[#742C86]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] relative z-10"
-              />
-              <textarea
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                placeholder="MESSAGE"
-                rows={3}
-                className="w-full bg-black/50 border border-white/10 p-4 text-xs tracking-[0.2em] text-white focus:border-[#742C86]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg resize-none shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] relative z-10"
-              />
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className={`w-full bg-gradient-to-r from-[#742C86] to-[#4A1C56] text-white py-4 font-bold tracking-[0.3em] uppercase text-xs hover:from-[#c79a40] hover:to-[#916b20] transition-all duration-500 rounded-lg shadow-[0_10px_30px_rgba(116,44,134,0.4)] border border-[#742C86]/50 hover:border-[#c79a40]/50 relative z-10 overflow-hidden ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
-              >
-                <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                  {isSubmitting ? 'SENDING...' : 'SEND MESSAGE'}
-                </span>
-              </button>
-
-              {result && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={`mt-4 p-4 rounded-xl text-center text-sm font-bold tracking-wider relative z-10 ${result.type === 'success' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'
-                    }`}
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className={`w-full bg-gradient-to-r from-[#742C86] to-[#4A1C56] text-white py-4 font-bold tracking-[0.3em] uppercase text-xs hover:from-[#c79a40] hover:to-[#916b20] transition-all duration-500 rounded-lg shadow-[0_10px_30px_rgba(116,44,134,0.4)] border border-[#742C86]/50 hover:border-[#c79a40]/50 relative z-10 overflow-hidden ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
                 >
-                  {result.message}
-                </motion.div>
-              )}
-            </form>
-          </motion.div>
+                  <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                    {isSubmitting ? 'SENDING...' : 'SEND MESSAGE'}
+                  </span>
+                </button>
+
+                {result && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`mt-4 p-4 rounded-xl text-center text-sm font-bold tracking-wider relative z-10 ${result.type === 'success' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'
+                      }`}
+                  >
+                    {result.message}
+                  </motion.div>
+                )}
+              </form>
+            </motion.div>
+          </div>
         </div>
       </div>
 
@@ -1969,10 +2043,10 @@ const Contact = () => {
 const Footer = () => {
   const { setIsHoveringCard } = React.useContext(MouseGlowContext);
   return (
-    <div className="relative py-8 md:py-16 z-20">
-      {/* Large Background Branding - smaller on mobile */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none opacity-[0.02] md:opacity-[0.04]">
-        <span className="text-[10vw] md:text-[15vw] font-black tracking-tighter uppercase text-white">
+    <footer className="relative py-8 md:py-12 bg-black overflow-hidden group">
+      {/* Massive Background Text Branding */}
+      <div className="absolute inset-0 hidden md:flex items-start justify-center pointer-events-none select-none z-0">
+        <span className="text-[35vw] md:text-[20vw] font-black leading-[0.7] uppercase text-white opacity-[0.1] whitespace-nowrap translate-y-[5%] transition-transform duration-700 group-hover:translate-y-[5%] font-sans">
           NYTWOLF
         </span>
       </div>
@@ -1984,41 +2058,43 @@ const Footer = () => {
         viewport={{ once: true }}
         className="container-1440 relative z-10"
       >
-        <div className="flex flex-col md:flex-row justify-between items-center gap-10">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 md:gap-10">
           {/* Left Side: Copyright & Links */}
-          <motion.div variants={staggerItem} className="flex flex-wrap items-topleft gap-4 text-[11px] text-text-muted uppercase tracking-[0.3em] font-light">
-            <span>© 2026 NYTWOLF. All Rights Reserved.</span>
-            <span className="opacity-30">•</span>
-            <span>Terms</span>
-            <span className="opacity-30">•</span>
-            <span>Privacy</span>
-            <span className="opacity-30">•</span>
-            <span>Cookies</span>
+          <motion.div variants={staggerItem} className="flex flex-wrap items-center justify-center md:justify-start gap-y-4 gap-x-6 text-[10px] md:text-[11px] text-text-muted uppercase tracking-[0.2em] font-medium">
+            <span className="text-white/40 whitespace-nowrap">© 2026 NYTWOLF GAMES. ALL RIGHTS RESERVED.</span>
+
+            <div className="flex items-center gap-4">
+              <span className="hidden md:inline opacity-20">•</span>
+              <span className="hover:text-primary transition-colors cursor-pointer whitespace-nowrap">Terms</span>
+              <span className="opacity-20">•</span>
+              <span className="hover:text-primary transition-colors cursor-pointer whitespace-nowrap">Privacy</span>
+              <span className="opacity-20">•</span>
+              <span className="hover:text-primary transition-colors cursor-pointer whitespace-nowrap">Cookies</span>
+            </div>
           </motion.div>
 
           {/* Right Side: Social Icons */}
-          <motion.div variants={staggerItem} className="flex items-center gap-6">
+          <motion.div variants={staggerItem} className="flex items-center gap-5">
             {[
               {
                 icon: (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932 6.064-6.932zm-1.294 19.497h2.039L6.486 3.24H4.298l13.31 17.41z" />
                   </svg>
                 ),
-                href: "https://twitter.com/NytwolfGames",
-                target: "_blank"
+                href: "https://twitter.com/NytwolfGames"
               },
-              { icon: <Linkedin className="w-4 h-4" />, href: "https://www.linkedin.com/company/nytwolf-games/", target: "_blank" },
-              { icon: <Facebook className="w-4 h-4" />, href: "https://www.facebook.com/profile.php?id=61551333385719&mibextid=ZbWKwL", target: "_blank" }
+              { icon: <Linkedin size={16} />, href: "https://www.linkedin.com/company/nytwolf-games/" },
+              { icon: <Facebook size={16} />, href: "https://www.facebook.com/profile.php?id=61551333385719&mibextid=ZbWKwL" }
             ].map((social, i) => (
               <a
                 key={i}
                 href={social.href}
-                target={social.target}
-                rel={social.target ? "noopener noreferrer" : undefined}
+                target="_blank"
+                rel="noopener noreferrer"
                 onMouseEnter={() => setIsHoveringCard(true)}
                 onMouseLeave={() => setIsHoveringCard(false)}
-                className="w-10 h-10 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-text-muted hover:text-white hover:border-[#742C86]/50 hover:bg-[#742C86]/10 transition-all duration-500"
+                className="w-9 h-9 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-text-muted hover:text-white hover:border-white/20 hover:bg-white/10 transition-all duration-300"
               >
                 {social.icon}
               </a>
@@ -2026,7 +2102,7 @@ const Footer = () => {
           </motion.div>
         </div>
       </motion.div>
-    </div>
+    </footer>
   );
 };
 
@@ -2037,6 +2113,29 @@ export default function App() {
   const [scrollingFromId, setScrollingFromId] = useState<string | null>(null);
   const activeSectionIdRef = useRef('home');
   const isAnimating = useRef(false);
+  const lastScrollTime = useRef(0);
+  const SCROLL_COOLDOWN = 1400; // 1s animation + 400ms buffer to ensure one scroll per section
+
+  // Mouse Parallax Motion Values
+  const mouseX = useMotionValue(0.5);
+  const mouseY = useMotionValue(0.5);
+  const springConfig = { damping: 40, stiffness: 120 };
+  const mouseXSpring = useSpring(mouseX, springConfig);
+  const mouseYSpring = useSpring(mouseY, springConfig);
+
+  // Background Parallax Transforms
+  const bgX = useTransform(mouseXSpring, [0, 1], ["-1.5%", "1.5%"]);
+  const bgYParallax = useTransform(mouseYSpring, [0, 1], ["-1.5%", "1.5%"]);
+  const bgScale = useTransform(mouseYSpring, [0, 1], [1.12, 1.15]);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseX.set(e.clientX / window.innerWidth);
+      mouseY.set(e.clientY / window.innerHeight);
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [mouseX, mouseY]);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -2067,8 +2166,6 @@ export default function App() {
   }, [isLoading]);
 
   useEffect(() => {
-
-
     const observerOptions = {
       root: null,
       rootMargin: '-20% 0px -20% 0px',
@@ -2098,34 +2195,44 @@ export default function App() {
     const handleWheel = (e: WheelEvent) => {
       if (isLoading) return;
 
+      const now = Date.now();
+      const isCooldownActive = now - lastScrollTime.current < SCROLL_COOLDOWN;
+
       const currentId = activeSectionIdRef.current;
       const el = document.getElementById(currentId);
 
-      if (el && !isAnimating.current) {
+      if (el && !isAnimating.current && !isCooldownActive) {
         const rect = el.getBoundingClientRect();
         const isLongSection = el.offsetHeight > window.innerHeight + 10;
 
         if (isLongSection) {
           // If we are in a long section, check if we've reached the edge
           if (e.deltaY > 0) { // Scrolling Down
-            const isAtBottom = rect.bottom <= window.innerHeight + 1;
-            if (!isAtBottom) return; // Allow natural scroll
+            const isAtBottom = rect.bottom <= window.innerHeight + 5;
+            if (!isAtBottom) return; // Allow natural scroll within the section
           } else { // Scrolling Up
-            const isAtTop = rect.top >= -1;
-            if (!isAtTop) return; // Allow natural scroll
+            const isAtTop = rect.top >= -5;
+            if (!isAtTop) return; // Allow natural scroll within the section
           }
         }
       }
 
-      // Prevent standard browser scroll behavior for the snapping jump
+      // If we are here, we are trying to snap to the next/prev section
+      // Prevent standard browser scroll behavior
       e.preventDefault();
 
-      if (isAnimating.current) return;
+      // If already animating or in cooldown, ignore the event entirely
+      if (isAnimating.current || isCooldownActive) return;
+
+      // Require a minimum threshold for the scroll to be considered deliberate
+      if (Math.abs(e.deltaY) < 20) return;
 
       const currentIndex = sections.indexOf(currentId);
       if (e.deltaY > 0 && currentIndex < sections.length - 1) {
+        lastScrollTime.current = now;
         scrollToSection(sections[currentIndex + 1]);
       } else if (e.deltaY < 0 && currentIndex > 0) {
+        lastScrollTime.current = now;
         scrollToSection(sections[currentIndex - 1]);
       }
     };
@@ -2133,31 +2240,41 @@ export default function App() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (isLoading) return;
 
+      const now = Date.now();
+      const isCooldownActive = now - lastScrollTime.current < SCROLL_COOLDOWN;
+
       const currentId = activeSectionIdRef.current;
       const el = document.getElementById(currentId);
 
-      if (el && !isAnimating.current) {
+      if (el && !isAnimating.current && !isCooldownActive) {
+        const panScrollFactor = 0.8;
         const rect = el.getBoundingClientRect();
         const isLongSection = el.offsetHeight > window.innerHeight + 10;
 
         if (isLongSection) {
-          if (e.key === 'ArrowDown' || e.key === 'PageDown') {
-            const isAtBottom = rect.bottom <= window.innerHeight + 1;
+          if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+            const isAtBottom = rect.bottom <= window.innerHeight + 5;
             if (!isAtBottom) return; // Allow natural scroll
           } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-            const isAtTop = rect.top >= -1;
+            const isAtTop = rect.top >= -5;
             if (!isAtTop) return; // Allow natural scroll
           }
         }
       }
 
       const currentIndex = sections.indexOf(currentId);
-      if ((e.key === 'ArrowDown' || e.key === 'PageDown') && currentIndex < sections.length - 1) {
+      if ((e.key === 'ArrowDown' || e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey)) && currentIndex < sections.length - 1) {
         e.preventDefault();
-        scrollToSection(sections[currentIndex + 1]);
-      } else if ((e.key === 'ArrowUp' || e.key === 'PageUp') && currentIndex > 0) {
+        if (!isAnimating.current && !isCooldownActive) {
+          lastScrollTime.current = now;
+          scrollToSection(sections[currentIndex + 1]);
+        }
+      } else if ((e.key === 'ArrowUp' || e.key === 'PageUp' || (e.key === ' ' && e.shiftKey)) && currentIndex > 0) {
         e.preventDefault();
-        scrollToSection(sections[currentIndex - 1]);
+        if (!isAnimating.current && !isCooldownActive) {
+          lastScrollTime.current = now;
+          scrollToSection(sections[currentIndex - 1]);
+        }
       }
     };
 
@@ -2189,30 +2306,42 @@ export default function App() {
           <Navbar activeSection={activeSectionId} onNavItemClick={scrollToSection} />
 
           {/* Global Fixed Background for Home Section ONLY */}
-          <div className="fixed inset-0 z-[-1] pointer-events-none bg-[#060408]">
+          <div className="fixed inset-0 z-[-1] pointer-events-none bg-[#060408] overflow-hidden">
             {/* Top Fade Gradient for Navbar visibility */}
             <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-b from-[#060408] to-transparent z-10" />
-            <img src="/bg_ruins.png" className="w-full h-screen object-cover object-bottom grayscale-[0.05] contrast-[1.1] brightness-[0.7]" alt="Deep Background" />
-            <div className="absolute inset-0 bg-purple-900/50 mix-blend-multiply z-[1]" />
+
+            <motion.img
+              style={{
+                x: bgX,
+                y: bgYParallax,
+                scale: bgScale
+              }}
+              src="/bg_ruins.png"
+              className="w-[140vw] h-[140vh] left-[0vw] top-[-40vh] object-cover object-bottom grayscale-[0.05] contrast-[1.1] brightness-[0.7] absolute will-change-transform"
+              alt="Deep Background"
+            />
+
+            {/* Cinematic Black Overlay for Readability */}
+            <div className="absolute inset-0 bg-black/30 -20" />
           </div>
 
           <main>
-            <div id="home" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col justify-center ${activeSectionId === 'home' || scrollingFromId === 'home' ? 'active' : ''}`}>
-              <Hero />
+            <div id="home" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col  justify-center ${activeSectionId === 'home' || scrollingFromId === 'home' ? 'active' : ''}`}>
+              <Hero mouseX={mouseXSpring} mouseY={mouseYSpring} />
             </div>
-            <div id="studio" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col justify-center ${activeSectionId === 'studio' || scrollingFromId === 'studio' ? 'active' : ''}`}>
+            <div id="studio" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col  justify-center ${activeSectionId === 'studio' || scrollingFromId === 'studio' ? 'active' : ''}`}>
               <About />
             </div>
-            <div id="services" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col justify-center ${activeSectionId === 'services' || scrollingFromId === 'services' ? 'active' : ''}`}>
+            <div id="services" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col  justify-center ${activeSectionId === 'services' || scrollingFromId === 'services' ? 'active' : ''}`}>
               <Services />
             </div>
-            <div id="tech" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col justify-center ${activeSectionId === 'tech' || scrollingFromId === 'tech' ? 'active' : ''}`}>
+            <div id="tech" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col  justify-center ${activeSectionId === 'tech' || scrollingFromId === 'tech' ? 'active' : ''}`}>
               <PoweringOurWorlds />
             </div>
-            <div id="projects" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col justify-center ${activeSectionId === 'projects' || scrollingFromId === 'projects' ? 'active' : ''}`}>
+            <div id="projects" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col  justify-center ${activeSectionId === 'projects' || scrollingFromId === 'projects' ? 'active' : ''}`}>
               <FeaturedProject />
             </div>
-            <div id="careers" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col justify-center ${activeSectionId === 'careers' || scrollingFromId === 'careers' ? 'active' : ''}`}>
+            <div id="careers" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col  justify-center ${activeSectionId === 'careers' || scrollingFromId === 'careers' ? 'active' : ''}`}>
               <Careers onNavItemClick={scrollToSection} />
             </div>
             <div id="contact" className={`section-focus-layer relative overflow-hidden min-h-screen ${activeSectionId === 'contact' || scrollingFromId === 'contact' ? 'active' : ''}`}>
@@ -2220,7 +2349,7 @@ export default function App() {
             </div>
           </main>
         </motion.div>
-        <MouseGlow />
+        <MouseGlow activeSectionId={activeSectionId} />
       </div>
     </MouseGlowContext.Provider>
   );
