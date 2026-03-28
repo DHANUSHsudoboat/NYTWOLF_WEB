@@ -309,27 +309,61 @@ const ShineOverlay = React.memo(({ delay = 1.5, duration = 6, className = "z-[40
   );
 });
 
+const PRELOAD_ASSETS = [
+  '/bg_ruins.png',
+  '/statue.png',
+  '/grass.png',
+  '/tree.png',
+  '/tech_room.png',
+  '/sky.png',
+  '/battlefield.png',
+  '/knight.png',
+];
+
 const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
-  const [showLogo, setShowLogo] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [isFinishing, setIsFinishing] = useState(false);
 
+  // Spring-smoothed progress drives the logo fill height
+  const progressMV = useMotionValue(0);
+  const springProg = useSpring(progressMV, { damping: 28, stiffness: 55 });
+  const fillHeight = useTransform(springProg, [0, 100], ['0%', '100%']);
+
   useEffect(() => {
-    // Stage 1: Reveal Logo with rising blur
-    const logoTimer = setTimeout(() => setShowLogo(true), 500);
+    progressMV.set(progress);
+  }, [progress, progressMV]);
 
-    // Stage 2: Start finishing transition (fade out or smooth entry)
-    const finishTimer = setTimeout(() => setIsFinishing(true), 2400);
+  useEffect(() => {
+    const MIN_DISPLAY_MS = 1800;
+    const startTime = Date.now();
+    const total = PRELOAD_ASSETS.length + 1; // +1 for fonts
+    let loaded = 0;
 
-    // Stage 3: Complete
-    const completeTimer = setTimeout(() => {
-      onComplete();
-    }, 4000);
+    const onAssetLoaded = () => {
+      loaded++;
+      const pct = Math.round((loaded / total) * 100);
+      setProgress(pct);
 
-    return () => {
-      clearTimeout(logoTimer);
-      clearTimeout(finishTimer);
-      clearTimeout(completeTimer);
+      if (loaded >= total) {
+        const elapsed = Date.now() - startTime;
+        const delay = Math.max(0, MIN_DISPLAY_MS - elapsed);
+        setTimeout(() => {
+          setIsFinishing(true);
+          setTimeout(onComplete, 900);
+        }, delay);
+      }
     };
+
+    // Track fonts
+    document.fonts.ready.then(onAssetLoaded).catch(onAssetLoaded);
+
+    // Track images
+    PRELOAD_ASSETS.forEach(src => {
+      const img = new Image();
+      img.onload = onAssetLoaded;
+      img.onerror = onAssetLoaded; // count errors so we never get stuck
+      img.src = src;
+    });
   }, [onComplete]);
 
   return (
@@ -378,15 +412,11 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
 
       <motion.div
         className="absolute inset-0 z-20 flex flex-col items-center justify-center"
-        initial={{
-          y: 40,
-          opacity: 0,
-          filter: "blur(12px)"
-        }}
+        initial={{ y: 40, opacity: 0, filter: "blur(12px)" }}
         animate={{
-          y: showLogo ? (isFinishing ? 0 : 0) : 40,
-          opacity: showLogo ? 1 : 0,
-          filter: showLogo ? "blur(0px)" : "blur(12px)",
+          y: 0,
+          opacity: progress > 0 ? 1 : 0,
+          filter: progress > 0 ? "blur(0px)" : "blur(12px)",
           scale: isFinishing ? 0.8 : 1
         }}
         transition={{
@@ -396,55 +426,61 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
       >
         <motion.div
           className="relative w-[160px] h-[160px] md:w-[200px] md:h-[200px] lg:w-[240px] lg:h-[240px]"
-          animate={{
-            scale: 1
-          }}
-          transition={{
-            duration: 0.8,
-            ease: "easeInOut"
-          }}
         >
           {/* Outline Logo (Background) */}
           <div className="absolute inset-0 text-white/10">
             <LogoOutline className="w-full h-full" />
           </div>
 
-          {/* Filling Logo (Foreground) */}
+          {/* Filling Logo — height driven by real loading progress */}
           <motion.div
             className="absolute inset-0 overflow-hidden"
-            initial={{ height: "0%" }}
-            animate={{ height: showLogo ? "100%" : "0%" }}
-            transition={{ duration: 2, ease: "easeInOut", delay: 0.6 }}
-            style={{ bottom: 0, top: 'auto' }}
+            style={{ height: fillHeight, bottom: 0, top: 'auto' }}
           >
             <div className="absolute bottom-0 left-0 w-[160px] h-[160px] md:w-[200px] md:h-[200px] lg:w-[240px] lg:h-[240px]">
               <Logo className="w-full h-full" useGradient={true} />
             </div>
           </motion.div>
 
-          {/* Cinematic Glow (Static/Soft) */}
+          {/* Cinematic Glow */}
           <motion.div
             className="absolute inset-0 rounded-full bg-[#7B3FE4]/10 blur-[80px]"
-            animate={{
-              opacity: showLogo ? 1 : 0,
-              scale: showLogo ? 1 : 0.8
-            }}
+            animate={{ opacity: progress > 0 ? 1 : 0, scale: progress > 0 ? 1 : 0.8 }}
             transition={{ duration: 2, delay: 0.5 }}
           />
         </motion.div>
 
-        {/* Studio Name Reveal (Integrated with upward rise) */}
+        {/* Progress indicator */}
+        {/* <motion.div
+          className="mt-8 flex flex-col items-center gap-2"
+          animate={{ opacity: isFinishing ? 0 : 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="w-32 h-[1px] bg-white/10 overflow-hidden rounded-full">
+            <motion.div
+              className="h-full bg-gradient-to-r from-[#742C86] to-[#C6A75E]"
+              style={{ width: fillHeight }}
+            />
+          </div>
+          {progress < 100 && (
+            <span className="text-[10px] tracking-[0.3em] text-white/30 font-display uppercase tabular-nums">
+              Loading {progress}%
+            </span>
+          )}
+        </motion.div> */}
+
+        {/* Studio Name */}
         <motion.div
           animate={{
-            opacity: showLogo ? 1 : 0,
-            y: showLogo ? (isFinishing ? 0 : 0) : 10
+            opacity: progress > 0 ? 1 : 0,
+            y: progress > 0 ? 0 : 10
           }}
           transition={{
             duration: isFinishing ? 1.5 : 1.2,
-            delay: isFinishing ? 0 : 1.4,
+            delay: isFinishing ? 0 : 0.6,
             ease: [0.22, 1, 0.36, 1]
           }}
-          className="mt-[40px] md:mt-[60px] text-center"
+          className="mt-[32px] md:mt-[48px] text-center"
         >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-[0.2em] md:tracking-[0.3em] text-white uppercase font-display drop-shadow-[0_0_30px_rgba(116,44,134,0.3)] flex flex-col lg:flex-row items-center gap-2 lg:gap-4">
             <span className="flex items-center">NYTW<WolfEyeO />LF</span> <span className="text-[#742C86]">GAMES</span>
@@ -885,7 +921,7 @@ const Hero = ({ mouseX, mouseY }: { mouseX: any, mouseY: any }) => {
         }}
         className="hidden min-[450px]:block absolute bottom-[0%] md:bottom-[-5%] lg:bottom-[-18%] left-[-10vw] md:left-[-5vw] lg:left-[2vw] z-10 pointer-events-none origin-bottom will-change-transform"
       >
-        <motion.img src="/statue.png" className="h-[135vh] md:h-[135vh] lg:h-[185vh] w-auto max-w-[100vw] md:max-w-[85vw] lg:max-w-[80vw] object-contain object-bottom drop-shadow-[50px_0_30px_rgba(0,0,0,0.3)]" alt="Statue" loading="eager" decoding="async" />
+        <motion.img src="/statue.png" className="h-[135vh] md:h-[135vh] lg:h-[185vh] w-auto max-w-[100vw] md:max-w-[85vw] lg:max-w-[80vw] object-contain object-bottom drop-shadow-[50px_0_30px_rgba(0,0,0,0.3)]" alt="Statue" loading="eager" fetchPriority="high" decoding="async" />
       </motion.div>
 
       {/* ===== Atmospheric Fog Mid ===== */}
@@ -1467,7 +1503,7 @@ const PoweringOurWorlds = () => {
           transition={{ duration: 1.2 }}
           className="absolute inset-0 grayscale brightness-50 contrast-125"
         >
-          <img src="/tech_room.png" className="w-full h-full object-cover" alt="" />
+          <img src="/tech_room.png" className="w-full h-full object-cover" alt="" loading="lazy" decoding="async" />
         </motion.div>
 
         {/* Ambient Wandering / Following Purple Glow */}
@@ -1497,7 +1533,7 @@ const PoweringOurWorlds = () => {
             maskImage: maskStyle,
           }}
         >
-          <img src="/tech_room.png" className="w-full h-full object-cover filter brightness-[1.6] contrast-[1.2] grayscale-0" alt="" />
+          <img src="/tech_room.png" className="w-full h-full object-cover filter brightness-[1.6] contrast-[1.2] grayscale-0" alt="" loading="lazy" decoding="async" />
         </motion.div>
 
         {/* Ambient Glow */}
@@ -1810,10 +1846,10 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
       </motion.div>
 
       <div className="container-1440 relative z-10 py-2 lg:py-0">
-        <div className="text-center mb-2 md:mb-3 lg:mb-6">
+        <div className="text-center mb-2 md:mb-3 lg:mb-4">
           <motion.div style={{ y: h1Y, clipPath: h1Clip }}>
             <span className="text-[#c79a40] tracking-[0.5em] uppercase text-[10px] md:text-xs font-bold mb-2 md:mb-3 lg:mb-4 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">JOIN THE GUILD</span>
-            <h2 className="text-3xl sm:text-4xl md:text-4xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black mb-2 md:mb-3 lg:mb-4 uppercase tracking-tighter text-white leading-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
+            <h2 className="text-3xl sm:text-4xl md:text-4xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-black mb-2 md:mb-3 lg:mb-3 uppercase tracking-tighter text-white leading-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
               BUILD THE <span className="text-[#742C86]">FUTURE</span> <br /> WITH US
             </h2>
             <p className="text-sm md:text-base text-text-muted max-w-2xl mx-auto leading-relaxed font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-4">
@@ -1824,24 +1860,24 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
 
         <motion.div
           style={{ y: cardY, rotateX: cardRotX, scale: cardScale, clipPath: cardClip, transformOrigin: "bottom center", transformStyle: "preserve-3d" }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 mb-4 md:mb-6 lg:mb-12 max-w-7xl mx-auto px-6"
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-5 mb-4 md:mb-6 lg:mb-6 max-w-7xl mx-auto px-6"
         >
           {roles.map((role, i) => (
             <div
               key={i}
               onMouseEnter={() => setIsHoveringCard(true)}
               onMouseLeave={() => setIsHoveringCard(false)}
-              className="group relative p-5 md:p-6 lg:p-10 border border-white/5 bg-[#0F0B14]/40 backdrop-blur-md transition-all duration-500 flex flex-col items-center text-center cursor-default hover:border-[#742C86]/50 hover:bg-[#0F0B14]/60"
+              className="group relative p-5 md:p-5 lg:p-5 border border-white/5 bg-[#0F0B14]/40 backdrop-blur-md transition-all duration-500 flex flex-col items-center text-center cursor-default hover:border-[#742C86]/50 hover:bg-[#0F0B14]/60"
             >
-              <div className="w-10 h-10 md:w-9 md:h-9 lg:w-16 lg:h-16 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#c79a40] group-hover:scale-110 group-hover:border-[#c79a40]/40 transition-all duration-500 mb-4 md:mb-6">
-                {React.cloneElement(role.icon as React.ReactElement, { size: 24, className: "w-5 h-5 md:w-4 md:h-4 lg:w-7 lg:h-7" })}
+              <div className="w-10 h-10 md:w-12 md:h-12 lg:w-12 lg:h-12 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#c79a40] group-hover:scale-110 group-hover:border-[#c79a40]/40 transition-all duration-500 mb-3 md:mb-4">
+                {React.cloneElement(role.icon as React.ReactElement, { size: 24, className: "w-5 h-5 md:w-5 md:h-5 lg:w-5 lg:h-5" })}
               </div>
 
-              <div className="space-y-2 md:space-y-3 relative z-10">
-                <h3 className="text-lg md:text-sm lg:text-2xl font-black text-white uppercase tracking-widest group-hover:text-[#c79a40] transition-colors duration-300">
+              <div className="space-y-1 md:space-y-2 relative z-10">
+                <h3 className="text-base md:text-base lg:text-base font-black text-white uppercase tracking-widest group-hover:text-[#c79a40] transition-colors duration-300">
                   {role.title}
                 </h3>
-                <p className="text-[11px] md:text-[12px] lg:text-base text-white/50 leading-relaxed font-medium transition-colors duration-500 group-hover:text-white/80 max-w-[280px]">
+                <p className="text-[11px] md:text-[11px] lg:text-[11px] text-white/50 leading-relaxed font-medium transition-colors duration-500 group-hover:text-white/80 max-w-[280px]">
                   {role.text}
                 </p>
               </div>

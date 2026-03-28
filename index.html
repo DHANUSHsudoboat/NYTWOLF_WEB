@@ -11,8 +11,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <!-- Preload critical hero background image (LCP element) -->
-    <link rel="preload" href="/bg_ruins.png" as="image" fetchpriority="high" />
+    <!-- Load Google Fonts via <link> (non-render-blocking) instead of CSS @import -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+
+    <!-- Preload critical LCP image -->
+    <link rel="preload" href="/statue.png" as="image" fetchpriority="high" />
   </head>
   <body>
     <div id="root"></div>
