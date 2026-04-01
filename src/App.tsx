@@ -432,20 +432,10 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
         <motion.div
           className="relative w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48"
         >
-          {/* Outline Logo (Background) */}
-          <div className="absolute inset-0 text-white/10">
-            <LogoOutline className="w-full h-full" />
+          {/* Static Full Logo without bottom-to-top animation */}
+          <div className="absolute inset-0">
+            <Logo className="w-full h-full drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]" useGradient={true} />
           </div>
-
-          {/* Filling Logo — height driven by real loading progress */}
-          <motion.div
-            className="absolute inset-0 overflow-hidden"
-            style={{ height: fillHeight, bottom: 0, top: 'auto' }}
-          >
-            <div className="absolute bottom-0 left-0 w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48">
-              <Logo className="w-full h-full" useGradient={true} />
-            </div>
-          </motion.div>
 
           {/* Cinematic Glow */}
           <motion.div
@@ -1028,13 +1018,10 @@ const FeatureCard = React.memo(({ feature, smoothProgress, setIsHoveringCard }: 
   smoothProgress: any;
   setIsHoveringCard: (v: boolean) => void;
 }) => {
-  const cardY = useTransform(smoothProgress, [0.1, 0.35, 0.85, 1], [200, 0, 0, -150]);
-  const cardRotateX = useTransform(smoothProgress, [0.1, 0.35], [30, 0]);
-  const cardScale = useTransform(smoothProgress, [0.1, 0.35], [0.9, 1]);
-  const cardClip = useTransform(smoothProgress, [0.1, 0.35], ["inset(0 0 0 0)", "inset(-20% -20% -20% -20%)"]);
+  const cardOpacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
   return (
     <motion.div
-      style={{ y: cardY, rotateX: cardRotateX, scale: cardScale, clipPath: cardClip, transformOrigin: "bottom center" }}
+      style={{ opacity: cardOpacity }}
       onMouseEnter={() => setIsHoveringCard(true)}
       onMouseLeave={() => setIsHoveringCard(false)}
       className="relative p-5 md:p-6 lg:p-7 border border-white/5 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-md group overflow-hidden"
@@ -1077,14 +1064,9 @@ const About = () => {
   const fgRightY = useTransform(smoothProgress, [0, 1], ["40%", "-100%"]);
   const fgRotate = useTransform(smoothProgress, [0, 1], [15, -15]);
 
-  // Main Text 3D Transforms
-  // Enter by 0.2, hold until 0.8, then exit
-  const textY = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [300, 0, 0, -300]);
-  const textRotateX = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [60, 0, 0, -60]);
-  const textScale = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0.85, 1, 1, 0.7]);
-  const textClip = useTransform(smoothProgress, [0, 0.2, 0.8, 1],
-    ["inset(0 0 0 0)", "inset(-50% -20% -50% -20%)", "inset(-50% -20% -50% -20%)", "inset(-50% 0 100% 0)"]
-  );
+  // Main Text Fade Animation
+  // Fade in at 0.2, hold until 0.8, then fade out
+  const textOpacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
   // Hero Right Image
   // Enter by 0.25, hold until 0.75, then exit
@@ -1128,12 +1110,7 @@ const About = () => {
           {/* Left Column: 3D Heavy Text Reveal */}
           <motion.div
             style={{
-              y: textY,
-              rotateX: textRotateX,
-              scale: textScale,
-              clipPath: textClip,
-              transformOrigin: "left center",
-              transformStyle: "preserve-3d"
+              opacity: textOpacity
             }}
             className="lg:col-span-6 space-y-6"
           >
@@ -1223,14 +1200,8 @@ const Services = () => {
   const fgRot2 = useTransform(smoothProgress, [0, 1], [0, 90]);
 
   // ========== CONTENT REVEAL LAYERS ==========
-  const h1Y = useTransform(smoothProgress, [0.02, 0.12], [150, 0]);
-  const h1RotX = useTransform(smoothProgress, [0.02, 0.12], [45, 0]);
-  const h1Scale = useTransform(smoothProgress, [0.02, 0.12], [0.8, 1]);
-  const h1Clip = useTransform(smoothProgress, [0.02, 0.12], ["inset(100% 0 0 0)", "inset(0% 0 0 0)"]);
-
-  const cardsY = useTransform(smoothProgress, [0.05, 0.15], [200, 0]);
-  const cardsRotX = useTransform(smoothProgress, [0.05, 0.15], [30, 0]);
-  const cardsClip = useTransform(smoothProgress, [0.05, 0.15], ["inset(100% 0 0 0)", "inset(-20% -20% -20% -20%)"]);
+  const h1Opacity = useTransform(smoothProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
+  const cardsOpacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
   const h2Y = useTransform(smoothProgress, [0.1, 0.22], [150, 0]);
   const h2RotX = useTransform(smoothProgress, [0.1, 0.22], [45, 0]);
@@ -1314,8 +1285,8 @@ const Services = () => {
 
         {/* ====== 1. CORE CAPABILITIES ====== */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-4 md:mb-6 lg:mb-10 px-6 md:px-0">
-          <div className="lg:col-span-5 relative z-10 lg:translate-y-12" style={{ perspective: "1000px" }}>
-            <motion.div style={{ y: h1Y, rotateX: h1RotX, scale: h1Scale, clipPath: h1Clip, transformOrigin: "bottom center", transformStyle: "preserve-3d" }}>
+          <div className="lg:col-span-5 relative z-10 lg:translate-y-12">
+            <motion.div style={{ opacity: h1Opacity }}>
               <span className="text-[#c79a40] tracking-[0.3em] md:tracking-[0.5em] uppercase text-[10px] md:text-xs font-bold mb-2 md:mb-3 lg:mb-6 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">OUR EXPERTISE</span>
               <h2 className="text-3xl sm:text-4xl md:text-4xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black leading-none mb-2 md:mb-3 lg:mb-6 uppercase tracking-tighter drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
                 CORE <br />
@@ -1329,7 +1300,7 @@ const Services = () => {
 
           <div className="lg:col-span-7">
             <motion.div
-              style={{ y: cardsY, rotateX: cardsRotX, clipPath: cardsClip, transformOrigin: "bottom center" }}
+              style={{ opacity: cardsOpacity }}
               className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6"
             >
               {services.map((s, i) => (
@@ -1455,13 +1426,8 @@ const PoweringOurWorlds = () => {
     return () => { unsubX(); unsubY(); };
   }, [glowX, glowY]);
 
-  const h2Y = useTransform(smoothProgress, [0.1, 0.22], [150, 0]);
-  const h2RotX = useTransform(smoothProgress, [0.1, 0.22], [45, 0]);
-  const h2Clip = useTransform(smoothProgress, [0.1, 0.22], ["inset(100% 0 0 0)", "inset(0% 0 0 0)"]);
-
-  const techY = useTransform(smoothProgress, [0.12, 0.25], [200, 0]);
-  const techRotX = useTransform(smoothProgress, [0.12, 0.25], [30, 0]);
-  const techClip = useTransform(smoothProgress, [0.12, 0.25], ["inset(100% 0 0 0)", "inset(0% 0 0 0)"]);
+  const h2Opacity = useTransform(smoothProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
+  const techOpacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
   const techs = [
     {
@@ -1549,7 +1515,7 @@ const PoweringOurWorlds = () => {
 
       <div className="container-1440 relative z-10">
         <motion.div
-          style={{ y: h2Y, rotateX: h2RotX, clipPath: h2Clip, transformOrigin: "bottom center", transformStyle: "preserve-3d" }}
+          style={{ opacity: h2Opacity }}
           className="text-center mb-4 lg:mb-6 relative z-10"
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-black tracking-tighter text-white uppercase leading-none mb-4 lg:mb-5 drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
@@ -1561,7 +1527,7 @@ const PoweringOurWorlds = () => {
         </motion.div>
 
         <motion.div
-          style={{ y: techY, rotateX: techRotX, clipPath: techClip, transformOrigin: "bottom center" }}
+          style={{ opacity: techOpacity }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-4 max-w-7xl mx-auto relative z-10 px-4 md:px-0"
         >
           {techs.map((tech, i) => (
@@ -1631,16 +1597,12 @@ const FeaturedProject = () => {
   const knightScale = useTransform(smoothProgress, [0, 0.5], [1.1, 1]);
 
   // 4. Content Reveal (~60%)
-  const textY = useTransform(smoothProgress, [0.1, 0.4], [150, 0]);
-  const textOpacity = useTransform(smoothProgress, [0.1, 0.3], [0, 1]);
-  const textScale = useTransform(smoothProgress, [0.1, 0.4], [0.95, 1]);
+  // 4. Content Reveal
+  const textOpacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
   // 5. Atmospheric Enhancements
   const vignetteOpacity = useTransform(smoothProgress, [0, 0.5, 1], [0.6, 0.9, 0.6]);
   const lightShift = useTransform(smoothProgress, [0, 1], ["rgba(116,44,134,0.1)", "rgba(199,154,64,0.15)"]);
-
-  const springConfig = { damping: 30, stiffness: 70 };
-  const smoothTextY = useSpring(textY, springConfig);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -1654,10 +1616,9 @@ const FeaturedProject = () => {
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      y: 0,
       transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] }
     }
   };
@@ -1720,7 +1681,7 @@ const FeaturedProject = () => {
 
       <div className="container-1440 relative z-50">
         <motion.div
-          style={{ opacity: textOpacity, y: prefersReducedMotion ? 0 : smoothTextY, scale: textScale, translateZ: 0 }}
+          style={{ opacity: textOpacity }}
           className="max-w-4xl will-change-transform"
         >
           <motion.div
@@ -1802,16 +1763,9 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
   const fgRot2 = useTransform(smoothProgress, [0, 1], [30, -20]);
 
   // ========== CONTENT REVEAL LAYERS ==========
-  const h1Y = useTransform(smoothProgress, [0.05, 0.25], [100, 0]);
-  const h1Clip = useTransform(smoothProgress, [0.05, 0.2], ["inset(100% 0 0 0)", "inset(-20% -20% -20% -20%)"]);
-
-  const cardY = useTransform(smoothProgress, [0.1, 0.35], [200, 0]);
-  const cardRotX = useTransform(smoothProgress, [0.1, 0.35], [20, 0]);
-  const cardScale = useTransform(smoothProgress, [0.1, 0.35], [0.9, 1]);
-  const cardClip = useTransform(smoothProgress, [0.1, 0.3], ["inset(100% 0 0 0)", "inset(-20% -20% -20% -20%)"]);
-
-  const btnY = useTransform(smoothProgress, [0.2, 0.4], [50, 0]);
-  const btnClip = useTransform(smoothProgress, [0.2, 0.35], ["inset(100% 0 0 0)", "inset(0% 0 0 0)"]);
+  const h1Opacity = useTransform(smoothProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
+  const cardOpacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+  const btnOpacity = useTransform(smoothProgress, [0, 0.25, 0.75, 1], [0, 1, 1, 0]);
 
   const roles = [
     {
@@ -1853,7 +1807,7 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
 
       <div className="container-1440 relative z-10 py-2 lg:py-0">
         <div className="text-center mb-2 md:mb-3 lg:mb-4">
-          <motion.div style={{ y: h1Y, clipPath: h1Clip }}>
+          <motion.div style={{ opacity: h1Opacity }}>
             <span className="text-[#c79a40] tracking-[0.5em] uppercase text-[10px] md:text-xs font-bold mb-2 md:mb-3 lg:mb-4 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">JOIN THE GUILD</span>
             <h2 className="text-3xl sm:text-4xl md:text-4xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-black mb-2 md:mb-3 lg:mb-3 uppercase tracking-tighter text-white leading-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
               BUILD THE <span className="text-[#742C86]">FUTURE</span> <br /> WITH US
@@ -1865,7 +1819,7 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
         </div>
 
         <motion.div
-          style={{ y: cardY, rotateX: cardRotX, scale: cardScale, clipPath: cardClip, transformOrigin: "bottom center", transformStyle: "preserve-3d" }}
+          style={{ opacity: cardOpacity }}
           className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-5 mb-4 md:mb-6 lg:mb-6 max-w-7xl mx-auto px-6"
         >
           {roles.map((role, i) => (
@@ -1895,7 +1849,7 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
           ))}
         </motion.div>
 
-        <motion.div style={{ y: btnY, clipPath: btnClip }} className="flex justify-center">
+        <motion.div style={{ opacity: btnOpacity }} className="flex justify-center">
           <motion.a
             href="https://www.linkedin.com/company/nytwolf-games/"
             target="_blank"
@@ -2018,13 +1972,8 @@ const Contact = () => {
   const fgRot2 = useTransform(smoothProgress, [0, 1], [30, -30]);
 
   // ========== CONTENT REVEAL LAYERS ==========
-  const contentY = useTransform(smoothProgress, [0.05, 0.25], [100, 0]);
-  const contentClip = useTransform(smoothProgress, [0.05, 0.2], ["inset(100% 0 0 0)", "inset(-20% -20% -20% -20%)"]);
-
-  const formY = useTransform(smoothProgress, [0.1, 0.35], [200, 0]);
-  const formRotX = useTransform(smoothProgress, [0.1, 0.35], [20, 0]);
-  const formScale = useTransform(smoothProgress, [0.1, 0.35], [0.9, 1]);
-  const formClip = useTransform(smoothProgress, [0.1, 0.3], ["inset(100% 0 0 0)", "inset(-20% -20% -20% -20%)"]);
+  const contentOpacity = useTransform(smoothProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
+  const formOpacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
   return (
     <section ref={sectionRef} id="contact" className="relative min-h-screen flex flex-col pt-20 md:pt-0 pb-0 bg-[#0F0B14] overflow-hidden" style={{ perspective: "1500px" }}>
@@ -2049,7 +1998,7 @@ const Contact = () => {
         <div className="container-1440 relative w-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-20">
             <div className="lg:col-span-6">
-              <motion.div style={{ y: contentY, clipPath: contentClip }}>
+              <motion.div style={{ opacity: contentOpacity }}>
                 <span className="text-[#c79a40] tracking-[0.5em] uppercase text-xs font-bold mb-4 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">SEND A RAVEN</span>
                 <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black mb-6 md:mb-10 uppercase tracking-tighter text-white leading-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
                   LET'S <span className="text-[#742C86]">TALK</span>.
@@ -2088,7 +2037,7 @@ const Contact = () => {
             </div>
 
             <motion.div
-              style={{ y: formY, rotateX: formRotX, scale: formScale, clipPath: formClip, transformOrigin: "bottom center", transformStyle: "preserve-3d" }}
+              style={{ opacity: formOpacity }}
               className="lg:col-span-6"
             >
               <form
@@ -2326,279 +2275,8 @@ export default function App() {
       if (el) observer.observe(el);
     });
 
-    // ========== JS SMOOTH SCROLL SNAPPING (DESKTOP) ==========
-    const handleWheel = (e: WheelEvent) => {
-      if (isLoading) return;
-
-      const now = Date.now();
-      const isCooldownActive = now - lastScrollTime.current < SCROLL_COOLDOWN;
-
-      const currentId = activeSectionIdRef.current;
-      const el = document.getElementById(currentId);
-
-      if (el && !isAnimating.current && !isCooldownActive) {
-        const rect = el.getBoundingClientRect();
-        const isLongSection = el.offsetHeight > window.innerHeight + 10;
-
-        if (isLongSection) {
-          // If we are in a long section, check if we've reached the edge
-          if (e.deltaY > 0) { // Scrolling Down
-            const isAtBottom = rect.bottom <= window.innerHeight + 5;
-            if (!isAtBottom) return; // Allow natural scroll within the section
-          } else { // Scrolling Up
-            const isAtTop = rect.top >= -5;
-            if (!isAtTop) return; // Allow natural scroll within the section
-          }
-        }
-      }
-
-      // If we are here, we are trying to snap to the next/prev section
-      // Prevent standard browser scroll behavior
-      e.preventDefault();
-
-      // If already animating or in cooldown, ignore the event entirely
-      if (isAnimating.current || isCooldownActive) return;
-
-      // Require a minimum threshold for the scroll to be considered deliberate
-      if (Math.abs(e.deltaY) < 20) return;
-
-      const currentIndex = sections.indexOf(currentId);
-      if (e.deltaY > 0 && currentIndex < sections.length - 1) {
-        lastScrollTime.current = now;
-        scrollToSection(sections[currentIndex + 1]);
-      } else if (e.deltaY < 0 && currentIndex > 0) {
-        lastScrollTime.current = now;
-        scrollToSection(sections[currentIndex - 1]);
-      }
-    };
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (isLoading) return;
-
-      const now = Date.now();
-      const isCooldownActive = now - lastScrollTime.current < SCROLL_COOLDOWN;
-
-      const currentId = activeSectionIdRef.current;
-      const el = document.getElementById(currentId);
-
-      if (el && !isAnimating.current && !isCooldownActive) {
-        const panScrollFactor = 0.8;
-        const rect = el.getBoundingClientRect();
-        const isLongSection = el.offsetHeight > window.innerHeight + 10;
-
-        if (isLongSection) {
-          if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
-            const isAtBottom = rect.bottom <= window.innerHeight + 5;
-            if (!isAtBottom) return; // Allow natural scroll
-          } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-            const isAtTop = rect.top >= -5;
-            if (!isAtTop) return; // Allow natural scroll
-          }
-        }
-      }
-
-      const currentIndex = sections.indexOf(currentId);
-      if ((e.key === 'ArrowDown' || e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey)) && currentIndex < sections.length - 1) {
-        e.preventDefault();
-        if (!isAnimating.current && !isCooldownActive) {
-          lastScrollTime.current = now;
-          scrollToSection(sections[currentIndex + 1]);
-        }
-      } else if ((e.key === 'ArrowUp' || e.key === 'PageUp' || (e.key === ' ' && e.shiftKey)) && currentIndex > 0) {
-        e.preventDefault();
-        if (!isAnimating.current && !isCooldownActive) {
-          lastScrollTime.current = now;
-          scrollToSection(sections[currentIndex - 1]);
-        }
-      }
-    };
-
-    // ========== TOUCH SNAP LOGIC (MOBILE) ==========
-    let touchStartY = 0;
-    let touchStartTime = 0;
-
-    const handleTouchStart = (e: TouchEvent) => {
-      touchStartY = e.touches[0].clientY;
-      touchStartTime = Date.now();
-    };
-
-    const snapToMostVisible = () => {
-      if (isAnimating.current) return;
-
-      let maxVisibleHeight = 0;
-      let mostVisibleId = sections[0];
-      let visibleSectionsCount = 0;
-
-      sections.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          const visibleHeight = Math.max(0, Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0));
-
-          if (visibleHeight > 20) { // Using a 20px threshold for 'both are visible' check
-            visibleSectionsCount++;
-          }
-
-          if (visibleHeight > maxVisibleHeight) {
-            maxVisibleHeight = visibleHeight;
-            mostVisibleId = id;
-          }
-        }
-      });
-
-      // ONLY snap if we are actually split between 2 or more sections (in-between state)
-      if (visibleSectionsCount >= 2) {
-        const targetEl = document.getElementById(mostVisibleId);
-        if (targetEl) {
-          const rect = targetEl.getBoundingClientRect();
-          const isLong = targetEl.offsetHeight > window.innerHeight + 10;
-
-          // If it's a long section, only snap to top if we are closer to the top than the bottom
-          if (isLong) {
-            const distToTop = Math.abs(rect.top);
-            const distToBottom = Math.abs(rect.bottom - window.innerHeight);
-
-            // If we are closer to the bottom, just let it rest there (or snap specifically to bottom)
-            if (distToBottom < distToTop) {
-              // Near bottom - if we are within range, align to bottom
-              if (distToBottom > 5 && distToBottom < 100) {
-                const targetScroll = targetEl.offsetTop + targetEl.offsetHeight - window.innerHeight;
-                const currentScroll = window.scrollY;
-                isAnimating.current = true;
-                animate(currentScroll, targetScroll, {
-                  duration: 0.6,
-                  ease: "easeOut",
-                  onUpdate: (latest) => window.scrollTo(0, latest),
-                  onComplete: () => { isAnimating.current = false; }
-                });
-              }
-              return;
-            }
-          }
-
-          // Otherwise (standard section OR near top of long section), snap to top
-          if (Math.abs(rect.top) > 5) {
-            scrollToSection(mostVisibleId);
-          }
-        }
-      }
-    };
-
-    const handleTouchEnd = (e: TouchEvent) => {
-      if (isLoading) return;
-
-      const touchEndY = e.changedTouches[0].clientY;
-      const deltaY = touchStartY - touchEndY;
-      const deltaTime = Date.now() - touchStartTime;
-      const velocity = Math.abs(deltaY) / deltaTime;
-
-      const threshold = 40;
-      const velocityThreshold = 0.8;
-
-      const now = Date.now();
-      const isCooldownActive = now - lastScrollTime.current < SCROLL_COOLDOWN;
-
-      // Track if we've handled a snap transition
-      let snapped = false;
-
-      if (Math.abs(deltaY) > threshold && !isAnimating.current && !isCooldownActive) {
-        const currentId = activeSectionIdRef.current;
-        const currentIndex = sections.indexOf(currentId);
-        const el = document.getElementById(currentId);
-
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          const isLongSection = el.offsetHeight > window.innerHeight + 10;
-          const isQuickFlick = velocity > velocityThreshold;
-
-          // Snap to NEXT (Scroll Down)
-          if (deltaY > 0 && currentIndex < sections.length - 1) {
-            if (isLongSection) {
-              const isAtBottom = rect.bottom <= window.innerHeight + 15;
-              // Quick flick OR already at the bottom edge = move to next section
-              if (isQuickFlick || isAtBottom) {
-                lastScrollTime.current = now;
-                scrollToSection(sections[currentIndex + 1]);
-                snapped = true;
-              }
-            } else {
-              lastScrollTime.current = now;
-              scrollToSection(sections[currentIndex + 1]);
-              snapped = true;
-            }
-          }
-          // Snap to PREV (Scroll Up)
-          else if (deltaY < 0 && currentIndex > 0) {
-            if (isLongSection) {
-              const isAtTop = rect.top >= -15;
-              // Quick flick OR already at the top edge = move to prev section
-              if (isQuickFlick || isAtTop) {
-                lastScrollTime.current = now;
-                scrollToSection(sections[currentIndex - 1]);
-                snapped = true;
-              }
-            } else {
-              lastScrollTime.current = now;
-              scrollToSection(sections[currentIndex - 1]);
-              snapped = true;
-            }
-          }
-        }
-      }
-
-      // If we didn't swipe enough for a directional snap, snap to whichever is most visible
-      if (!snapped && !isAnimating.current) {
-        // Delay slightly to allow any native momentum to finish if it's a long section
-        setTimeout(snapToMostVisible, 50);
-      }
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      if (isAnimating.current) {
-        e.preventDefault();
-        return;
-      }
-
-      const currentId = activeSectionIdRef.current;
-      const el = document.getElementById(currentId);
-      if (el) {
-        const isLongSection = el.offsetHeight > window.innerHeight + 10;
-
-        if (!isLongSection) {
-          e.preventDefault();
-        } else {
-          // In long sections, ONLY prevent default if we've completely finished the internal scroll
-          const rect = el.getBoundingClientRect();
-          const touchY = e.touches[0].clientY;
-          const isAtTop = rect.top >= -5;
-          const isAtBottom = rect.bottom <= window.innerHeight + 5;
-
-          // Trying to scroll to NEXT (swiping up) BUT already at the bottom
-          if (touchStartY > touchY && isAtBottom) {
-            e.preventDefault();
-          }
-          // Trying to scroll to PREV (swiping down) BUT already at the top
-          else if (touchStartY < touchY && isAtTop) {
-            e.preventDefault();
-          }
-          // Otherwise, allow the browser to handle the native momentum scroll smoothly
-        }
-      }
-    };
-
-    window.addEventListener('wheel', handleWheel, { passive: false });
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('touchstart', handleTouchStart, { passive: true });
-    window.addEventListener('touchend', handleTouchEnd, { passive: true });
-    window.addEventListener('touchmove', handleTouchMove, { passive: false });
-
     return () => {
       observer.disconnect();
-      window.removeEventListener('wheel', handleWheel);
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchend', handleTouchEnd);
-      window.removeEventListener('touchmove', handleTouchMove);
     };
   }, [isLoading]);
 
