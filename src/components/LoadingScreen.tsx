@@ -19,8 +19,8 @@ const LoadingScreen: React.FC<{
   // Spring-smoothed progress drives the logo fill height
   const progressMV = useMotionValue(0);
   const springProg = useSpring(progressMV, {
-    damping: 28,
-    stiffness: 55
+    damping: 35,
+    stiffness: 45
   });
   const fillHeight = useTransform(springProg, [0, 100], ['0%', '100%']);
   useEffect(() => {
@@ -89,9 +89,9 @@ const LoadingScreen: React.FC<{
       duration: 1.5
     }}>
         {/* Large soft spread */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(116,44,134,0.15)_0%,transparent_80%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(179,71,209,0.15)_0%,transparent_80%)]" />
         {/* Core glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(116,44,134,0.1)_0%,transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(179,71,209,0.1)_0%,transparent_50%)]" />
       </motion.div>
 
       {/* Technical Hex Grid Background (Matches User Request) */}
@@ -150,7 +150,7 @@ const LoadingScreen: React.FC<{
               clipPath: useTransform(springProg, (v) => `inset(${100 - (v as number)}% 0 0 0)`)
             }}
           >
-            <Logo className="w-full h-full text-[#742C86]" useGradient={true} />
+            <Logo className="w-full h-full text-[#b347d1]" useGradient={true} />
           </motion.div>
         </div>
 
@@ -163,8 +163,8 @@ const LoadingScreen: React.FC<{
         delay: isFinishing ? 0 : 0.6,
         ease: [0.22, 1, 0.36, 1]
       }} className="mt-12 text-center">
-          <h1 className="text-3xl sm:text-4xl md:text-[2.5rem] lg:text-5xl font-black tracking-[0.15em] md:tracking-[0.25em] lg:tracking-[0.3em] text-white uppercase font-display drop-shadow-[0_0_30px_rgba(116,44,134,0.3)] flex flex-col lg:flex-row items-center gap-2 lg:gap-4 text-center justify-center w-full">
-            <span className="inline-block align-middle">NYTW<WolfEyeO />LF</span> <span className="text-[#742C86]">GAMES</span>
+          <h1 className="text-3xl sm:text-4xl md:text-[2.5rem] lg:text-5xl font-black tracking-[0.15em] md:tracking-[0.25em] lg:tracking-[0.3em] text-white uppercase font-display drop-shadow-[0_0_30px_rgba(179,71,209,0.3)] flex flex-col lg:flex-row items-center gap-2 lg:gap-4 text-center justify-center w-full">
+            <span className="inline-block align-middle">NYTW<WolfEyeO />LF</span> <span className="text-[#b347d1]">GAMES</span>
           </h1>
         </motion.div>
       </motion.div>
