@@ -486,7 +486,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
   );
 };
 
-const staggerContainer = {
+const staggerContainer: any = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -507,7 +507,7 @@ const staggerContainer = {
   }
 };
 
-const staggerItem = {
+const staggerItem: any = {
   hidden: { opacity: 0, y: 40, filter: "blur(10px)" },
   visible: {
     opacity: 1,
@@ -914,7 +914,7 @@ const Hero = ({ mouseX, mouseY }: { mouseX: any, mouseY: any }) => {
           rotateY: statueRotateY,
           transformStyle: "preserve-3d"
         }}
-        className="hidden min-[450px]:block absolute bottom-[0%] md:bottom-[-5%] lg:bottom-[-18%] left-[-10vw] md:left-[-5vw] lg:left-[2vw] z-10 pointer-events-none origin-bottom will-change-transform"
+        className="hidden min-[450px]:block absolute bottom-[0%] md:bottom-[-10%] lg:bottom-[-18%] left-[-10vw] md:left-[-5vw] lg:left-[2vw] z-10 pointer-events-none origin-bottom will-change-transform"
       >
         <motion.img src="/statue.png" className="h-[135vh] md:h-[135vh] lg:h-[185vh] w-auto max-w-[100vw] md:max-w-[85vw] lg:max-w-[80vw] object-contain object-bottom drop-shadow-[50px_0_30px_rgba(0,0,0,0.3)]" alt="Statue" loading="eager" fetchPriority="high" decoding="async" />
       </motion.div>
@@ -931,7 +931,7 @@ const Hero = ({ mouseX, mouseY }: { mouseX: any, mouseY: any }) => {
           translateY: mouseGrassY,
           scale: grassScale
         }}
-        className="hidden min-[450px]:block absolute bottom-[-2%] md:bottom-[-2%] lg:bottom-[-9%] left-[-2vw] z-20 pointer-events-none origin-bottom-left will-change-transform"
+        className="hidden min-[450px]:block absolute bottom-[-2%] md:bottom-[-8%] lg:bottom-[-9%] left-[-2vw] z-20 pointer-events-none origin-bottom-left will-change-transform"
       >
         <motion.img src="/grass.png" className="w-[120vw] md:w-[75vw] lg:w-[66vw] min-w-[300px] h-auto object-contain object-bottom drop-shadow-[20px_0_30px_rgba(0,0,0,0.8)]" alt="Grass" loading="eager" decoding="async" />
       </motion.div>
@@ -946,7 +946,7 @@ const Hero = ({ mouseX, mouseY }: { mouseX: any, mouseY: any }) => {
           rotate: treeRotate,
           scale: treeScale
         }}
-        className="hidden min-[450px]:block absolute bottom-[0%] md:bottom-[-2%] lg:bottom-[-9%] right-[-5vw] md:right-[-2vw] lg:right-[-5vw] z-20 pointer-events-none origin-bottom-right will-change-transform"
+        className="hidden min-[450px]:block absolute bottom-[0%] md:bottom-[-8%] lg:bottom-[-9%] right-[-5vw] md:right-[-2vw] lg:right-[-5vw] z-20 pointer-events-none origin-bottom-right will-change-transform"
       >
         <motion.img src="/tree.png" className="w-[110vw] md:w-[60vw] lg:w-[45vw] min-w-[280px] h-auto object-contain object-bottom drop-shadow-[-20px_0_30px_rgba(0,0,0,0.8)]" alt="Tree" loading="eager" decoding="async" />
       </motion.div>
@@ -1766,6 +1766,7 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
   const h1Opacity = useTransform(smoothProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
   const cardOpacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
   const btnOpacity = useTransform(smoothProgress, [0, 0.25, 0.75, 1], [0, 1, 1, 0]);
+  const skyGlowOpacity = useTransform(smoothProgress, [0, 0.25, 0.5, 0.75, 1], [0, 1, 0.1, 1, 0]);
 
   const roles = [
     {
@@ -1791,11 +1792,32 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
   return (
     <section ref={sectionRef} className="relative min-h-screen flex flex-col justify-center section-spacing bg-[#0F0B14] overflow-hidden border-t border-white/5" style={{ perspective: "1500px" }}>
 
-      {/* LAYER 1: Deep Background Atmosphere */}
-      <motion.div style={{ y: bgY }} className="absolute inset-0 z-0 pointer-events-none opacity-50 origin-center">
-        <div className="absolute inset-0 bg-[#0F0B14] opacity-80 z-10" />
-        {/* Soft glowing ambient light typical of a guild hall */}
-        <div className="absolute top-[20%] left-[20%] w-[60%] h-[60%] bg-[radial-gradient(ellipse_at_center,rgba(199,154,64,0.1)_0%,transparent_70%)] blur-[60px]" />
+      {/* LAYER 1: "Build the Future" Custom Background */}
+      <motion.div style={{ y: bgY }} className="absolute inset-[-5%] z-0 pointer-events-none origin-center text-[#c79a40]">
+
+        {/* Base Image */}
+        <img
+          src="/buildthefutureBG.png"
+          alt="Build the Future Background"
+          className="w-full h-full object-cover object-center brightness-[0.6] contrast-[1.1] saturate-[0.8]"
+          loading="lazy"
+          decoding="async"
+        />
+
+        {/* Scroll-Driven Glow Overlay (Masked to ONLY affect the top sky/stars, ignoring clouds below) */}
+        <motion.img
+          style={{
+            opacity: skyGlowOpacity,
+            WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 30%, transparent 60%)",
+            maskImage: "linear-gradient(to bottom, black 0%, black 30%, transparent 60%)"
+          }}
+          src="/buildthefutureBG.png"
+          alt="Glow Overlay"
+          className="absolute inset-0 w-full h-full object-cover object-center mix-blend-color-dodge contrast-[1.5] brightness-[1.2] saturate-[1.2]"
+        />
+
+        {/* Cinematic Vignette to ensure text readability */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(6,4,8,0.4)_0%,rgba(6,4,8,0.95)_100%)] z-10" />
       </motion.div>
 
       {/* LAYER 2: Midground Environment (Hanging Banners / Notice Boards) */}
@@ -1867,19 +1889,7 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
         </motion.div>
       </div>
 
-      {/* LAYER 3: Fast Foreground (Floating Parchment/Runes) */}
-      {/* <motion.div style={{ y: fgY1, x: fgX1, rotate: fgRot1 }} className="absolute top-[40%] left-[10%] z-30 pointer-events-none opacity-70 drop-shadow-[10px_10px_20px_rgba(0,0,0,0.8)]">
-        <div className="w-[12vw] h-[16vw] bg-[#e6d0a3]/10 clip-path-polygon-[10%_0%,_90%_5%,_100%_90%,_5%_100%] backdrop-blur-[2px] border border-[#e6d0a3]/20 flex items-center justify-center">
-          <div className="w-1/2 h-1/2 border border-[#c79a40]/30 rounded-sm rotate-45" />
-        </div>
-      </motion.div> */}
-      {/* <motion.div style={{ y: fgY2, x: fgX2, rotate: fgRot2 }} className="absolute bottom-[20%] right-[10%] z-30 pointer-events-none opacity-80 drop-shadow-[10px_10px_20px_rgba(0,0,0,0.8)]">
-        <div className="w-[8vw] h-[10vw] bg-[#e6d0a3]/10 clip-path-polygon-[0%_5%,_100%_0%,_95%_100%,_5%_95%] backdrop-blur-[1px] border border-[#e6d0a3]/30 flex flex-col items-center justify-center gap-2">
-          <div className="w-[60%] h-[2px] bg-[#c79a40]/40 rounded-full" />
-          <div className="w-[40%] h-[2px] bg-[#c79a40]/40 rounded-full" />
-          <div className="w-[70%] h-[2px] bg-[#c79a40]/40 rounded-full" />
-        </div>
-      </motion.div> */}
+      {/* Removed Layer 3 wireframes to prioritize the raw uploaded background image */}
 
     </section>
   );
