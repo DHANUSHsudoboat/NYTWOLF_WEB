@@ -127,7 +127,7 @@ const LogoOutline = React.memo(({ className = "h-12 w-auto" }: { className?: str
 ));
 
 const WolfEyeO = React.memo(({ className = "" }: { className?: string }) => (
-  <svg viewBox="0 0 100 100" className={`h-[0.84em] w-auto inline-block align-middle relative top-[-0.1em] left-[-0.12em] ${className}`} fill="currentColor">
+  <svg viewBox="0 0 100 100" className={`h-[0.84em] w-auto inline-block align-middle relative top-[-0.2em] left-[-0.125em] mx-[0.1em] ${className}`} fill="currentColor">
     <circle cx="50" cy="50" r="42" stroke="currentColor" strokeWidth="16" fill="none" />
     <path d="M50 25 Q58 50 50 75 Q42 50 50 25 Z" fill="currentColor" />
   </svg>
@@ -412,12 +412,17 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
 
       <motion.div
         className="absolute inset-0 z-20 flex flex-col items-center justify-center"
-        initial={{ y: 40, opacity: 0, filter: "blur(12px)" }}
+        initial={{
+          y: 40,
+          opacity: 0,
+          filter: "blur(12px)",
+          scale: typeof window !== "undefined" && window.innerWidth < 768 ? 1.5 : 1.25
+        }}
         animate={{
           y: 0,
           opacity: progress > 0 ? 1 : 0,
           filter: progress > 0 ? "blur(0px)" : "blur(12px)",
-          scale: isFinishing ? 0.8 : 1
+          scale: isFinishing ? 1 : (typeof window !== "undefined" && window.innerWidth < 768 ? 1.5 : 1.25)
         }}
         transition={{
           duration: isFinishing ? 1.5 : 1.8,
@@ -425,7 +430,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
         }}
       >
         <motion.div
-          className="relative w-[160px] h-[160px] md:w-[200px] md:h-[200px] lg:w-[240px] lg:h-[240px]"
+          className="relative w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48"
         >
           {/* Outline Logo (Background) */}
           <div className="absolute inset-0 text-white/10">
@@ -437,7 +442,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
             className="absolute inset-0 overflow-hidden"
             style={{ height: fillHeight, bottom: 0, top: 'auto' }}
           >
-            <div className="absolute bottom-0 left-0 w-[160px] h-[160px] md:w-[200px] md:h-[200px] lg:w-[240px] lg:h-[240px]">
+            <div className="absolute bottom-0 left-0 w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48">
               <Logo className="w-full h-full" useGradient={true} />
             </div>
           </motion.div>
@@ -480,10 +485,10 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
             delay: isFinishing ? 0 : 0.6,
             ease: [0.22, 1, 0.36, 1]
           }}
-          className="mt-[32px] md:mt-[48px] text-center"
+          className="mt-12 text-center"
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-[0.2em] md:tracking-[0.3em] text-white uppercase font-display drop-shadow-[0_0_30px_rgba(116,44,134,0.3)] flex flex-col lg:flex-row items-center gap-2 lg:gap-4">
-            <span className="flex items-center">NYTW<WolfEyeO />LF</span> <span className="text-[#742C86]">GAMES</span>
+          <h1 className="text-3xl sm:text-4xl md:text-[2.5rem] lg:text-5xl font-black tracking-[0.15em] md:tracking-[0.25em] lg:tracking-[0.3em] text-white uppercase font-display drop-shadow-[0_0_30px_rgba(116,44,134,0.3)] flex flex-col lg:flex-row items-center gap-2 lg:gap-4 text-center justify-center w-full">
+            <span className="inline-block align-middle">NYTW<WolfEyeO />LF</span> <span className="text-[#742C86]">GAMES</span>
           </h1>
         </motion.div>
       </motion.div>
@@ -961,7 +966,7 @@ const Hero = ({ mouseX, mouseY }: { mouseX: any, mouseY: any }) => {
 
       {/* Main Text Content */}
       <div
-        className="relative z-30 flex flex-col items-center text-center px-6 max-w-5xl -translate-y-3 md:translate-y-[15px]"
+        className="relative z-30 flex flex-col items-center text-center px-6 max-w-5xl translate-y-[15px] md:translate-y-[15px] lg:translate-y-[15px]"
       >
         <div className="mb-12 relative animate-none">
           <MouseParallax factor={40}>
@@ -973,7 +978,7 @@ const Hero = ({ mouseX, mouseY }: { mouseX: any, mouseY: any }) => {
 
         <div className="flex flex-col items-center">
           <h1 className="text-3xl sm:text-4xl md:text-[2.5rem] lg:text-5xl font-black tracking-[0.15em] md:tracking-[0.25em] lg:tracking-[0.3em] text-white uppercase font-display drop-shadow-[0_0_30px_rgba(116,44,134,0.3)] flex flex-col lg:flex-row items-center gap-2 lg:gap-4 text-center">
-            <span className="flex items-center">NYTW<WolfEyeO />LF</span> <span className="text-[#742C86]">GAMES</span>
+            <span className="inline-block align-middle">NYTW<WolfEyeO />LF</span> <span className="text-[#742C86]">GAMES</span>
           </h1>
 
           <div className="flex flex-col items-center gap-1 mt-2">
@@ -990,7 +995,7 @@ const Hero = ({ mouseX, mouseY }: { mouseX: any, mouseY: any }) => {
         initial={{ opacity: 1 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2.5, duration: 1 }}
-        className="absolute bottom-24 sm:bottom-10 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-0 pointer-events-none"
+        className="absolute bottom-[2vh] sm:bottom-[3vh] md:bottom-[4vh] lg:bottom-[5vh] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-0 pointer-events-none"
       >
         {[0, 1, 2].map((i) => (
           <motion.div
@@ -1501,7 +1506,7 @@ const PoweringOurWorlds = () => {
         <motion.div
           animate={{ opacity: isHovered ? 0.35 : 0.15 }}
           transition={{ duration: 1.2 }}
-          className="absolute inset-0 grayscale brightness-50 contrast-125"
+          className="absolute inset-0 grayscale brightness-[0.25] contrast-[1.1]"
         >
           <img src="/tech_room.png" className="w-full h-full object-cover" alt="" loading="lazy" decoding="async" />
         </motion.div>
@@ -1533,7 +1538,7 @@ const PoweringOurWorlds = () => {
             maskImage: maskStyle,
           }}
         >
-          <img src="/tech_room.png" className="w-full h-full object-cover filter brightness-[1.6] contrast-[1.2] grayscale-0" alt="" loading="lazy" decoding="async" />
+          <img src="/tech_room.png" className="w-full h-full object-cover filter brightness-[1.1] contrast-[1.1] grayscale-0" alt="" loading="lazy" decoding="async" />
         </motion.div>
 
         {/* Ambient Glow */}
@@ -1734,7 +1739,8 @@ const FeaturedProject = () => {
             </motion.div>
 
             <motion.p variants={itemVariants} className="text-base md:text-xl lg:text-2xl text-text-muted leading-relaxed font-medium italic max-w-2xl drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)] border-l-4 border-[#efb034]/70 pl-6 md:pl-8">
-              "A brutal medieval sandbox where kingdoms rise, alliances fracture, and every decision echoes across generations."
+
+              A brutal medieval sandbox where kingdoms rise, alliances fracture, and every decision echoes across generations
             </motion.p>
 
             <motion.div variants={itemVariants} className="flex flex-wrap gap-3 md:gap-4 pt-4">
@@ -1891,12 +1897,12 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
 
         <motion.div style={{ y: btnY, clipPath: btnClip }} className="flex justify-center">
           <motion.a
-            href="https://www.linkedin.com/in/sandhya-babu-7b11a1195?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+            href="https://www.linkedin.com/company/nytwolf-games/"
             target="_blank"
             rel="noopener noreferrer"
-            whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(116,44,134,0.6)" }}
+            whileHover={{ scale: 1.05, boxShadow: "0 0 5px rgba(116,44,134,0.6)" }}
             whileTap={{ scale: 0.95 }}
-            className="px-8 py-3 md:px-7 md:py-3.5 lg:px-12 lg:py-5 bg-gradient-to-r from-[#742C86] to-[#4A1C56] text-white font-bold uppercase tracking-[0.3em] text-[10px] md:text-[12px] lg:text-sm rounded-3xl flex items-center gap-4 group border border-[#742C86] shadow-[0_10px_20px_rgba(116,44,134,0.4)] transition-all relative overflow-hidden"
+            className="px-8 py-3 md:px-7 md:py-3.5 lg:px-12 lg:py-5 bg-gradient-to-r from-[#742C86] to-[#4A1C56] text-white font-bold uppercase tracking-[0.3em] text-[10px] md:text-[12px] lg:text-sm rounded-3xl flex items-center gap-4 group border border-[#742C86] shadow-[0_10px_px_rgba(116,44,134,0.4)] transition-all relative overflow-hidden"
           >
             <span className="relative z-10 flex items-center gap-4">
               View Openings
@@ -2176,7 +2182,7 @@ const Footer = () => {
     <footer className="relative py-8 md:py-12 bg-black overflow-hidden group">
       {/* Massive Background Text Branding */}
       <div className="absolute inset-0 hidden md:flex items-start justify-center pointer-events-none select-none z-0">
-        <span className="text-[35vw] md:text-[20vw] font-black leading-[0.7] uppercase text-white opacity-[0.1] whitespace-nowrap translate-y-[5%] transition-transform duration-700 group-hover:translate-y-[5%] font-sans">
+        <span className="text-[35vw] md:text-[20vw] font-black leading-[0.7] uppercase text-white opacity-[0.1] whitespace-nowrap translate-y-[5%] transition-transform duration-700 group-hover:translate-y-[5%] font-display">
           NYTWOLF
         </span>
       </div>

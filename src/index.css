@@ -124,31 +124,28 @@
     cursor: default; /* Force default arrow pointer */
   }
 
+  h1, h2, h3, h4, h5, h6, .container-heading {
+    @apply font-display;
+  }
+
+  p, li, a, button {
+    @apply font-sans;
+  }
+
   /* Prevent text cursor on all elements except inputs/textareas */
   *:not(input):not(textarea) {
     cursor: default;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  p,
-  span {
+  h1, h2, h3, h4, h5, h6, p, span {
     cursor: default !important;
   }
 
-  button,
-  a,
-  [role="button"],
-  .cursor-pointer {
+  button, a, [role="button"], .cursor-pointer {
     cursor: pointer !important;
   }
 
-  input,
-  textarea {
+  input, textarea {
     cursor: text;
     user-select: text; /* Allow selection in forms */
   }
