@@ -1592,7 +1592,7 @@ const FeaturedProject = () => {
   const battlefieldScale = useTransform(smoothProgress, [0, 1], [1.15, 1.25]);
 
   // 3. Foreground Knight (~40%)
-  const knightY = useTransform(smoothProgress, [0, 1], ["20%", "-30%"]);
+  const knightY = useTransform(smoothProgress, [0, 1], ["20%", "-13%"]);
   const knightRotateX = useTransform(smoothProgress, [0.1, 0.5], [3, 0]);
   const knightScale = useTransform(smoothProgress, [0, 0.5], [1.1, 1]);
 
