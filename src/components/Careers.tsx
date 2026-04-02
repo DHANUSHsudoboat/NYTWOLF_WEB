@@ -31,6 +31,7 @@ const Careers = ({
   const skyGlowOpacity = useTransform(smoothProgress, [0, 0.25, 0.5, 0.75, 1], [0, 1, 0.1, 1, 0]);
 
   // ========== CONTENT REVEAL LAYERS ==========
+  const bgOpacity = useTransform(smoothProgress, [0.3, 0.5, 0.85, 1], [0, 1, 1, 0]);
   const h1Opacity = useTransform(smoothProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
   const cardOpacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
   const btnOpacity = useTransform(smoothProgress, [0, 0.25, 0.75, 1], [0, 1, 1, 0]);
@@ -56,7 +57,7 @@ const Careers = ({
   return (
     <section ref={sectionRef} id="careers" className="relative min-h-screen flex flex-col justify-center section-spacing bg-[#0F0B14] overflow-hidden border-t border-white/5" style={{ perspective: "1500px" }}>
       {/* LAYER 1: Background */}
-      <motion.div style={{ y: bgY }} className="absolute inset-[-5%] z-0 pointer-events-none origin-center">
+      <motion.div style={{ y: bgY, opacity: bgOpacity }} className="absolute inset-[-5%] z-0 pointer-events-none origin-center">
         <img src="/buildthefutureBG.png" alt="Build the Future Background" className="w-full h-full object-cover object-center brightness-[0.6] contrast-[1.1] saturate-[0.8]" loading="lazy" />
         
         {/* Scroll-Driven Glow Overlay */}
