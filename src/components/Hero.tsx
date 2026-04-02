@@ -83,7 +83,8 @@ const Hero = ({
         />
 
         {/* Cinematic Black Overlay for Readability */}
-        <div className="absolute inset-0 bg-black/30 z-20" />
+        <div className="absolute inset-0 bg-black/15 z-20" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.2)_100%)] z-25" />
       </div>
 
       {/* Cinematic Diagonal Shine Sweep */}

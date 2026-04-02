@@ -164,8 +164,8 @@ const Services = () => {
         </div>
       </div>
 
-      {/* LAYER 3: Fast Foreground (Artifacts/Weapons intersecting content space) */}
-      <motion.div style={{ y: fgY1, x: fgX1, rotate: fgRot1 }} className="absolute bottom-[20%] left-[8%] z-30 pointer-events-none opacity-90 drop-shadow-[20px_20px_30px_rgba(0,0,0,0.8)]">
+      {/* LAYER 3: Fast Foreground (Moved to background z-0 to avoid overlap) */}
+      <motion.div style={{ y: fgY1, x: fgX1, rotate: fgRot1 }} className="absolute bottom-[20%] left-[-5vw] z-0 pointer-events-none opacity-50 drop-shadow-[20px_20px_30px_rgba(0,0,0,0.8)]">
         <div className="w-[12vw] h-[40vh] bg-gradient-to-tr from-[#c79a40] to-transparent clip-path-polygon-[50%_0%,_100%_100%,_0%_100%] blur-[2px]" />
       </motion.div>
 

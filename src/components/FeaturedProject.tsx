@@ -201,7 +201,7 @@ const FeaturedProject = () => {
           <motion.div variants={itemVariants} className="space-y-4">
             <span className="text-[#c79a40] tracking-[0.3em] md:tracking-[0.5em] uppercase text-[10px] md:text-xs font-bold block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">CURRENT WORLD</span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black tracking-tighter text-white uppercase leading-[1.05] drop-shadow-[0_10px_30px_rgba(0,0,0,0.9)]">
-              PROJECT: <br />
+              PROJECT <br />
               <span className="text-white">GREEN LEAF</span>
             </h2>
           </motion.div>

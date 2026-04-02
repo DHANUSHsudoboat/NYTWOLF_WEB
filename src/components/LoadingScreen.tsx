@@ -71,7 +71,7 @@ const LoadingScreen: React.FC<{
     return () => clearInterval(interval);
   }, [onComplete]);
 
-  return <motion.div className="fixed inset-0 z-[100] bg-[#060408] flex flex-col items-center justify-center overflow-hidden" 
+  return <motion.div className="fixed inset-0 z-[100] bg-[#0F0B14] flex flex-col items-center justify-center overflow-hidden" 
     initial={{ opacity: 1 }} 
     exit={{ opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }}
   >
@@ -82,18 +82,19 @@ const LoadingScreen: React.FC<{
           alt="" 
           className="w-full h-full object-cover opacity-30" 
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#060408] via-transparent to-[#060408]/80" />
+        {/* Games World Match: Deep purple atmospheric overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#060408] via-[#1a0b2e]/40 to-[#060408]/80" />
       </div>
 
-      {/* Ambient Background Glow */}
+      {/* Ambient Background Glow (Matches Games World / Services Section) */}
       <motion.div 
         className="absolute inset-0 z-1 pointer-events-none" 
         initial={{ opacity: 0 }} 
         animate={{ opacity: isFinishing ? 0 : 1 }} 
         transition={{ duration: 1.5 }}
       >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,197,0.15)_0%,transparent_80%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,197,0.1)_0%,transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,197,0.25)_0%,transparent_80%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,197,0.15)_0%,transparent_50%)]" />
       </motion.div>
 
       {/* Subtle Floating Particles */}

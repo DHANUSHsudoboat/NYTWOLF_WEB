@@ -174,7 +174,7 @@ const PoweringOurWorlds = () => {
         <motion.div style={{
         opacity: h2Opacity
       }} className="text-center mb-4 lg:mb-6 relative z-10">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-black tracking-tighter text-white uppercase leading-none mb-4 lg:mb-5 drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
+          <h2 className="text-4xl lg:text-5xl xl:text-6xl font-black tracking-tighter text-white uppercase leading-none mb-4 lg:mb-5 drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
             POWERING OUR <span className="text-[#A855C5]">WORLDS</span>
           </h2>
           <p className="text-sm md:text-lg lg:text-base text-text-muted tracking-[0.15em] md:tracking-[0.4em] uppercase font-bold max-w-4xl mx-auto drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-6">

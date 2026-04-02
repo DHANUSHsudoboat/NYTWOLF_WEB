@@ -16,7 +16,7 @@ const FeatureCard = React.memo(({
   const cardOpacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
   return <motion.div style={{
     opacity: cardOpacity
-  }} onMouseEnter={() => setIsHoveringCard(true)} onMouseLeave={() => setIsHoveringCard(false)} className="relative p-5 md:p-6 lg:p-7 border border-white/5 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-md group overflow-hidden">
+  }} onMouseEnter={() => setIsHoveringCard(true)} onMouseLeave={() => setIsHoveringCard(false)} className="relative p-5 md:p-6 lg:p-7 border border-white/10 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-md group overflow-hidden transition-all duration-500 hover:border-[#A855C5]/50">
     <div className="absolute inset-0 bg-gradient-to-r from-[#A855C5]/0 via-[#A855C5]/20 to-[#A855C5]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
     <h3 className="text-base md:text-lg lg:text-xl font-black text-white uppercase tracking-widest mb-2 group-hover:text-[#c79a40] transition-colors">
       {feature.title}
@@ -118,7 +118,7 @@ const About = () => {
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black tracking-tighter text-white leading-[1.05] uppercase mb-4 lg:mb-6 drop-shadow-[0_20px_50px_rgba(168,85,197,0.5)]">
               WE BUILD WORLDS <br />
               WHERE <span className="inline-block text-transparent bg-clip-text bg-gradient-to-br from-[#c79a40] to-[#A855C5] pb-2">STRATEGY</span> <br />
-              REIGNS.
+              REIGNS
             </h2>
 
             <div className="w-16 h-1.5 bg-[#A855C5] mb-6 lg:mb-8" />

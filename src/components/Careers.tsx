@@ -78,11 +78,11 @@ const Careers = ({
         <div className="text-center mb-8">
           <motion.div style={{ opacity: h1Opacity }}>
             <span className="text-[#c79a40] tracking-[0.5em] uppercase text-[10px] md:text-xs font-bold mb-4 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">JOIN THE GUILD</span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-4 uppercase tracking-tighter text-white leading-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
+            <h2 className="text-4xl lg:text-5xl xl:text-6xl font-black leading-none mb-6 uppercase tracking-tighter text-white drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
               BUILD THE <span className="text-[#A855C5]">FUTURE</span> <br /> WITH US
             </h2>
             <p className="text-sm md:text-base text-text-muted max-w-2xl mx-auto leading-relaxed font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-4">
-              We are always looking for passionate, talented individuals. At NYTWOLF, your voice matters.
+              We are always looking for passionate, talented individuals. At NYTWOLF, your voice matters
             </p>
           </motion.div>
         </div>
