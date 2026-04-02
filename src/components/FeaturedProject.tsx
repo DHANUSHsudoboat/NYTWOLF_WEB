@@ -76,12 +76,17 @@ const FeaturedProject = () => {
   }, [currentFrameIndex]);
 
   // ========== AAA CINEMATIC PARALLAX LAYERS ==========
-  
+
   // Update frame based on scroll
   useEffect(() => {
     const unsubscribe = smoothProgress.on("change", (latest) => {
+      // Logic: Frame 100 at progress 0.5 (Centered)
+      // This maps 0 to Frame 0 and ensures Frame 100 is reached at exactly 0.5 viewport alignment
+      const multiplier = 200; // 100 / 0.5
+      const calculatedIndex = Math.floor(latest * multiplier);
+
       const index = Math.min(
-        Math.max(Math.floor(latest * totalFrames), 0),
+        Math.max(calculatedIndex, 0),
         totalFrames - 1
       );
       setCurrentFrameIndex(index);
@@ -90,7 +95,7 @@ const FeaturedProject = () => {
   }, [smoothProgress, totalFrames]);
 
   // ========== AAA CINEMATIC PARALLAX LAYERS ==========
-  
+
   // (Rest of the transforms...)
   const skyY = useTransform(smoothProgress, [0, 1], ["0%", "15%"]);
   const skyScale = useTransform(smoothProgress, [0, 1], [1.05, 1.15]);
