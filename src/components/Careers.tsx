@@ -78,7 +78,7 @@ const Careers = ({
           <motion.div style={{ opacity: h1Opacity }}>
             <span className="text-[#c79a40] tracking-[0.5em] uppercase text-[10px] md:text-xs font-bold mb-4 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">JOIN THE GUILD</span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-4 uppercase tracking-tighter text-white leading-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
-              BUILD THE <span className="text-[#742C86]">FUTURE</span> <br /> WITH US
+              BUILD THE <span className="text-[#A855C5]">FUTURE</span> <br /> WITH US
             </h2>
             <p className="text-sm md:text-base text-text-muted max-w-2xl mx-auto leading-relaxed font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-4">
               We are always looking for passionate, talented individuals. At NYTWOLF, your voice matters.
@@ -92,7 +92,7 @@ const Careers = ({
               key={i} 
               onMouseEnter={() => setIsHoveringCard(true)} 
               onMouseLeave={() => setIsHoveringCard(false)} 
-              className="group relative p-8 border border-white/5 bg-[#0F0B14]/40 backdrop-blur-md transition-all duration-500 flex flex-col items-center text-center cursor-default hover:border-[#742C86]/50 hover:bg-[#0F0B14]/60"
+              className="group relative p-8 border border-white/5 bg-[#0F0B14]/40 backdrop-blur-md transition-all duration-500 flex flex-col items-center text-center cursor-default hover:border-[#A855C5]/50 hover:bg-[#0F0B14]/60"
             >
               <div className="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#c79a40] group-hover:scale-110 group-hover:border-[#c79a40]/40 transition-all duration-500 mb-6">
                 {React.cloneElement(role.icon as React.ReactElement<any>, { className: "w-8 h-8" })}
@@ -107,7 +107,7 @@ const Careers = ({
                 </p>
               </div>
 
-              <div className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-[#742C86] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-[#A855C5] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </div>
           ))}
         </motion.div>
@@ -119,7 +119,7 @@ const Careers = ({
             rel="noopener noreferrer" 
             whileHover={{ scale: 1.05 }} 
             whileTap={{ scale: 0.95 }} 
-            className="px-12 py-5 bg-gradient-to-r from-[#742C86] to-[#4A1C56] text-white font-bold uppercase tracking-[0.3em] text-sm rounded-3xl flex items-center gap-4 group border border-[#742C86] shadow-[0_10px_30px_rgba(116,44,134,0.4)] transition-all relative overflow-hidden"
+            className="px-12 py-5 bg-gradient-to-r from-[#A855C5] to-[#4A1C56] text-white font-bold uppercase tracking-[0.3em] text-sm rounded-3xl flex items-center gap-4 group border border-[#A855C5] shadow-[0_10px_30px_rgba(168,85,197,0.4)] transition-all relative overflow-hidden"
           >
             <span className="relative z-10 flex items-center gap-4">
               View Openings

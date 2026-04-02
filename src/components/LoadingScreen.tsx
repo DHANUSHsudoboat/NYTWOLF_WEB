@@ -71,50 +71,54 @@ const LoadingScreen: React.FC<{
     return () => clearInterval(interval);
   }, [onComplete]);
 
-  return <motion.div className="fixed inset-0 z-[100] bg-[#0F0B14] flex flex-col items-center justify-center overflow-hidden" initial={{
-    opacity: 1
-  }} exit={{
-    opacity: 0,
-    transition: {
-      duration: 0.8,
-      ease: "easeInOut"
-    }
-  }}>
-      {/* Ambient Background Glow */}
-      <motion.div className="absolute inset-0 z-0 pointer-events-none" initial={{
-      opacity: 0
-    }} animate={{
-      opacity: isFinishing ? 0 : 1
-    }} transition={{
-      duration: 1.5
-    }}>
-        {/* Large soft spread */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(179,71,209,0.15)_0%,transparent_80%)]" />
-        {/* Core glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(179,71,209,0.1)_0%,transparent_50%)]" />
-      </motion.div>
+  return <motion.div className="fixed inset-0 z-[100] bg-[#060408] flex flex-col items-center justify-center overflow-hidden" 
+    initial={{ opacity: 1 }} 
+    exit={{ opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }}
+  >
+      {/* Cinematic Background (Matches Frame 0 of the intro) */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center">
+        <img 
+          src="/GIFFrames/frame_000_delay-0.03s.gif" 
+          alt="" 
+          className="w-full h-full object-cover opacity-30" 
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#060408] via-transparent to-[#060408]/80" />
+      </div>
 
-      {/* Technical Hex Grid Background (Matches User Request) */}
+      {/* Ambient Background Glow */}
       <motion.div 
-        className="absolute inset-0 z-0 pointer-events-none overflow-hidden"
-        animate={{ opacity: isFinishing ? 0 : 1 }}
-        transition={{ duration: 0.5 }}
+        className="absolute inset-0 z-1 pointer-events-none" 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: isFinishing ? 0 : 1 }} 
+        transition={{ duration: 1.5 }}
       >
-        <HexGridBackground />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,197,0.15)_0%,transparent_80%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,197,0.1)_0%,transparent_50%)]" />
       </motion.div>
 
       {/* Subtle Floating Particles */}
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        {Array.from({
-        length: 12
-      }).map((_, i) => <motion.div key={i} className="absolute w-[2px] h-[2px] bg-white/10 rounded-full blur-[1px]" initial={{
-        x: Math.random() * 100 + "%",
-        y: Math.random() * 100 + "%",
-        opacity: 0
-      }} animate={{
-        y: [null, "-20%"],
-        opacity: [0, 0.2, 0]
-      }} transition={{ duration: Math.random() * 15 + 15, repeat: Infinity, ease: "linear", delay: Math.random() * 10 }} />)}
+      <div className="absolute inset-0 z-1 pointer-events-none overflow-hidden">
+        {Array.from({ length: 15 }).map((_, i) => (
+          <motion.div 
+            key={i} 
+            className="absolute w-[1px] h-[1px] bg-white/20 rounded-full blur-[0.5px]" 
+            initial={{
+              x: Math.random() * 100 + "%",
+              y: Math.random() * 100 + "%",
+              opacity: 0
+            }} 
+            animate={{
+              y: [null, "-20%"],
+              opacity: [0, 0.3, 0]
+            }} 
+            transition={{ 
+              duration: Math.random() * 10 + 10, 
+              repeat: Infinity, 
+              ease: "linear", 
+              delay: Math.random() * 5 
+            }} 
+          />
+        ))}
       </div>
 
       <motion.div 
@@ -150,7 +154,7 @@ const LoadingScreen: React.FC<{
               clipPath: useTransform(springProg, (v) => `inset(${100 - (v as number)}% 0 0 0)`)
             }}
           >
-            <Logo className="w-full h-full text-[#b347d1]" useGradient={true} />
+            <Logo className="w-full h-full text-[#A855C5]" useGradient={true} />
           </motion.div>
         </div>
 
@@ -163,8 +167,8 @@ const LoadingScreen: React.FC<{
         delay: isFinishing ? 0 : 0.6,
         ease: [0.22, 1, 0.36, 1]
       }} className="mt-12 text-center">
-          <h1 className="text-3xl sm:text-4xl md:text-[2.5rem] lg:text-5xl font-black tracking-[0.15em] md:tracking-[0.25em] lg:tracking-[0.3em] text-white uppercase font-display drop-shadow-[0_0_30px_rgba(179,71,209,0.3)] flex flex-col lg:flex-row items-center gap-2 lg:gap-4 text-center justify-center w-full">
-            <span className="inline-block align-middle">NYTW<WolfEyeO />LF</span> <span className="text-[#b347d1]">GAMES</span>
+          <h1 className="text-3xl sm:text-4xl md:text-[2.5rem] lg:text-5xl font-black tracking-[0.15em] md:tracking-[0.25em] lg:tracking-[0.3em] text-white uppercase font-display drop-shadow-[0_0_30px_rgba(168,85,197,0.3)] flex flex-col lg:flex-row items-center gap-2 lg:gap-4 text-center justify-center w-full">
+            <span className="inline-block align-middle">NYTW<WolfEyeO />LF</span> <span className="text-[#A855C5]">GAMES</span>
           </h1>
         </motion.div>
       </motion.div>

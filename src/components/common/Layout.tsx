@@ -80,7 +80,7 @@ export const ShineOverlay = React.memo(({
     </div>;
 });
 
-export const FogLayer = React.memo(({ opacity = 0.4, speed = 20, color = "rgba(116,44,134,0.15)", className = "", yOffset = "0%" }: { opacity?: number, speed?: number, color?: string, className?: string, yOffset?: string }) => {
+export const FogLayer = React.memo(({ opacity = 0.4, speed = 20, color = "rgba(168,85,197,0.15)", className = "", yOffset = "0%" }: { opacity?: number, speed?: number, color?: string, className?: string, yOffset?: string }) => {
   return (
     <div className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`}>
       <motion.div
@@ -216,9 +216,9 @@ export const CinematicBackground = () => {
   return <div ref={containerRef} className="absolute inset-0 pointer-events-none overflow-hidden">
       <div className="absolute inset-0 bg-[#0F0B14]" />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#1A1322]/20 to-transparent" />
-      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,rgba(116,44,134,0.04)_0%,transparent_60%)]" />
-      <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_80%_80%,rgba(116,44,134,0.03)_0%,transparent_60%)]" />
-      <motion.div className="absolute h-[800px] w-[800px] rounded-full bg-[radial-gradient(circle_at_center,rgba(116,44,134,0.18)_0%,transparent_70%)] blur-[80px]" style={{
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,rgba(168,85,197,0.04)_0%,transparent_60%)]" />
+      <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_80%_80%,rgba(168,85,197,0.03)_0%,transparent_60%)]" />
+      <motion.div className="absolute h-[800px] w-[800px] rounded-full bg-[radial-gradient(circle_at_center,rgba(168,85,197,0.18)_0%,transparent_70%)] blur-[80px]" style={{
       x: useTransform(mouseX, x => x - 400),
       y: useTransform(mouseY, y => y - 400),
       opacity: isHovering ? isHoveringCard ? 0 : 1 : 0

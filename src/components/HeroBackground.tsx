@@ -78,7 +78,7 @@ const HeroBackground = ({
       repeat: Infinity,
       ease: "linear"
     }} className="absolute inset-0 pointer-events-none z-20">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(116,44,134,0.15)_0%,transparent_60%)] blur-[80px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(168,85,197,0.15)_0%,transparent_60%)] blur-[80px]" />
       </motion.div>
 
       {/* Atmospheric Particles (Embers/Dust) */}

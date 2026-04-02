@@ -17,14 +17,14 @@ const FeatureCard = React.memo(({
   return <motion.div style={{
     opacity: cardOpacity
   }} onMouseEnter={() => setIsHoveringCard(true)} onMouseLeave={() => setIsHoveringCard(false)} className="relative p-5 md:p-6 lg:p-7 border border-white/5 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-md group overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-r from-[#742C86]/0 via-[#742C86]/20 to-[#742C86]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
-      <h3 className="text-base md:text-lg lg:text-xl font-black text-white uppercase tracking-widest mb-2 group-hover:text-[#c79a40] transition-colors">
-        {feature.title}
-      </h3>
-      <p className="text-xs md:text-sm lg:text-base text-white/60 leading-relaxed font-medium">
-        {feature.desc}
-      </p>
-    </motion.div>;
+    <div className="absolute inset-0 bg-gradient-to-r from-[#A855C5]/0 via-[#A855C5]/20 to-[#A855C5]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
+    <h3 className="text-base md:text-lg lg:text-xl font-black text-white uppercase tracking-widest mb-2 group-hover:text-[#c79a40] transition-colors">
+      {feature.title}
+    </h3>
+    <p className="text-xs md:text-sm lg:text-base text-white/60 leading-relaxed font-medium">
+      {feature.desc}
+    </p>
+  </motion.div>;
 });
 
 
@@ -84,88 +84,88 @@ const About = () => {
     perspective: "2000px"
   }}>
 
-      {/* ===== LAYER 1: DEEP BACKGROUND (Slow Parallax) ===== */}
-      <motion.div style={{
+    {/* ===== LAYER 1: DEEP BACKGROUND (Slow Parallax) ===== */}
+    <motion.div style={{
       y: bgY
     }} className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(50,20,60,0.2)_0%,transparent_100%)]" />
-        {/* Giant textured background sphere (Moon/Planet illusion) */}
-        <div className="absolute -top-[20%] right-[-10%] w-[80vw] h-[80vw] bg-[radial-gradient(circle,rgba(116,44,134,0.1)_0%,transparent_70%)] rounded-full blur-[100px]" />
-      </motion.div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(50,20,60,0.2)_0%,transparent_100%)]" />
+      {/* Giant textured background sphere (Moon/Planet illusion) */}
+      <div className="absolute -top-[20%] right-[-10%] w-[80vw] h-[80vw] bg-[radial-gradient(circle,rgba(168,85,197,0.1)_0%,transparent_70%)] rounded-full blur-[100px]" />
+    </motion.div>
 
-      {/* ===== LAYER 2: MID-GROUND ENVIRONMENT (Medium Reverse Parallax) ===== */}
-      <motion.div style={{
+    {/* ===== LAYER 2: MID-GROUND ENVIRONMENT (Medium Reverse Parallax) ===== */}
+    <motion.div style={{
       y: midY,
       scaleX: midScaleX
     }} className="absolute inset-0 pointer-events-none z-0 flex items-center justify-center opacity-30">
-        {/* Stylized geometric background elements representing structures or ruins */}
-        <div className="w-[120%] h-[1px] bg-gradient-to-r from-transparent via-[#742C86] to-transparent absolute top-1/4 -rotate-6" />
-        <div className="w-[120%] h-[1px] bg-gradient-to-r from-transparent via-[#742C86] to-transparent absolute bottom-1/3 rotate-3" />
-        {/* Floating background monoliths */}
-        <div className="absolute left-[10%] top-[40%] w-32 h-[500px] border border-[#742C86]/20 bg-[#0F0B14]/50 backdrop-blur-sm -rotate-12 transform-gpu" />
-        <div className="absolute right-[5%] top-[20%] w-64 h-[800px] border border-[#742C86]/10 bg-[#0F0B14]/30 backdrop-blur-sm rotate-6 transform-gpu" />
-      </motion.div>
+      {/* Stylized geometric background elements representing structures or ruins */}
+      <div className="w-[120%] h-[1px] bg-gradient-to-r from-transparent via-[#A855C5] to-transparent absolute top-1/4 -rotate-6" />
+      <div className="w-[120%] h-[1px] bg-gradient-to-r from-transparent via-[#A855C5] to-transparent absolute bottom-1/3 rotate-3" />
+      {/* Floating background monoliths */}
+      <div className="absolute left-[10%] top-[40%] w-32 h-[500px] border border-[#A855C5]/20 bg-[#0F0B14]/50 backdrop-blur-sm -rotate-12 transform-gpu" />
+      <div className="absolute right-[5%] top-[20%] w-64 h-[800px] border border-[#A855C5]/10 bg-[#0F0B14]/30 backdrop-blur-sm rotate-6 transform-gpu" />
+    </motion.div>
 
-      {/* ===== MAIN CONTENT ===== */}
-      <div className="container-1440 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center mb-8 lg:mb-12 relative">
+    {/* ===== MAIN CONTENT ===== */}
+    <div className="container-1440 relative z-10">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center mb-8 lg:mb-12 relative">
 
-          {/* Left Column: 3D Heavy Text Reveal */}
-          <motion.div style={{
+        {/* Left Column: 3D Heavy Text Reveal */}
+        <motion.div style={{
           opacity: textOpacity
         }} className="lg:col-span-6 space-y-6">
-            <div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black tracking-tighter text-white leading-[1.05] uppercase mb-4 lg:mb-6 drop-shadow-[0_20px_50px_rgba(116,44,134,0.5)]">
-                WE BUILD WORLDS <br />
-                WHERE <span className="inline-block text-transparent bg-clip-text bg-gradient-to-br from-[#c79a40] to-[#742C86] pb-2">STRATEGY</span> <br />
-                REIGNS.
-              </h2>
+          <div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black tracking-tighter text-white leading-[1.05] uppercase mb-4 lg:mb-6 drop-shadow-[0_20px_50px_rgba(168,85,197,0.5)]">
+              WE BUILD WORLDS <br />
+              WHERE <span className="inline-block text-transparent bg-clip-text bg-gradient-to-br from-[#c79a40] to-[#A855C5] pb-2">STRATEGY</span> <br />
+              REIGNS.
+            </h2>
 
-              <div className="w-16 h-1.5 bg-[#742C86] mb-6 lg:mb-8" />
+            <div className="w-16 h-1.5 bg-[#A855C5] mb-6 lg:mb-8" />
 
-              <p className="text-sm md:text-base lg:text-lg xl:text-xl text-white/80 leading-relaxed max-w-xl font-medium tracking-wide">
-                NYTWOLF Games is a passionate studio crafting immersive medieval sandbox worlds where every decision matters.
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Right Column: Static Image with Hover Animation */}
-          <div className="hidden lg:block lg:col-span-6">
-            <div className="relative aspect-[16/9] rounded-sm overflow-hidden border-2 border-white/10 group">
-              <div className="absolute inset-0 bg-[#742C86]/20 mix-blend-overlay z-10 pointer-events-none" />
-              <img src="https://i.pinimg.com/736x/78/e8/10/78e81059f1e19ddbf772424da5409863.jpg" alt="Cinematic Medieval Landscape" className="w-full h-full object-cover brightness-[0.8] contrast-125 saturate-50 transition-all duration-[1000ms] group-hover:scale-[1.1] group-hover:saturate-100" referrerPolicy="no-referrer" />
-              {/* Sci-fi/Fantasy UI Crosshairs */}
-              <div className="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-[#c79a40] z-20" />
-              <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-[#c79a40] z-20" />
-            </div>
+            <p className="text-sm md:text-base lg:text-lg xl:text-xl text-white/80 leading-relaxed max-w-xl font-medium tracking-wide">
+              NYTWOLF Games is a passionate studio crafting immersive medieval sandbox worlds where every decision matters.
+            </p>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Feature Blocks: Layered Extrusion */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8" style={{
-        perspective: "1500px"
-      }}>
-          {features.map((feature, i) => <FeatureCard key={i} feature={feature} smoothProgress={smoothProgress} setIsHoveringCard={setIsHoveringCard} />)}
+        {/* Right Column: Static Image with Hover Animation */}
+        <div className="hidden lg:block lg:col-span-6">
+          <div className="relative aspect-[16/9] rounded-sm overflow-hidden border-2 border-white/10 group">
+            <div className="absolute inset-0 bg-[#A855C5]/20 mix-blend-overlay z-10 pointer-events-none" />
+            <img src="https://i.pinimg.com/736x/78/e8/10/78e81059f1e19ddbf772424da5409863.jpg" alt="Cinematic Medieval Landscape" className="w-full h-full object-cover brightness-[0.8] contrast-125 saturate-50 transition-all duration-[1000ms] group-hover:scale-[1.1] group-hover:saturate-100" referrerPolicy="no-referrer" />
+            {/* Sci-fi/Fantasy UI Crosshairs */}
+            <div className="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-[#c79a40] z-20" />
+            <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-[#c79a40] z-20" />
+          </div>
         </div>
       </div>
 
-      {/* ===== LAYER 3: FAST FOREGROUND (High Speed Parallax) ===== */}
-      <motion.div style={{
+      {/* Feature Blocks: Layered Extrusion */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8" style={{
+        perspective: "1500px"
+      }}>
+        {features.map((feature, i) => <FeatureCard key={i} feature={feature} smoothProgress={smoothProgress} setIsHoveringCard={setIsHoveringCard} />)}
+      </div>
+    </div>
+
+    {/* ===== LAYER 3: FAST FOREGROUND (High Speed Parallax) ===== */}
+    <motion.div style={{
       y: fgLeftY,
       rotate: fgRotate
     }} className="absolute -left-[10%] top-[40%] w-[30vw] h-[30vw] pointer-events-none z-50 mix-blend-screen opacity-40">
-        <div className="w-full h-full border-[40px] border-[#742C86] rounded-full blur-[80px]" />
-      </motion.div>
+      <div className="w-full h-full border-[40px] border-[#A855C5] rounded-full blur-[80px]" />
+    </motion.div>
 
-      <motion.div style={{
+    <motion.div style={{
       y: fgRightY,
       rotate: useTransform(fgRotate, v => -v)
     }} className="absolute -right-[5%] top-[60%] w-[20vw] h-[20vw] pointer-events-none z-50 mix-blend-screen opacity-50">
-        {/* Sharp geometric foreground element simulating a shard or weapon edge flying past */}
-        <div className="w-full h-full bg-gradient-to-tr from-[#c79a40] to-transparent clip-path-polygon-[50%_0%,_100%_100%,_0%_100%] blur-[4px] rotate-45" />
-      </motion.div>
+      {/* Sharp geometric foreground element simulating a shard or weapon edge flying past */}
+      <div className="w-full h-full bg-gradient-to-tr from-[#c79a40] to-transparent clip-path-polygon-[50%_0%,_100%_100%,_0%_100%] blur-[4px] rotate-45" />
+    </motion.div>
 
-    </section>;
+  </section>;
 };
 
 export default About;

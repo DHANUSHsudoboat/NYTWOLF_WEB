@@ -57,12 +57,12 @@ const Services = () => {
     <section ref={sectionRef} className="relative min-h-screen flex flex-col justify-center section-spacing bg-[#060408] overflow-hidden" style={{ perspective: "1500px" }}>
       {/* LAYER 1: Deep Background Atmosphere */}
       <motion.div style={{ y: bgY }} className="absolute inset-0 z-0 pointer-events-none opacity-40 origin-center">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(116,44,134,0.15)_0%,transparent_70%)] blur-[50px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,197,0.15)_0%,transparent_70%)] blur-[50px]" />
       </motion.div>
 
       {/* LAYER 2: Midground Environment (Pillars / Architecture) */}
       <motion.div style={{ y: midLeftY }} className="absolute top-[20%] -left-[5%] z-0 pointer-events-none opacity-20">
-        <div className="w-[30vw] h-[60vh] bg-gradient-to-b from-[#742C86]/40 to-transparent clip-path-polygon-[10%_0%,_90%_0%,_100%_100%,_0%_100%] blur-sm rotate-[-10deg] drop-shadow-[0_20px_30px_rgba(0,0,0,0.8)]" />
+        <div className="w-[30vw] h-[60vh] bg-gradient-to-b from-[#A855C5]/40 to-transparent clip-path-polygon-[10%_0%,_90%_0%,_100%_100%,_0%_100%] blur-sm rotate-[-10deg] drop-shadow-[0_20px_30px_rgba(0,0,0,0.8)]" />
       </motion.div>
       <motion.div style={{ y: midRightY }} className="absolute top-[40%] -right-[10%] z-0 pointer-events-none opacity-30">
         <div className="w-[25vw] h-[50vh] bg-gradient-to-b from-[#c79a40]/20 to-transparent clip-path-polygon-[20%_0%,_80%_0%,_100%_100%,_0%_100%] blur-[2px] rotate-[15deg] drop-shadow-[0_20px_30px_rgba(0,0,0,0.8)]" />
@@ -94,10 +94,10 @@ const Services = () => {
                   key={i}
                   className="relative p-4 border border-white/5 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-md group overflow-hidden transition-all duration-500"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#742C86]/0 via-[#742C86]/10 to-[#742C86]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-[1500ms] ease-in-out" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#A855C5]/0 via-[#A855C5]/10 to-[#A855C5]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-[1500ms] ease-in-out" />
 
                   <div className="relative z-10 flex flex-col items-center text-center space-y-2">
-                    <div className="w-10 h-10 md:w-11 md:h-11 lg:w-14 lg:h-14 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#742C86] group-hover:scale-110 group-hover:text-[#c79a40] group-hover:border-[#c79a40]/30 transition-all duration-500">
+                    <div className="w-10 h-10 md:w-11 md:h-11 lg:w-14 lg:h-14 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#A855C5] group-hover:scale-110 group-hover:text-[#c79a40] group-hover:border-[#c79a40]/30 transition-all duration-500">
                       {React.cloneElement(s.icon as React.ReactElement<any>, { className: "w-5 h-5 md:w-6 md:h-6" })}
                     </div>
                     <div className="space-y-1">
@@ -122,7 +122,7 @@ const Services = () => {
       </motion.div>
 
       <motion.div style={{ y: fgY2, rotate: fgRot2 }} className="absolute bottom-[60%] right-[10%] z-30 pointer-events-none opacity-80 drop-shadow-[-20px_20px_30px_rgba(0,0,0,0.8)]">
-        <div className="w-[20vw] h-[20vw] border-t-[8px] border-r-[4px] border-[#742C86] rounded-full blur-[1px] opacity-70" />
+        <div className="w-[20vw] h-[20vw] border-t-[8px] border-r-[4px] border-[#A855C5] rounded-full blur-[1px] opacity-70" />
       </motion.div>
     </section>
   );

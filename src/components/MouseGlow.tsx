@@ -23,7 +23,7 @@ const MouseGlow = ({
 
   // Responsive settings based on active section
   const isHidden = activeSectionId === 'home';
-  const glowColor = "radial-gradient(circle, rgba(116, 44, 134, 0.2) 0%, rgba(116, 44, 134, 0.05) 40%, transparent 70%)";
+  const glowColor = "radial-gradient(circle, rgba(168, 85, 197, 0.2) 0%, rgba(168, 85, 197, 0.05) 40%, transparent 70%)";
   const glowSize = '600px';
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {

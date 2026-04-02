@@ -147,7 +147,7 @@ const PoweringOurWorlds = () => {
           ease: "easeInOut"
         }
       }} className="absolute w-[600px] h-[600px] -translate-x-1/2 -translate-y-1/2 z-10">
-          <div className="w-full h-full bg-[radial-gradient(circle_at_center,rgba(116,44,134,0.3)_0%,rgba(116,44,134,0.1)_30%,transparent_70%)] blur-[80px]" />
+          <div className="w-full h-full bg-[radial-gradient(circle_at_center,rgba(168,85,197,0.3)_0%,rgba(168,85,197,0.1)_30%,transparent_70%)] blur-[80px]" />
         </motion.div>
 
         {/* Interactive Spotlight Overlay - Intensifies on hover */}
@@ -166,7 +166,7 @@ const PoweringOurWorlds = () => {
         <motion.div style={{
         y: bgY
       }} className="absolute inset-0 z-0 opacity-40 origin-center">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(116,44,134,0.15)_0%,transparent_70%)] blur-[50px]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,197,0.15)_0%,transparent_70%)] blur-[50px]" />
         </motion.div>
       </div>
 
@@ -175,7 +175,7 @@ const PoweringOurWorlds = () => {
         opacity: h2Opacity
       }} className="text-center mb-4 lg:mb-6 relative z-10">
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-black tracking-tighter text-white uppercase leading-none mb-4 lg:mb-5 drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
-            POWERING OUR <span className="text-[#742C86]">WORLDS</span>
+            POWERING OUR <span className="text-[#A855C5]">WORLDS</span>
           </h2>
           <p className="text-sm md:text-lg lg:text-base text-text-muted tracking-[0.15em] md:tracking-[0.4em] uppercase font-bold max-w-4xl mx-auto drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-6">
             Built with industry-leading tools. Executed with precision.

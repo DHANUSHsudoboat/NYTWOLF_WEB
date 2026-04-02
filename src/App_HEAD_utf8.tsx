@@ -1,4 +1,4 @@
-Ôªø/**
+/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -199,7 +199,7 @@ const HeroBackground = ({ className = "" }: { className?: string }) => {
         transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
         className="absolute inset-0 pointer-events-none z-20"
       >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(116,44,134,0.15)_0%,transparent_60%)] blur-[80px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(168,85,197,0.15)_0%,transparent_60%)] blur-[80px]" />
       </motion.div>
 
       {/* Atmospheric Particles (Embers/Dust) */}
@@ -380,9 +380,9 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
         transition={{ duration: 1.5 }}
       >
         {/* Large soft spread */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(116,44,134,0.15)_0%,transparent_80%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,197,0.15)_0%,transparent_80%)]" />
         {/* Core glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(116,44,134,0.1)_0%,transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,197,0.1)_0%,transparent_50%)]" />
       </motion.div>
 
       {/* Subtle Floating Particles */}
@@ -453,7 +453,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
         >
           <div className="w-32 h-[1px] bg-white/10 overflow-hidden rounded-full">
             <motion.div
-              className="h-full bg-gradient-to-r from-[#742C86] to-[#C6A75E]"
+              className="h-full bg-gradient-to-r from-[#A855C5] to-[#C6A75E]"
               style={{ width: fillHeight }}
             />
           </div>
@@ -477,8 +477,8 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
           }}
           className="mt-12 text-center"
         >
-          <h1 className="text-3xl sm:text-4xl md:text-[2.5rem] lg:text-5xl font-black tracking-[0.15em] md:tracking-[0.25em] lg:tracking-[0.3em] text-white uppercase font-display drop-shadow-[0_0_30px_rgba(116,44,134,0.3)] flex flex-col lg:flex-row items-center gap-2 lg:gap-4 text-center justify-center w-full">
-            <span className="inline-block align-middle">NYTW<WolfEyeO />LF</span> <span className="text-[#742C86]">GAMES</span>
+          <h1 className="text-3xl sm:text-4xl md:text-[2.5rem] lg:text-5xl font-black tracking-[0.15em] md:tracking-[0.25em] lg:tracking-[0.3em] text-white uppercase font-display drop-shadow-[0_0_30px_rgba(168,85,197,0.3)] flex flex-col lg:flex-row items-center gap-2 lg:gap-4 text-center justify-center w-full">
+            <span className="inline-block align-middle">NYTW<WolfEyeO />LF</span> <span className="text-[#A855C5]">GAMES</span>
           </h1>
         </motion.div>
       </motion.div>
@@ -630,12 +630,12 @@ const CinematicBackground = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#1A1322]/20 to-transparent" />
 
       {/* Soft Cinematic Lighting - Very Minimal */}
-      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,rgba(116,44,134,0.04)_0%,transparent_60%)]" />
-      <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_80%_80%,rgba(116,44,134,0.03)_0%,transparent_60%)]" />
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,rgba(168,85,197,0.04)_0%,transparent_60%)]" />
+      <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_80%_80%,rgba(168,85,197,0.03)_0%,transparent_60%)]" />
 
       {/* Interactive Spotlight Glow */}
       <motion.div
-        className="absolute h-[800px] w-[800px] rounded-full bg-[radial-gradient(circle_at_center,rgba(116,44,134,0.18)_0%,transparent_70%)] blur-[80px]"
+        className="absolute h-[800px] w-[800px] rounded-full bg-[radial-gradient(circle_at_center,rgba(168,85,197,0.18)_0%,transparent_70%)] blur-[80px]"
         style={{
           x: useTransform(mouseX, (x) => x - 400),
           y: useTransform(mouseY, (y) => y - 400),
@@ -675,7 +675,7 @@ const CinematicBackground = () => {
   );
 };
 
-const FogLayer = React.memo(({ opacity = 0.4, speed = 20, color = "rgba(116,44,134,0.15)", className = "", yOffset = "0%" }: { opacity?: number, speed?: number, color?: string, className?: string, yOffset?: string }) => {
+const FogLayer = React.memo(({ opacity = 0.4, speed = 20, color = "rgba(168,85,197,0.15)", className = "", yOffset = "0%" }: { opacity?: number, speed?: number, color?: string, className?: string, yOffset?: string }) => {
   return (
     <motion.div
       initial={{ x: "-10%", opacity: 0 }}
@@ -707,7 +707,7 @@ const MouseGlow = ({ activeSectionId }: { activeSectionId: string }) => {
   const isHidden = activeSectionId === 'home';
   const glowColor = activeSectionId === 'projects'
     ? "radial-gradient(circle, rgba(239, 176, 52, 0.25) 0%, rgba(239, 176, 52, 0.1) 40%, transparent 70%)"
-    : "radial-gradient(circle, rgba(116, 44, 134, 0.2) 0%, rgba(116, 44, 134, 0.05) 40%, transparent 70%)";
+    : "radial-gradient(circle, rgba(168, 85, 197, 0.2) 0%, rgba(168, 85, 197, 0.05) 40%, transparent 70%)";
   const glowSize = activeSectionId === 'projects' ? '700px' : '600px';
 
   useEffect(() => {
@@ -764,7 +764,7 @@ const Navbar = ({ activeSection, onNavItemClick }: { activeSection: string, onNa
   }, []);
 
   useEffect(() => {
-    // Section tracking Œì√á√∂ keep for dev visibility if needed
+    // Section tracking G«ˆ keep for dev visibility if needed
   }, [activeSection]);
 
   const navLinks = [
@@ -967,8 +967,8 @@ const Hero = ({ mouseX, mouseY }: { mouseX: any, mouseY: any }) => {
         </div>
 
         <div className="flex flex-col items-center">
-          <h1 className="text-3xl sm:text-4xl md:text-[2.5rem] lg:text-5xl font-black tracking-[0.15em] md:tracking-[0.25em] lg:tracking-[0.3em] text-white uppercase font-display drop-shadow-[0_0_30px_rgba(116,44,134,0.3)] flex flex-col lg:flex-row items-center gap-2 lg:gap-4 text-center">
-            <span className="inline-block align-middle">NYTW<WolfEyeO />LF</span> <span className="text-[#742C86]">GAMES</span>
+          <h1 className="text-3xl sm:text-4xl md:text-[2.5rem] lg:text-5xl font-black tracking-[0.15em] md:tracking-[0.25em] lg:tracking-[0.3em] text-white uppercase font-display drop-shadow-[0_0_30px_rgba(168,85,197,0.3)] flex flex-col lg:flex-row items-center gap-2 lg:gap-4 text-center">
+            <span className="inline-block align-middle">NYTW<WolfEyeO />LF</span> <span className="text-[#A855C5]">GAMES</span>
           </h1>
 
           <div className="flex flex-col items-center gap-1 mt-2">
@@ -1026,7 +1026,7 @@ const FeatureCard = React.memo(({ feature, smoothProgress, setIsHoveringCard }: 
       onMouseLeave={() => setIsHoveringCard(false)}
       className="relative p-5 md:p-6 lg:p-7 border border-white/5 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-md group overflow-hidden"
     >
-      <div className="absolute inset-0 bg-gradient-to-r from-[#742C86]/0 via-[#742C86]/20 to-[#742C86]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#A855C5]/0 via-[#A855C5]/20 to-[#A855C5]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
       <h3 className="text-base md:text-lg lg:text-xl font-black text-white uppercase tracking-widest mb-2 group-hover:text-[#c79a40] transition-colors">
         {feature.title}
       </h3>
@@ -1090,17 +1090,17 @@ const About = () => {
       <motion.div style={{ y: bgY }} className="absolute inset-0 pointer-events-none z-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(50,20,60,0.2)_0%,transparent_100%)]" />
         {/* Giant textured background sphere (Moon/Planet illusion) */}
-        <div className="absolute -top-[20%] right-[-10%] w-[80vw] h-[80vw] bg-[radial-gradient(circle,rgba(116,44,134,0.1)_0%,transparent_70%)] rounded-full blur-[100px]" />
+        <div className="absolute -top-[20%] right-[-10%] w-[80vw] h-[80vw] bg-[radial-gradient(circle,rgba(168,85,197,0.1)_0%,transparent_70%)] rounded-full blur-[100px]" />
       </motion.div>
 
       {/* ===== LAYER 2: MID-GROUND ENVIRONMENT (Medium Reverse Parallax) ===== */}
       <motion.div style={{ y: midY, scaleX: midScaleX }} className="absolute inset-0 pointer-events-none z-0 flex items-center justify-center opacity-30">
         {/* Stylized geometric background elements representing structures or ruins */}
-        <div className="w-[120%] h-[1px] bg-gradient-to-r from-transparent via-[#742C86] to-transparent absolute top-1/4 -rotate-6" />
-        <div className="w-[120%] h-[1px] bg-gradient-to-r from-transparent via-[#742C86] to-transparent absolute bottom-1/3 rotate-3" />
+        <div className="w-[120%] h-[1px] bg-gradient-to-r from-transparent via-[#A855C5] to-transparent absolute top-1/4 -rotate-6" />
+        <div className="w-[120%] h-[1px] bg-gradient-to-r from-transparent via-[#A855C5] to-transparent absolute bottom-1/3 rotate-3" />
         {/* Floating background monoliths */}
-        <div className="absolute left-[10%] top-[40%] w-32 h-[500px] border border-[#742C86]/20 bg-[#0F0B14]/50 backdrop-blur-sm -rotate-12 transform-gpu" />
-        <div className="absolute right-[5%] top-[20%] w-64 h-[800px] border border-[#742C86]/10 bg-[#0F0B14]/30 backdrop-blur-sm rotate-6 transform-gpu" />
+        <div className="absolute left-[10%] top-[40%] w-32 h-[500px] border border-[#A855C5]/20 bg-[#0F0B14]/50 backdrop-blur-sm -rotate-12 transform-gpu" />
+        <div className="absolute right-[5%] top-[20%] w-64 h-[800px] border border-[#A855C5]/10 bg-[#0F0B14]/30 backdrop-blur-sm rotate-6 transform-gpu" />
       </motion.div>
 
       {/* ===== MAIN CONTENT ===== */}
@@ -1115,13 +1115,13 @@ const About = () => {
             className="lg:col-span-6 space-y-6"
           >
             <div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black tracking-tighter text-white leading-[1.05] uppercase mb-4 lg:mb-6 drop-shadow-[0_20px_50px_rgba(116,44,134,0.5)]">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black tracking-tighter text-white leading-[1.05] uppercase mb-4 lg:mb-6 drop-shadow-[0_20px_50px_rgba(168,85,197,0.5)]">
                 WE BUILD WORLDS <br />
-                WHERE <span className="inline-block text-transparent bg-clip-text bg-gradient-to-br from-[#c79a40] to-[#742C86] pb-2">STRATEGY</span> <br />
+                WHERE <span className="inline-block text-transparent bg-clip-text bg-gradient-to-br from-[#c79a40] to-[#A855C5] pb-2">STRATEGY</span> <br />
                 REIGNS.
               </h2>
 
-              <div className="w-16 h-1.5 bg-[#742C86] mb-6 lg:mb-8" />
+              <div className="w-16 h-1.5 bg-[#A855C5] mb-6 lg:mb-8" />
 
               <p className="text-sm md:text-base lg:text-lg xl:text-xl text-white/80 leading-relaxed max-w-xl font-medium tracking-wide">
                 NYTWOLF Games is a passionate studio crafting immersive medieval sandbox worlds where every decision matters.
@@ -1132,7 +1132,7 @@ const About = () => {
           {/* Right Column: Static Image with Hover Animation */}
           <div className="hidden lg:block lg:col-span-6">
             <div className="relative aspect-[16/9] rounded-sm overflow-hidden border-2 border-white/10 group">
-              <div className="absolute inset-0 bg-[#742C86]/20 mix-blend-overlay z-10 pointer-events-none" />
+              <div className="absolute inset-0 bg-[#A855C5]/20 mix-blend-overlay z-10 pointer-events-none" />
               <img
                 src="https://i.pinimg.com/736x/78/e8/10/78e81059f1e19ddbf772424da5409863.jpg"
                 alt="Cinematic Medieval Landscape"
@@ -1161,7 +1161,7 @@ const About = () => {
 
       {/* ===== LAYER 3: FAST FOREGROUND (High Speed Parallax) ===== */}
       <motion.div style={{ y: fgLeftY, rotate: fgRotate }} className="absolute -left-[10%] top-[40%] w-[30vw] h-[30vw] pointer-events-none z-50 mix-blend-screen opacity-40">
-        <div className="w-full h-full border-[40px] border-[#742C86] rounded-full blur-[80px]" />
+        <div className="w-full h-full border-[40px] border-[#A855C5] rounded-full blur-[80px]" />
       </motion.div>
 
       <motion.div style={{ y: fgRightY, rotate: useTransform(fgRotate, v => -v) }} className="absolute -right-[5%] top-[60%] w-[20vw] h-[20vw] pointer-events-none z-50 mix-blend-screen opacity-50">
@@ -1267,14 +1267,14 @@ const Services = () => {
 
       {/* LAYER 1: Deep Background Atmosphere */}
       <motion.div style={{ y: bgY }} className="absolute inset-0 z-0 pointer-events-none opacity-40 origin-center">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(116,44,134,0.15)_0%,transparent_70%)] blur-[50px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,197,0.15)_0%,transparent_70%)] blur-[50px]" />
         {/* Placeholder for a deep background image: <img src="/services_bg.png" className="w-full h-[120%] object-cover hidden" /> */}
       </motion.div>
 
       {/* LAYER 2: Midground Environment (Pillars / Architecture) */}
       <motion.div style={{ y: midLeftY }} className="absolute top-[20%] -left-[5%] z-0 pointer-events-none opacity-20">
         {/* Placeholder for uploaded asset: <img src="/pillar_left.png" className="w-[30vw] h-auto hidden" /> */}
-        <div className="w-[30vw] h-[60vh] bg-gradient-to-b from-[#742C86]/40 to-transparent clip-path-polygon-[10%_0%,_90%_0%,_100%_100%,_0%_100%] blur-sm rotate-[-10deg] drop-shadow-[0_20px_30px_rgba(0,0,0,0.8)]" />
+        <div className="w-[30vw] h-[60vh] bg-gradient-to-b from-[#A855C5]/40 to-transparent clip-path-polygon-[10%_0%,_90%_0%,_100%_100%,_0%_100%] blur-sm rotate-[-10deg] drop-shadow-[0_20px_30px_rgba(0,0,0,0.8)]" />
       </motion.div>
       <motion.div style={{ y: midRightY }} className="absolute top-[40%] -right-[10%] z-0 pointer-events-none opacity-30">
         {/* Placeholder for uploaded asset: <img src="/arch_right.png" className="w-[40vw] h-auto hidden" /> */}
@@ -1310,10 +1310,10 @@ const Services = () => {
                   onMouseLeave={() => setIsHoveringCard(false)}
                   className="relative p-4 border border-white/5 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-md group overflow-hidden transition-all duration-500"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#742C86]/0 via-[#742C86]/10 to-[#742C86]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-[1500ms] ease-in-out" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#A855C5]/0 via-[#A855C5]/10 to-[#A855C5]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-[1500ms] ease-in-out" />
 
                   <div className="relative z-10 flex flex-col items-center text-center space-y-2">
-                    <div className="w-10 h-10 md:w-11 md:h-11 lg:w-14 lg:h-14 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#742C86] group-hover:scale-110 group-hover:text-[#c79a40] group-hover:border-[#c79a40]/30 transition-all duration-500">
+                    <div className="w-10 h-10 md:w-11 md:h-11 lg:w-14 lg:h-14 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#A855C5] group-hover:scale-110 group-hover:text-[#c79a40] group-hover:border-[#c79a40]/30 transition-all duration-500">
                       {React.cloneElement(s.icon as React.ReactElement, { className: "w-5 h-5 md:w-6 md:h-6" })}
                     </div>
                     <div className="space-y-1">
@@ -1339,7 +1339,7 @@ const Services = () => {
       </motion.div>
 
       <motion.div style={{ y: fgY2, rotate: fgRot2 }} className="absolute bottom-[60%] right-[10%] z-30 pointer-events-none opacity-80 drop-shadow-[-20px_20px_30px_rgba(0,0,0,0.8)]">
-        <div className="w-[20vw] h-[20vw] border-t-[8px] border-r-[4px] border-[#742C86] rounded-full blur-[1px] opacity-70" />
+        <div className="w-[20vw] h-[20vw] border-t-[8px] border-r-[4px] border-[#A855C5] rounded-full blur-[1px] opacity-70" />
       </motion.div>
 
     </section>
@@ -1491,7 +1491,7 @@ const PoweringOurWorlds = () => {
           }}
           className="absolute w-[600px] h-[600px] -translate-x-1/2 -translate-y-1/2 z-10"
         >
-          <div className="w-full h-full bg-[radial-gradient(circle_at_center,rgba(116,44,134,0.3)_0%,rgba(116,44,134,0.1)_30%,transparent_70%)] blur-[80px]" />
+          <div className="w-full h-full bg-[radial-gradient(circle_at_center,rgba(168,85,197,0.3)_0%,rgba(168,85,197,0.1)_30%,transparent_70%)] blur-[80px]" />
         </motion.div>
 
         {/* Interactive Spotlight Overlay - Intensifies on hover */}
@@ -1509,7 +1509,7 @@ const PoweringOurWorlds = () => {
 
         {/* Ambient Glow */}
         <motion.div style={{ y: bgY }} className="absolute inset-0 z-0 opacity-40 origin-center">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(116,44,134,0.15)_0%,transparent_70%)] blur-[50px]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,197,0.15)_0%,transparent_70%)] blur-[50px]" />
         </motion.div>
       </div>
 
@@ -1519,7 +1519,7 @@ const PoweringOurWorlds = () => {
           className="text-center mb-4 lg:mb-6 relative z-10"
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-black tracking-tighter text-white uppercase leading-none mb-4 lg:mb-5 drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
-            POWERING OUR <span className="text-[#742C86]">WORLDS</span>
+            POWERING OUR <span className="text-[#A855C5]">WORLDS</span>
           </h2>
           <p className="text-sm md:text-lg lg:text-base text-text-muted tracking-[0.15em] md:tracking-[0.4em] uppercase font-bold max-w-4xl mx-auto drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-6">
             Built with industry-leading tools. Executed with precision.
@@ -1602,7 +1602,7 @@ const FeaturedProject = () => {
 
   // 5. Atmospheric Enhancements
   const vignetteOpacity = useTransform(smoothProgress, [0, 0.5, 1], [0.6, 0.9, 0.6]);
-  const lightShift = useTransform(smoothProgress, [0, 1], ["rgba(116,44,134,0.1)", "rgba(199,154,64,0.15)"]);
+  const lightShift = useTransform(smoothProgress, [0, 1], ["rgba(168,85,197,0.1)", "rgba(199,154,64,0.15)"]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -1773,19 +1773,19 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
       title: "Development",
       icon: <Code className="w-8 h-8" />,
       text: "Build gameplay systems, tools and immersive mechanics.",
-      color: "from-[#742C86]/20 to-[#c79a40]/20"
+      color: "from-[#A855C5]/20 to-[#c79a40]/20"
     },
     {
       title: "Art",
       icon: <Paintbrush className="w-8 h-8" />,
       text: "Craft worlds, characters and visual storytelling.",
-      color: "from-[#c79a40]/20 to-[#742C86]/20"
+      color: "from-[#c79a40]/20 to-[#A855C5]/20"
     },
     {
       title: "Design",
       icon: <LayoutGrid className="w-8 h-8" />,
       text: "Shape gameplay experiences and player journeys.",
-      color: "from-[rgba(255,255,255,0.1)] to-[#742C86]/20"
+      color: "from-[rgba(255,255,255,0.1)] to-[#A855C5]/20"
     }
   ];
 
@@ -1823,7 +1823,7 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
       {/* LAYER 2: Midground Environment (Hanging Banners / Notice Boards) */}
       {/* LAYER 2: Subtle Atmospheric Depth */}
       <motion.div style={{ y: midLeftY }} className="absolute inset-0 z-0 pointer-events-none opacity-30">
-        <div className="absolute top-[20%] left-[10%] w-[40vw] h-[40vw] bg-[radial-gradient(circle_at_center,rgba(116,44,134,0.05)_0%,transparent_70%)] blur-[100px]" />
+        <div className="absolute top-[20%] left-[10%] w-[40vw] h-[40vw] bg-[radial-gradient(circle_at_center,rgba(168,85,197,0.05)_0%,transparent_70%)] blur-[100px]" />
         <div className="absolute bottom-[20%] right-[10%] w-[30vw] h-[30vw] bg-[radial-gradient(circle_at_center,rgba(199,154,64,0.03)_0%,transparent_70%)] blur-[80px]" />
       </motion.div>
 
@@ -1832,7 +1832,7 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
           <motion.div style={{ opacity: h1Opacity }}>
             <span className="text-[#c79a40] tracking-[0.5em] uppercase text-[10px] md:text-xs font-bold mb-2 md:mb-3 lg:mb-4 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">JOIN THE GUILD</span>
             <h2 className="text-3xl sm:text-4xl md:text-4xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-black mb-2 md:mb-3 lg:mb-3 uppercase tracking-tighter text-white leading-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
-              BUILD THE <span className="text-[#742C86]">FUTURE</span> <br /> WITH US
+              BUILD THE <span className="text-[#A855C5]">FUTURE</span> <br /> WITH US
             </h2>
             <p className="text-sm md:text-base text-text-muted max-w-2xl mx-auto leading-relaxed font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-4">
               We are always looking for passionate, talented individuals. At NYTWOLF, your voice matters.
@@ -1849,7 +1849,7 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
               key={i}
               onMouseEnter={() => setIsHoveringCard(true)}
               onMouseLeave={() => setIsHoveringCard(false)}
-              className="group relative p-5 md:p-5 lg:p-5 border border-white/5 bg-[#0F0B14]/40 backdrop-blur-md transition-all duration-500 flex flex-col items-center text-center cursor-default hover:border-[#742C86]/50 hover:bg-[#0F0B14]/60"
+              className="group relative p-5 md:p-5 lg:p-5 border border-white/5 bg-[#0F0B14]/40 backdrop-blur-md transition-all duration-500 flex flex-col items-center text-center cursor-default hover:border-[#A855C5]/50 hover:bg-[#0F0B14]/60"
             >
               <div className="w-10 h-10 md:w-12 md:h-12 lg:w-12 lg:h-12 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#c79a40] group-hover:scale-110 group-hover:border-[#c79a40]/40 transition-all duration-500 mb-3 md:mb-4">
                 {React.cloneElement(role.icon as React.ReactElement, { size: 24, className: "w-5 h-5 md:w-5 md:h-5 lg:w-5 lg:h-5" })}
@@ -1865,8 +1865,8 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
               </div>
 
               {/* Hover Glow Accent */}
-              <div className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-[#742C86] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-[radial-gradient(circle_at_50%_100%,rgba(116,44,134,0.1),transparent_70%)] transition-opacity duration-700 pointer-events-none" />
+              <div className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-[#A855C5] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-[radial-gradient(circle_at_50%_100%,rgba(168,85,197,0.1),transparent_70%)] transition-opacity duration-700 pointer-events-none" />
             </div>
           ))}
         </motion.div>
@@ -1876,9 +1876,9 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
             href="https://www.linkedin.com/company/nytwolf-games/"
             target="_blank"
             rel="noopener noreferrer"
-            whileHover={{ scale: 1.05, boxShadow: "0 0 5px rgba(116,44,134,0.6)" }}
+            whileHover={{ scale: 1.05, boxShadow: "0 0 5px rgba(168,85,197,0.6)" }}
             whileTap={{ scale: 0.95 }}
-            className="px-8 py-3 md:px-7 md:py-3.5 lg:px-12 lg:py-5 bg-gradient-to-r from-[#742C86] to-[#4A1C56] text-white font-bold uppercase tracking-[0.3em] text-[10px] md:text-[12px] lg:text-sm rounded-3xl flex items-center gap-4 group border border-[#742C86] shadow-[0_10px_px_rgba(116,44,134,0.4)] transition-all relative overflow-hidden"
+            className="px-8 py-3 md:px-7 md:py-3.5 lg:px-12 lg:py-5 bg-gradient-to-r from-[#A855C5] to-[#4A1C56] text-white font-bold uppercase tracking-[0.3em] text-[10px] md:text-[12px] lg:text-sm rounded-3xl flex items-center gap-4 group border border-[#A855C5] shadow-[0_10px_px_rgba(168,85,197,0.4)] transition-all relative overflow-hidden"
           >
             <span className="relative z-10 flex items-center gap-4">
               View Openings
@@ -1991,12 +1991,12 @@ const Contact = () => {
       {/* LAYER 1: Deep Background Atmosphere */}
       <motion.div style={{ y: bgY }} className="absolute inset-0 z-0 pointer-events-none opacity-40 origin-center">
         <div className="absolute inset-0 bg-[#0F0B14] opacity-80 z-10" />
-        <div className="absolute top-[30%] left-[30%] w-[40%] h-[40%] bg-[radial-gradient(ellipse_at_center,rgba(116,44,134,0.15)_0%,transparent_70%)] blur-[80px]" />
+        <div className="absolute top-[30%] left-[30%] w-[40%] h-[40%] bg-[radial-gradient(ellipse_at_center,rgba(168,85,197,0.15)_0%,transparent_70%)] blur-[80px]" />
       </motion.div>
 
       {/* LAYER 2: Midground Environment (Mystical Portal / Symbols) */}
       <motion.div style={{ y: midLeftY, rotate: midLeftRot }} className="absolute top-[10%] -left-[10%] z-0 pointer-events-none opacity-20">
-        <div className="w-[30vw] h-[30vw] border-[2px] border-[#742C86] rounded-full flex items-center justify-center">
+        <div className="w-[30vw] h-[30vw] border-[2px] border-[#A855C5] rounded-full flex items-center justify-center">
           <div className="w-[80%] h-[80%] border-[1px] border-[#c79a40] rounded-full rotate-45" />
         </div>
       </motion.div>
@@ -2011,7 +2011,7 @@ const Contact = () => {
               <motion.div style={{ opacity: contentOpacity }}>
                 <span className="text-[#c79a40] tracking-[0.5em] uppercase text-xs font-bold mb-4 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">SEND A RAVEN</span>
                 <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black mb-6 md:mb-10 uppercase tracking-tighter text-white leading-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
-                  LET'S <span className="text-[#742C86]">TALK</span>.
+                  LET'S <span className="text-[#A855C5]">TALK</span>.
                 </h2>
                 <p className="text-base md:text-lg text-text-muted mb-4 md:mb-8 max-w-sm font-medium leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                   Whether you're a potential partner, a member of the press, or just want to say hello, we'd love to hear from you.
@@ -2022,7 +2022,7 @@ const Contact = () => {
                     onMouseLeave={() => setIsHoveringCard(false)}
                     className="flex items-center gap-6 group cursor-pointer"
                   >
-                    <div className="w-14 h-14 rounded-xl border border-white/10 bg-[#0F0B14] shadow-[0_10px_20px_rgba(0,0,0,0.5)] flex items-center justify-center text-[#742C86] group-hover:border-[#c79a40]/50 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(199,154,64,0.3)] transition-all duration-300">
+                    <div className="w-14 h-14 rounded-xl border border-white/10 bg-[#0F0B14] shadow-[0_10px_20px_rgba(0,0,0,0.5)] flex items-center justify-center text-[#A855C5] group-hover:border-[#c79a40]/50 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(199,154,64,0.3)] transition-all duration-300">
                       <Mail className="w-6 h-6" />
                     </div>
                     <a href="mailto:hello@nytwolfgames.com?subject=Nytwolf%20Website%20Inquiry" className="text-xl font-bold text-white tracking-wider group-hover:text-[#c79a40] transition-colors">
@@ -2037,7 +2037,7 @@ const Contact = () => {
                     onMouseLeave={() => setIsHoveringCard(false)}
                     className="flex items-center gap-6 group cursor-pointer"
                   >
-                    <div className="w-14 h-14 rounded-xl border border-white/10 bg-[#0F0B14] shadow-[0_10px_20px_rgba(0,0,0,0.5)] flex items-center justify-center text-[#742C86] group-hover:border-[#c79a40]/50 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(199,154,64,0.3)] transition-all duration-300">
+                    <div className="w-14 h-14 rounded-xl border border-white/10 bg-[#0F0B14] shadow-[0_10px_20px_rgba(0,0,0,0.5)] flex items-center justify-center text-[#A855C5] group-hover:border-[#c79a40]/50 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(199,154,64,0.3)] transition-all duration-300">
                       <Globe className="w-6 h-6" />
                     </div>
                     <span className="text-xl font-bold text-white tracking-wider group-hover:text-[#c79a40] transition-colors">Coimbatore, India</span>
@@ -2054,10 +2054,10 @@ const Contact = () => {
                 onSubmit={handleSubmit}
                 onMouseEnter={() => setIsHoveringCard(true)}
                 onMouseLeave={() => setIsHoveringCard(false)}
-                className="space-y-4 bg-black/40 p-5 md:p-8 rounded-2xl border border-[#742C86]/20 shadow-[0_30px_60px_rgba(0,0,0,0.7)] relative overflow-hidden group"
+                className="space-y-4 bg-black/40 p-5 md:p-8 rounded-2xl border border-[#A855C5]/20 shadow-[0_30px_60px_rgba(0,0,0,0.7)] relative overflow-hidden group"
               >
                 {/* Mystical Altar Ambient Glow */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(116,44,134,0.15)_0%,transparent_60%)] pointer-events-none" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(168,85,197,0.15)_0%,transparent_60%)] pointer-events-none" />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
                   <input
@@ -2083,7 +2083,7 @@ const Contact = () => {
                   value={formData.subject}
                   onChange={handleChange}
                   placeholder="SUBJECT"
-                  className="w-full bg-black/50 border border-white/10 p-4 text-xs tracking-[0.2em] text-white focus:border-[#742C86]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] relative z-10"
+                  className="w-full bg-black/50 border border-white/10 p-4 text-xs tracking-[0.2em] text-white focus:border-[#A855C5]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] relative z-10"
                 />
                 <textarea
                   name="message"
@@ -2091,12 +2091,12 @@ const Contact = () => {
                   onChange={handleChange}
                   placeholder="MESSAGE"
                   rows={3}
-                  className="w-full bg-black/50 border border-white/10 p-4 text-xs tracking-[0.2em] text-white focus:border-[#742C86]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg resize-none shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] relative z-10"
+                  className="w-full bg-black/50 border border-white/10 p-4 text-xs tracking-[0.2em] text-white focus:border-[#A855C5]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg resize-none shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] relative z-10"
                 />
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`w-full bg-gradient-to-r from-[#742C86] to-[#4A1C56] text-white py-4 font-bold tracking-[0.3em] uppercase text-xs hover:from-[#c79a40] hover:to-[#916b20] transition-all duration-500 rounded-lg shadow-[0_10px_30px_rgba(116,44,134,0.4)] border border-[#742C86]/50 hover:border-[#c79a40]/50 relative z-10 overflow-hidden ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+                  className={`w-full bg-gradient-to-r from-[#A855C5] to-[#4A1C56] text-white py-4 font-bold tracking-[0.3em] uppercase text-xs hover:from-[#c79a40] hover:to-[#916b20] transition-all duration-500 rounded-lg shadow-[0_10px_30px_rgba(168,85,197,0.4)] border border-[#A855C5]/50 hover:border-[#c79a40]/50 relative z-10 overflow-hidden ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
                 >
                   <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                     {isSubmitting ? 'SENDING...' : 'SEND MESSAGE'}
@@ -2124,7 +2124,7 @@ const Contact = () => {
         <div className="w-[10vw] h-[10vw] border-[4px] border-[#c79a40] border-dashed rounded-full blur-[2px] animate-spin-slow opacity-50" />
       </motion.div>
       <motion.div style={{ y: fgY2, rotate: fgRot2 }} className="absolute top-[30%] right-[10%] z-30 pointer-events-none opacity-70 drop-shadow-[10px_10px_20px_rgba(0,0,0,0.8)]">
-        <div className="w-[5vw] h-[20vh] bg-gradient-to-b from-[#742C86] to-transparent clip-path-polygon-[50%_0%,_100%_20%,_50%_100%,_0%_20%] blur-[4px] rotate-[-20deg]" />
+        <div className="w-[5vw] h-[20vh] bg-gradient-to-b from-[#A855C5] to-transparent clip-path-polygon-[50%_0%,_100%_20%,_50%_100%,_0%_20%] blur-[4px] rotate-[-20deg]" />
       </motion.div>
 
       <div className="mt-4 bg-black/80 border-t border-white/5 backdrop-blur-lg">
@@ -2156,14 +2156,14 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 md:gap-10">
           {/* Left Side: Copyright & Links */}
           <motion.div variants={staggerItem} className="flex flex-wrap items-center justify-center md:justify-start gap-y-4 gap-x-6 text-[10px] md:text-[11px] text-text-muted uppercase tracking-[0.2em] font-medium">
-            <span className="text-white/40 whitespace-nowrap">‚î¨‚åê 2026 NYTWOLF GAMES. ALL RIGHTS RESERVED.</span>
+            <span className="text-white/40 whitespace-nowrap">-¨ 2026 NYTWOLF GAMES. ALL RIGHTS RESERVED.</span>
 
             <div className="flex items-center gap-4">
-              <span className="hidden md:inline opacity-20">Œì√á√≥</span>
+              <span className="hidden md:inline opacity-20">G«Û</span>
               <span className="hover:text-primary transition-colors cursor-pointer whitespace-nowrap">Terms</span>
-              <span className="opacity-20">Œì√á√≥</span>
+              <span className="opacity-20">G«Û</span>
               <span className="hover:text-primary transition-colors cursor-pointer whitespace-nowrap">Privacy</span>
-              <span className="opacity-20">Œì√á√≥</span>
+              <span className="opacity-20">G«Û</span>
               <span className="hover:text-primary transition-colors cursor-pointer whitespace-nowrap">Cookies</span>
             </div>
           </motion.div>

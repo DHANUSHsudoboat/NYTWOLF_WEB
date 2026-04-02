@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const PRELOAD_ASSETS = ['/bg_ruins.png', '/statue.png', '/grass.png', '/tree.png', '/tech_room.png', '/sky.png', '/battlefield.png', '/knight.png'];
+export const PRELOAD_ASSETS = ['/bg_ruins.png', '/statue.png', '/grass.png', '/tree.png', '/tech_room.png', '/sky.png', '/battlefield.png'];
 
 export const staggerContainer: any = {
   hidden: {
