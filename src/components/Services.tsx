@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence, useInView, useMotionValue, useSpring, animate, useReducedMotion } from 'motion/react';
+import { motion, useScroll, useTransform, AnimatePresence, useInView, useMotionValue, useSpring, animate, useReducedMotion, useMotionTemplate } from 'motion/react';
 import { ChevronRight, Gamepad2, Layout, Palette, Cpu, Users, Mail, ArrowUpRight, Menu, X, Globe, Zap, Layers, Box, Linkedin, Instagram, Facebook, Code, Paintbrush, LayoutGrid, Compass, Mouse } from 'lucide-react';
 import { MouseGlowContext } from '../context';
 
@@ -9,35 +9,43 @@ const ServiceCard = ({ service, index, scrollProgress }: { service: any; index: 
   const mouseY = useMotionValue(0);
 
   // 1. SCROLL-DRIVEN BURST (CENTER TO GRID)
-  // Animation starts the moment top of section enters viewport and finishes by 40% travel
-  const burstProgress = useTransform(scrollProgress, [0.0, 0.32], [0, 1]);
-  const flipProgress = useTransform(scrollProgress, [0.38, 0.65], [0, 1]);
-  
-  // Define offset vectors for the 'overlapped center' to 'grid position'
-  // Since it's a 2x2 grid, each card needs specific X/Y to reach the center point.
-  // We'll use viewport-proportional offsets for a clean overlap.
-  const offsets = [
-    { x: "60%", y: "60%" },   // Top Left (needs to move right and down)
-    { x: "-60%", y: "60%" },  // Top Right (needs to move left and down)
-    { x: "60%", y: "-60%" },  // Bottom Left (needs to move right and up)
-    { x: "-60%", y: "-60%" }   // Bottom Right (needs to move left and up)
-  ];
+  const burstProgress = useTransform(scrollProgress, [0.0, 0.2], [0, 1]);
+  const flipProgress = useTransform(scrollProgress, [0.22, 0.42], [0, 1]);
 
-  const scrollX = useTransform(burstProgress, [0, 1], [offsets[index].x, "0%"]);
-  const scrollY = useTransform(burstProgress, [0, 1], [offsets[index].y, "0%"]);
+  // Burst center starting points (Pixels for precision)
+  const xOffset = index % 2 === 0 ? "80px" : "-80px";
+  const yOffset = index < 2 ? "120px" : "-120px";
+
+  // Stage 1: Burst outwards (0 to 0.3)
+  const burstX = useTransform(burstProgress, [0, 1], [xOffset, "0px"]);
+  const burstY = useTransform(burstProgress, [0, 1], [yOffset, "0px"]);
+
+  // Stage 2: Global Upward Drift (0 to 1)
+  const driftY = useTransform(scrollProgress, [0, 1], ["50px", "-20px"]);
+
+  // Combining them via MotionTemplate for smooth 3D feel
+  const y = useMotionTemplate`calc(${burstY} + ${driftY})`;
+  const x = burstX;
+  
   const scrollScale = useTransform(burstProgress, [0, 0.8], [0.5, 1]);
   const scrollOpacity = useTransform(burstProgress, [0, 0.2], [0, 1]);
 
-  // Flipping effect: Stays 180 during burst, then flips during 0.35-0.65
-  const flipRotateX = useTransform(flipProgress, [0, 1], [180, 0]);
-  const flipRotateY = useTransform(flipProgress, [0, 1], [160, 0]);
+  // Flipping effect: Unique rotation angles for each card to create a "blooming" effect
+  const initialRotX = index < 2 ? 90 : -90;
+  const initialRotY = index % 2 === 0 ? 30 : -30;
+
+  const flipRotateX = useTransform(flipProgress, [0, 1], [initialRotX, 0]);
+  const flipRotateY = useTransform(flipProgress, [0, 1], [initialRotY, 0]);
   const contentOpacity = useTransform(flipProgress, [0.4, 0.9], [0, 1]);
 
-  // 2. MOUSE INTERACTION (Secondary)
-  const rotateXMouse = useSpring(useTransform(mouseY, [-0.5, 0.5], [10, -10]), { damping: 20, stiffness: 150 });
-  const rotateYMouse = useSpring(useTransform(mouseX, [-0.5, 0.5], [-10, 10]), { damping: 20, stiffness: 150 });
+  // Smooth out the motion - higher stiffness reduces "lag" feel
+  const rotateXMouse = useSpring(useTransform(mouseY, [-0.5, 0.5], [10, -10]), { damping: 25, stiffness: 220 });
+  const rotateYMouse = useSpring(useTransform(mouseX, [-0.5, 0.5], [-10, 10]), { damping: 25, stiffness: 220 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Disable hover tilt until the 180-degree flip is finished (at 0.42 progress)
+    if (scrollProgress.get() < 0.42) return;
+
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     const width = rect.width;
@@ -59,8 +67,8 @@ const ServiceCard = ({ service, index, scrollProgress }: { service: any; index: 
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{
-        x: scrollX,
-        y: scrollY,
+        x: x,
+        y: y,
         scale: scrollScale,
         opacity: scrollOpacity,
         rotateX: flipRotateX,
@@ -102,7 +110,7 @@ const Services = () => {
   });
 
   const smoothProgress = useSpring(scrollYProgress, {
-    damping: 30, stiffness: 70, restDelta: 0.001
+    damping: 25, stiffness: 100, restDelta: 0.001
   });
 
   // ========== ENVIRONMENTAL PARALAX LAYERS ==========
