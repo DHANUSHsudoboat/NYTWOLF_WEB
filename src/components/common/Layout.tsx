@@ -93,7 +93,6 @@ export const FogLayer = React.memo(({ opacity = 0.4, speed = 20, color = "rgba(1
           repeat: Infinity,
           ease: "linear",
         }}
-        style={{ y: yOffset }}
         className="absolute inset-0 w-[200%] h-full opacity-40 bg-[radial-gradient(ellipse_at_center,var(--fog-color)_0%,transparent_70%)]"
         // @ts-ignore
         style={{ "--fog-color": color, y: yOffset }}
