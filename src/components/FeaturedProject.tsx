@@ -5,6 +5,30 @@ import { MouseGlowContext } from '../context';
 import { ParticleSystem } from './common/Layout';
 
 
+
+const SmokeFragment = ({ i, smoothProgress }: { i: number; smoothProgress: any; key?: string }) => {
+  // Slower, voluminous movement for smoke
+  const y = useTransform(smoothProgress, [0, 1], [`${-20 + i * 10}%`, `${20 + i * 10}%`]);
+  const x = useTransform(smoothProgress, [0, 1], [`${(i % 3) * 20 - 10}%`, `${(i % 3) * 20 + 10}%`]);
+  const opacity = useTransform(smoothProgress, [0.1, 0.3, 0.7, 0.9], [0, 0.6, 0.6, 0]);
+  const scale = useTransform(smoothProgress, [0, 0.5, 1], [1, 1.4, 1]);
+
+  return (
+    <motion.div
+      style={{ y, x, opacity, scale }}
+      className="absolute inset-x-[-20%] inset-y-[-20%] z-20 pointer-events-none overflow-hidden"
+    >
+      <div 
+        className="absolute w-[800px] h-[600px] bg-[radial-gradient(circle,rgba(168,85,197,0.15)_0%,rgba(15,11,20,0.05)_50%,transparent_100%)] blur-[100px]"
+        style={{
+          left: `${(i * 35) % 100}%`,
+          top: `${(i * 25) % 100}%`,
+        }}
+      />
+    </motion.div>
+  );
+};
+
 const FeaturedProject = () => {
   const {
     setIsHoveringCard
@@ -103,7 +127,7 @@ const FeaturedProject = () => {
   // 2. Midground Battlefield (Reduced speed: ~10%, Increased Scale)
   const battlefieldY = useTransform(smoothProgress, [0, 1], ["2%", "-8%"]);
   const battlefieldX = useTransform(smoothProgress, [0, 1], ["-1%", "1%"]);
-  const battlefieldScale = useTransform(smoothProgress, [0, 1], [1.15, 1.25]);
+  const battlefieldScale = useTransform(smoothProgress, [0, 1], [1.05, 1.15]);
 
   // 3. Foreground Knight (~40%)
   const knightY = useTransform(smoothProgress, [0, 1], ["20%", "-13%"]);
@@ -158,11 +182,19 @@ const FeaturedProject = () => {
     <motion.div style={{
       y: prefersReducedMotion ? 0 : battlefieldY,
       x: prefersReducedMotion ? 0 : battlefieldX,
-      scale: prefersReducedMotion ? 1.1 : battlefieldScale,
+      scale: prefersReducedMotion ? 1.05 : battlefieldScale,
       translateZ: 0
-    }} className="absolute inset-0 z-10 pointer-events-none will-change-transform opacity-70 flex items-center justify-center overflow-hidden">
-      <img src="/battlefield.png" className="w-full h-full object-cover brightness-[0.5] scale-110" alt="" loading="lazy" decoding="async" />
+    }} className="absolute inset-0 z-10 pointer-events-none will-change-transform opacity-80 flex items-center justify-center overflow-hidden">
+      <img src="/battlefield.png" className="w-full h-full object-cover brightness-[0.8] contrast-[1.15] saturate-[1.1]" alt="" loading="lazy" decoding="async" />
     </motion.div>
+
+
+    {/* ATMOSPHERIC: Smoke Layers */}
+    {!prefersReducedMotion && <>
+      {[...Array(4)].map((_, i) => (
+        <SmokeFragment key={`smoke-${i}`} i={i} smoothProgress={smoothProgress} />
+      ))}
+    </>}
 
     {/* ATMOSPHERIC: Floating Particles */}
     <ParticleSystem count={prefersReducedMotion ? 5 : 18} />

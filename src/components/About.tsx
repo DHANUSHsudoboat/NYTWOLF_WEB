@@ -84,10 +84,28 @@ const About = () => {
     perspective: "2000px"
   }}>
 
+    {/* ===== LAYER 0: STUDIO BACKGROUND (Visible only when covered) ===== */}
+    <motion.div 
+      style={{
+        opacity: useTransform(smoothProgress, [0.2, 0.4, 0.6, 0.8], [0, 1, 1, 0]),
+        y: useTransform(smoothProgress, [0, 1], ["-5%", "5%"]),
+        scale: useTransform(smoothProgress, [0, 0.5, 1], [1.1, 1, 1.1])
+      }}
+      className="absolute inset-0 z-0 pointer-events-none"
+    >
+      <img 
+        src="/StudioBG.png" 
+        className="w-full h-full object-cover brightness-[0.25]" 
+        alt="" 
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#060408] via-transparent to-[#060408]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(50,20,60,0.1)_0%,transparent_100%)]" />
+    </motion.div>
+
     {/* ===== LAYER 1: DEEP BACKGROUND (Slow Parallax) ===== */}
     <motion.div style={{
       y: bgY
-    }} className="absolute inset-0 pointer-events-none z-0">
+    }} className="absolute inset-0 pointer-events-none z-[1]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(50,20,60,0.2)_0%,transparent_100%)]" />
       {/* Giant textured background sphere (Moon/Planet illusion) */}
       <div className="absolute -top-[20%] right-[-10%] w-[80vw] h-[80vw] bg-[radial-gradient(circle,rgba(168,85,197,0.1)_0%,transparent_70%)] rounded-full blur-[100px]" />
@@ -97,7 +115,7 @@ const About = () => {
     <motion.div style={{
       y: midY,
       scaleX: midScaleX
-    }} className="absolute inset-0 pointer-events-none z-0 flex items-center justify-center opacity-30">
+    }} className="absolute inset-0 pointer-events-none z-[2] flex items-center justify-center opacity-30">
       {/* Stylized geometric background elements representing structures or ruins */}
       <div className="w-[120%] h-[1px] bg-gradient-to-r from-transparent via-[#A855C5] to-transparent absolute top-1/4 -rotate-6" />
       <div className="w-[120%] h-[1px] bg-gradient-to-r from-transparent via-[#A855C5] to-transparent absolute bottom-1/3 rotate-3" />
