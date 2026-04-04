@@ -140,6 +140,8 @@ const Contact = () => {
   return <section ref={sectionRef} id="contact" className="relative min-h-screen flex flex-col pt-20 md:pt-0 pb-0 bg-[#0F0B14] overflow-hidden" style={{
     perspective: "1500px"
   }}>
+    {/* Cinematic Section Blending */}
+    <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[#060408] to-transparent z-[25] pointer-events-none" />
 
     {/* LAYER 1: Deep Background Atmosphere */}
     <motion.div style={{

@@ -64,6 +64,8 @@ const Hero = ({
   return <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden bg-[#060408]" style={{
     perspective: "1000px"
   }}>
+    {/* Cinematic Section Blending (Bottom) - Compact blend */}
+    <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#060408] to-transparent z-[60] pointer-events-none" />
       
       {/* ===== Layer 1: Deep Background Ruins (Moved from App.tsx) ===== */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
@@ -76,6 +78,10 @@ const Hero = ({
             y: bgYParallax,
             scale: bgScale
           }} 
+          initial={{ opacity: 0, y: 100 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+          viewport={{ once: true }}
           src="/bg_ruins.png" 
           className="w-[140vw] h-[140vh] left-[0vw] top-[-40vh] object-cover object-bottom grayscale-[0.05] contrast-[1.1] brightness-[0.7] absolute will-change-transform" 
           alt="Deep Background" 

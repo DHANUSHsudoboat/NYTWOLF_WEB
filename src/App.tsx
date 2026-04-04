@@ -9,6 +9,7 @@ import Contact from './components/Contact';
 import FeaturedProject from './components/FeaturedProject';
 import PoweringOurWorlds from './components/PoweringOurWorlds';
 import MouseGlow from './components/MouseGlow';
+import CustomCursor from './components/CustomCursor';
 import Navbar from './components/Navbar';
 // import { useIntersectionScroll } from "./hooks/useIntersectionScroll";
 
@@ -148,6 +149,7 @@ export default function App() {
           </main>
         </motion.div>
         <MouseGlow activeSectionId={activeSectionId} />
+        <CustomCursor />
       </div>
     </MouseGlowContext.Provider>;
 }

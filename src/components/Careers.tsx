@@ -55,7 +55,10 @@ const Careers = ({
   ];
 
   return (
-    <section ref={sectionRef} id="careers" className="relative min-h-screen flex flex-col justify-center section-spacing bg-[#0F0B14] overflow-hidden border-t border-white/5" style={{ perspective: "1500px" }}>
+    <section ref={sectionRef} id="careers" className="relative min-h-screen flex flex-col justify-center section-spacing bg-[#0F0B14] overflow-hidden" style={{ perspective: "1500px" }}>
+      {/* Cinematic Section Blending */}
+      <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[#060408] to-transparent z-[25] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#060408] to-transparent z-[25] pointer-events-none" />
       {/* LAYER 1: Background */}
       <motion.div style={{ y: bgY, opacity: bgOpacity }} className="absolute inset-[-5%] z-0 pointer-events-none origin-center">
         <img src="/buildthefutureBG.png" alt="Build the Future Background" className="w-full h-full object-cover object-center brightness-[0.6] contrast-[1.1] saturate-[0.8]" loading="lazy" />

@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform, AnimatePresence, useInView, useMotionV
 import { ChevronRight, Gamepad2, Layout, Palette, Cpu, Users, Mail, ArrowUpRight, Menu, X, Globe, Zap, Layers, Box, Linkedin, Instagram, Facebook, Code, Paintbrush, LayoutGrid, Compass, Mouse } from 'lucide-react';
 import { MouseGlowContext } from '../context';
 
-const ServiceCard = ({ service, index, scrollProgress }: { service: any; index: number; scrollProgress: any }) => {
+const ServiceCard = ({ service, index, scrollProgress }: { service: any; index: number; scrollProgress: any; key?: any }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -134,6 +134,9 @@ const Services = () => {
 
   return (
     <section ref={sectionRef} className="relative min-h-screen flex flex-col justify-center section-spacing bg-[#060408] overflow-hidden" style={{ perspective: "2000px" }}>
+      {/* Cinematic Section Blending */}
+      <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[#060408] to-transparent z-[25] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#060408] to-transparent z-[25] pointer-events-none" />
       {/* Background Layers */}
       <motion.div style={{ y: bgY }} className="absolute inset-0 z-0 pointer-events-none opacity-40">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,197,0.15)_0%,transparent_70%)] blur-[50px]" />

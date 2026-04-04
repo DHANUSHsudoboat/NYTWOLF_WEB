@@ -123,6 +123,9 @@ const PoweringOurWorlds = () => {
   return <section ref={sectionRef} onMouseMove={handleMouseMove} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className="relative min-h-screen flex flex-col justify-center section-spacing lg:py-12 bg-[#060408] overflow-hidden" style={{
     perspective: "1500px"
   }}>
+    {/* Cinematic Section Blending */}
+    <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[#060408] to-transparent z-[25] pointer-events-none" />
+    <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#060408] to-transparent z-[25] pointer-events-none" />
       {/* ===== Interactive Tech Room Background Spotlight ===== */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         {/* Base Image Layer - Always slightly visible */}

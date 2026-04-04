@@ -83,6 +83,9 @@ const About = () => {
   return <section ref={sectionRef} className="relative min-h-screen flex flex-col justify-center pt-32 pb-20 md:py-20 lg:py-12 bg-[#060408] overflow-hidden" style={{
     perspective: "2000px"
   }}>
+    {/* Cinematic Section Blending (Top & Bottom Transition) - Compact blend */}
+    <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[#060408] to-transparent z-[60] pointer-events-none" />
+    <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#060408] to-transparent z-[60] pointer-events-none" />
 
     {/* ===== LAYER 0: STUDIO BACKGROUND (Visible only when covered) ===== */}
     <motion.div 
@@ -91,13 +94,13 @@ const About = () => {
         y: useTransform(smoothProgress, [0, 1], ["-5%", "5%"]),
         scale: useTransform(smoothProgress, [0, 0.5, 1], [1.1, 1, 1.1])
       }}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1.2, ease: "easeOut" }}
+      viewport={{ once: true }}
       className="absolute inset-0 z-0 pointer-events-none"
     >
-      <img 
-        src="/StudioBG.png" 
-        className="w-full h-full object-cover brightness-[0.25]" 
-        alt="" 
-      />
+      <img src="/StudioBG.png" className="w-full h-full object-cover brightness-[0.25]" alt="" />
       <div className="absolute inset-0 bg-gradient-to-b from-[#060408] via-transparent to-[#060408]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(50,20,60,0.1)_0%,transparent_100%)]" />
     </motion.div>

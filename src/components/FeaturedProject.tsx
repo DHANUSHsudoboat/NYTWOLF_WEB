@@ -18,7 +18,7 @@ const SmokeFragment = ({ i, smoothProgress }: { i: number; smoothProgress: any; 
       style={{ y, x, opacity, scale }}
       className="absolute inset-x-[-20%] inset-y-[-20%] z-20 pointer-events-none overflow-hidden"
     >
-      <div 
+      <div
         className="absolute w-[800px] h-[600px] bg-[radial-gradient(circle,rgba(168,85,197,0.15)_0%,rgba(15,11,20,0.05)_50%,transparent_100%)] blur-[100px]"
         style={{
           left: `${(i * 35) % 100}%`,
@@ -168,6 +168,9 @@ const FeaturedProject = () => {
   return <section ref={sectionRef} className="relative min-h-screen flex flex-col justify-center section-spacing bg-[#060408] overflow-hidden" style={{
     perspective: "1500px"
   }}>
+    {/* Cinematic Section Blending */}
+    <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[#060408] to-transparent z-[60] pointer-events-none" />
+    <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#060408] to-transparent z-[60] pointer-events-none" />
 
     {/* LAYER 1: Background Sky */}
     <motion.div style={{

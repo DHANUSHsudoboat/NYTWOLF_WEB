@@ -132,21 +132,18 @@
     @apply font-sans;
   }
 
-  /* Prevent text cursor on all elements except inputs/textareas */
-  *:not(input):not(textarea) {
-    cursor: default;
-  }
-
-  h1, h2, h3, h4, h5, h6, p, span {
-    cursor: default !important;
-  }
-
-  button, a, [role="button"], .cursor-pointer {
-    cursor: pointer !important;
+  /* Prevent all system cursors on desktop to allow CustomCursor to take over */
+  @media (min-width: 1025px) {
+    *, h1, h2, h3, h4, h5, h6, p, span, div, li, a, button, input, textarea, [role="button"], .cursor-pointer {
+      cursor: none !important;
+    }
+    
+    ::selection {
+      cursor: none !important;
+    }
   }
 
   input, textarea {
-    cursor: text;
     user-select: text; /* Allow selection in forms */
   }
 }
