@@ -22,7 +22,7 @@ const MouseGlow = ({
   const [isVisible, setIsVisible] = useState(false);
 
   // Responsive settings based on active section
-  const isHidden = activeSectionId === 'home' || activeSectionId === 'projects';
+  const isHidden = activeSectionId === 'home' || activeSectionId === 'projects' || activeSectionId === '';
   const glowColor = "radial-gradient(circle, rgba(168, 85, 197, 0.2) 0%, rgba(168, 85, 197, 0.05) 40%, transparent 70%)";
   const glowSize = '600px';
   useEffect(() => {

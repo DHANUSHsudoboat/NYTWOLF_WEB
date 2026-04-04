@@ -40,6 +40,7 @@ const Hero = ({
   const mouseTreeX = useTransform(mouseX, [0, 1], ["-1.5%", "1.5%"]);
   const mouseTreeY = useTransform(mouseY, [0, 1], ["-0.75%", "0.75%"]);
 
+
   // Layer 2: Statue Mid - Slight depth
   const statueYScroll = useTransform(smoothProgress, [0, 0.6], ["0%", "-5%"]);
   const statueScale = useTransform(smoothProgress, [0, 6], [1, 1.01]);
@@ -136,7 +137,7 @@ const Hero = ({
         <div className="mb-12 relative animate-none">
           <MouseParallax factor={40}>
             <div className="relative">
-              <Logo className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]" useGradient={false} />
+              <Logo className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 text-white" useGradient={false} />
             </div>
           </MouseParallax>
         </div>
