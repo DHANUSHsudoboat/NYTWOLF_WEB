@@ -165,7 +165,7 @@ const FeaturedProject = () => {
     <motion.div style={{
       y: skyY,
       translateZ: 0
-    }} className="absolute inset-x-[-5%] inset-y-[-10%] z-0 pointer-events-none will-change-transform">
+    }} className="absolute inset-x-[-5%] inset-y-[-10%] z-0 pointer-events-none will-change-transform gpu-layer">
       <img src="/sky.png" className="w-full h-full object-cover brightness-[0.4] contrast-[1.1]" alt="" loading="lazy" />
     </motion.div>
 
@@ -173,7 +173,7 @@ const FeaturedProject = () => {
     <motion.div style={{
       y: battlefieldY,
       translateZ: 0
-    }} className="absolute inset-0 z-10 pointer-events-none will-change-transform opacity-60 flex items-center justify-center overflow-hidden">
+    }} className="absolute inset-0 z-10 pointer-events-none will-change-transform gpu-layer opacity-60 flex items-center justify-center overflow-hidden">
       <img src="/battlefield.png" className="w-full h-full object-cover brightness-[0.8] contrast-[1.15] saturate-[1.1]" alt="" />
     </motion.div>
 
@@ -183,7 +183,7 @@ const FeaturedProject = () => {
     <motion.div style={{
       y: knightY,
       translateZ: 0
-    }} className="hidden md:block absolute bottom-[-2%] md:bottom-[-5%] lg:bottom-[-8%] left-[-15%] xl:left-[-10%] w-[90vw] md:w-[70vw] lg:w-[45vw] z-30 pointer-events-none will-change-transform origin-bottom">
+    }} className="hidden md:block absolute bottom-[-2%] md:bottom-[-5%] lg:bottom-[-8%] left-[-15%] xl:left-[-10%] w-[90vw] md:w-[70vw] lg:w-[45vw] z-30 pointer-events-none will-change-transform origin-bottom gpu-layer">
       <canvas
         ref={canvasRef}
         className="w-full h-auto block"

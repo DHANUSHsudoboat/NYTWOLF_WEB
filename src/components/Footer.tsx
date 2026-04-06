@@ -36,8 +36,8 @@ const Footer = () => {
   } = React.useContext(MouseGlowContext);
   return <footer className="relative py-8 md:py-12 bg-black overflow-hidden group">
     {/* Massive Background Text Branding */}
-    <div className="absolute inset-0 hidden md:flex items-start justify-center pointer-events-none select-none z-0">
-      <span className="text-[35vw] md:text-[20vw] font-black leading-[0.7] uppercase text-white opacity-[0.1] whitespace-nowrap translate-y-[15%] transition-transform duration-700 group-hover:translate-y-18%] font-display">
+    <div className="absolute inset-0 hidden md:flex items-center justify-center pointer-events-none select-none z-0">
+      <span className="text-[12vw] font-black leading-none uppercase text-white opacity-[0.03] whitespace-nowrap translate-y-[10%] transition-transform duration-1000 group-hover:scale-110 font-display">
         NYTWOLF
       </span>
     </div>

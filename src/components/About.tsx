@@ -180,7 +180,7 @@ const About = () => {
     {/* ===== LAYER 1: DEEP BACKGROUND (Slow Parallax) ===== */}
     <motion.div style={{
       y: bgY
-    }} className="absolute inset-0 pointer-events-none z-[1]">
+    }} className="absolute inset-0 pointer-events-none z-[1] gpu-layer will-change-transform">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(50,20,60,0.2)_0%,transparent_100%)]" />
       {/* Giant textured background sphere (Moon/Planet illusion) */}
       <div className="absolute -top-[20%] right-[-10%] w-[80vw] h-[80vw] bg-[radial-gradient(circle,rgba(168,85,197,0.1)_0%,transparent_70%)] rounded-full blur-[100px]" />
@@ -190,13 +190,13 @@ const About = () => {
     <motion.div style={{
       y: midY,
       scaleX: midScaleX
-    }} className="absolute inset-0 pointer-events-none z-[2] flex items-center justify-center opacity-30">
+    }} className="absolute inset-0 pointer-events-none z-[2] flex items-center justify-center opacity-30 gpu-layer will-change-transform">
       {/* Stylized geometric background elements representing structures or ruins */}
       <div className="w-[120%] h-[1px] bg-gradient-to-r from-transparent via-[#A855C5] to-transparent absolute top-1/4 -rotate-6" />
       <div className="w-[120%] h-[1px] bg-gradient-to-r from-transparent via-[#A855C5] to-transparent absolute bottom-1/3 rotate-3" />
       {/* Floating background monoliths */}
-      <div className="absolute left-[10%] top-[40%] w-32 h-[500px] border border-[#A855C5]/20 bg-[#0F0B14]/50 backdrop-blur-sm -rotate-12 transform-gpu" />
-      <div className="absolute right-[5%] top-[20%] w-64 h-[800px] border border-[#A855C5]/10 bg-[#0F0B14]/30 backdrop-blur-sm rotate-6 transform-gpu" />
+      <div className="absolute left-[10%] top-[40%] w-32 h-[500px] border border-[#A855C5]/20 bg-[#0F0B14]/50 backdrop-blur-sm -rotate-12 transform-gpu gpu-layer" />
+      <div className="absolute right-[5%] top-[20%] w-64 h-[800px] border border-[#A855C5]/10 bg-[#0F0B14]/30 backdrop-blur-sm rotate-6 transform-gpu gpu-layer" />
     </motion.div>
 
     {/* ===== MAIN CONTENT ===== */}
@@ -233,7 +233,7 @@ const About = () => {
         <div className="hidden lg:block lg:col-span-6">
           <div className="relative aspect-video rounded-sm overflow-hidden border-2 border-white/10 group">
             <div className="absolute inset-0 bg-[#A855C5]/20 mix-blend-overlay z-10 pointer-events-none" />
-            <img src="https://i.pinimg.com/736x/78/e8/10/78e81059f1e19ddbf772424da5409863.jpg" alt="Cinematic Medieval Landscape" className="w-full h-full object-cover brightness-[0.8] contrast-125 saturate-50 transition-all duration-[1000ms] group-hover:scale-[1.1] group-hover:saturate-100" referrerPolicy="no-referrer" />
+            <img src="https://i.pinimg.com/736x/78/e8/10/78e81059f1e19ddbf772424da5409863.jpg" alt="Cinematic Medieval Landscape" className="w-full h-full object-cover brightness-[0.8] contrast-125 saturate-50 transition-all duration-[1000ms] group-hover:scale-[1.1] group-hover:saturate-100" referrerPolicy="no-referrer" loading="lazy" decoding="async" />
             {/* Sci-fi/Fantasy UI Crosshairs */}
             <div className="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-[#c79a40] z-20" />
             <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-[#c79a40] z-20" />

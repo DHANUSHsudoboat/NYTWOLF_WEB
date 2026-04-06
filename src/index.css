@@ -183,6 +183,9 @@
     opacity: 1;
     /* Isolate stacking context and reduce paint area per section */
     contain: layout style;
+    /* Skip rendering and layout for off-screen sections until they approach viewport */
+    content-visibility: auto;
+    contain-intrinsic-size: 100vh;
   }
 
   .section-focus-layer.active {
@@ -197,6 +200,8 @@
   .gpu-layer {
     transform: translateZ(0);
     backface-visibility: hidden;
+    perspective: 1000px;
+    contain: paint;
   }
 }
 
