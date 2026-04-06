@@ -6,28 +6,7 @@ import { ParticleSystem } from './common/Layout';
 
 
 
-const SmokeFragment = ({ i, smoothProgress }: { i: number; smoothProgress: any; key?: string }) => {
-  // Slower, voluminous movement for smoke
-  const y = useTransform(smoothProgress, [0, 1], [`${-20 + i * 10}%`, `${20 + i * 10}%`]);
-  const x = useTransform(smoothProgress, [0, 1], [`${(i % 3) * 20 - 10}%`, `${(i % 3) * 20 + 10}%`]);
-  const opacity = useTransform(smoothProgress, [0.1, 0.3, 0.7, 0.9], [0, 0.6, 0.6, 0]);
-  const scale = useTransform(smoothProgress, [0, 0.5, 1], [1, 1.4, 1]);
 
-  return (
-    <motion.div
-      style={{ y, x, opacity, scale }}
-      className="absolute inset-x-[-20%] inset-y-[-20%] z-20 pointer-events-none overflow-hidden"
-    >
-      <div
-        className="absolute w-[800px] h-[600px] bg-[radial-gradient(circle,rgba(168,85,197,0.15)_0%,rgba(15,11,20,0.05)_50%,transparent_100%)] blur-[100px]"
-        style={{
-          left: `${(i * 35) % 100}%`,
-          top: `${(i * 25) % 100}%`,
-        }}
-      />
-    </motion.div>
-  );
-};
 
 const FeaturedProject = () => {
   const {
@@ -42,9 +21,10 @@ const FeaturedProject = () => {
     offset: ["start end", "end start"]
   });
   const smoothProgress = useSpring(scrollYProgress, {
-    damping: 30,
-    stiffness: 70,
-    restDelta: 0.001
+    damping: 40,
+    stiffness: 150,
+    mass: 0.5,
+    restDelta: 0.0001
   });
 
   // ========== ANIMATED KNIGHT FRAMES ==========
@@ -54,93 +34,83 @@ const FeaturedProject = () => {
       `/KnightSwordFrames/ezgif-frame-${(i + 1).toString().padStart(3, '0')}.jpg`
     ), []);
 
-  const [currentFrameIndex, setCurrentFrameIndex] = useState(0);
-
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<HTMLImageElement[]>([]);
+  const lastIndexRef = useRef<number>(-1);
 
   // Preload images into objects
   useEffect(() => {
     let loadedCount = 0;
-    const preloadImages = () => {
-      frames.forEach((src, idx) => {
-        const img = new Image();
-        img.src = src;
-        img.onload = () => {
-          loadedCount++;
-          imagesRef.current[idx] = img;
-          // Draw first frame once loaded
-          if (idx === 0) renderCanvas(0);
-        };
-      });
-    };
-    preloadImages();
+    frames.forEach((src, idx) => {
+      const img = new Image();
+      img.src = src;
+      img.onload = () => {
+        loadedCount++;
+        imagesRef.current[idx] = img;
+        // Draw first frame once loaded and if it's the first image
+        if (idx === 0) {
+          renderCanvas(0);
+        }
+      };
+    });
   }, [frames]);
 
   const renderCanvas = (index: number) => {
+    // Avoid redundant renders
+    if (index === lastIndexRef.current) return;
+    
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
     const img = imagesRef.current[index];
-    if (!img) return;
+    if (!img || !img.complete) return;
 
-    // Set canvas dimensions to match image natural size or container
+    // Set dimensions once or when changed (though frames should be consistent)
     if (canvas.width !== img.naturalWidth) canvas.width = img.naturalWidth;
     if (canvas.height !== img.naturalHeight) canvas.height = img.naturalHeight;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Draw directly - can add subtle motion blur if we track delta, but single frames are cleaner
     ctx.drawImage(img, 0, 0);
+    lastIndexRef.current = index;
   };
 
-  // Update canvas on frame change
+  // Optimized scroll listener - using scrollYProgress directly for immediate stop
   useEffect(() => {
-    renderCanvas(currentFrameIndex);
-  }, [currentFrameIndex]);
-
-  // ========== AAA CINEMATIC PARALLAX LAYERS ==========
-
-  // Update frame based on scroll
-  useEffect(() => {
-    const unsubscribe = smoothProgress.on("change", (latest) => {
-      // Logic: Frame 100 at progress 0.5 (Centered)
-      // This maps 0 to Frame 0 and ensures Frame 100 is reached at exactly 0.5 viewport alignment
-      const multiplier = 200; // 100 / 0.5
-      const calculatedIndex = Math.floor(latest * multiplier);
-
+    const unsubscribe = scrollYProgress.on("change", (latest) => {
+      // Map progress [0, 1] to frame sequence [0, 152]
+      // Using raw scrollYProgress ensures it stops exactly when the scroll stops
+      const calculatedIndex = Math.floor(latest * (totalFrames - 1));
+      
       const index = Math.min(
         Math.max(calculatedIndex, 0),
         totalFrames - 1
       );
-      setCurrentFrameIndex(index);
+      
+      renderCanvas(index);
     });
     return () => unsubscribe();
-  }, [smoothProgress, totalFrames]);
+  }, [scrollYProgress, totalFrames]);
 
   // ========== AAA CINEMATIC PARALLAX LAYERS ==========
 
-  // (Rest of the transforms...)
-  const skyY = useTransform(smoothProgress, [0, 1], ["0%", "15%"]);
-  const skyScale = useTransform(smoothProgress, [0, 1], [1.05, 1.15]);
+  // Cleaned up transforms: Removed scale (zoom) and kept only subtle Y parallax
+  const skyY = useTransform(smoothProgress, [0, 1], ["0%", "5%"]);
+  
+  const battlefieldY = useTransform(smoothProgress, [0, 1], ["0%", "-5%"]);
+  const battlefieldX = useTransform(smoothProgress, [0, 1], ["0%", "0%"]);
 
-  // 2. Midground Battlefield (Reduced speed: ~10%, Increased Scale)
-  const battlefieldY = useTransform(smoothProgress, [0, 1], ["2%", "-8%"]);
-  const battlefieldX = useTransform(smoothProgress, [0, 1], ["-1%", "1%"]);
-  const battlefieldScale = useTransform(smoothProgress, [0, 1], [1.05, 1.15]);
-
-  // 3. Foreground Knight (~40%)
-  const knightY = useTransform(smoothProgress, [0, 1], ["20%", "-13%"]);
-  const knightRotateX = useTransform(smoothProgress, [0.1, 0.5], [3, 0]);
-  const knightScale = useTransform(smoothProgress, [0, 0.5], [1.1, 1]);
-
-  // 4. Content Reveal (~60%)
+  // Knight: Removed rotation and scale zoom for stability
+  const knightY = useTransform(smoothProgress, [0, 1], ["10%", "-5%"]);
+  
   // 4. Content Reveal
   const textOpacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
-  // 5. Atmospheric Enhancements
-  const vignetteOpacity = useTransform(smoothProgress, [0, 0.5, 1], [0.6, 0.9, 0.6]);
-  const lightShift = useTransform(smoothProgress, [0, 1], ["rgba(168,85,197,0.1)", "rgba(199,154,64,0.15)"]);
+  // 5. Atmospheric Enhancements - Simplified
+  const vignetteOpacity = useTransform(smoothProgress, [0, 0.5, 1], [0.4, 0.6, 0.4]);
+  const lightShift = useTransform(smoothProgress, [0, 1], ["rgba(168,85,197,0.05)", "rgba(199,154,64,0.05)"]);
   const containerVariants: any = {
     hidden: {
       opacity: 0
@@ -174,43 +144,30 @@ const FeaturedProject = () => {
 
     {/* LAYER 1: Background Sky */}
     <motion.div style={{
-      y: prefersReducedMotion ? 0 : skyY,
-      scale: prefersReducedMotion ? 1.05 : skyScale,
+      y: skyY,
       translateZ: 0
-    }} className="absolute inset-x-[-10%] inset-y-[-20%] z-0 pointer-events-none will-change-transform">
-      <img src="/sky.png" className="w-full h-full object-cover brightness-[0.4] contrast-[1.1]" alt="" loading="lazy" decoding="async" />
+    }} className="absolute inset-x-[-5%] inset-y-[-10%] z-0 pointer-events-none will-change-transform">
+      <img src="/sky.png" className="w-full h-full object-cover brightness-[0.4] contrast-[1.1]" alt="" loading="lazy" />
     </motion.div>
 
     {/* LAYER 2: Midground Battlefield */}
     <motion.div style={{
-      y: prefersReducedMotion ? 0 : battlefieldY,
-      x: prefersReducedMotion ? 0 : battlefieldX,
-      scale: prefersReducedMotion ? 1.05 : battlefieldScale,
+      y: battlefieldY,
       translateZ: 0
-    }} className="absolute inset-0 z-10 pointer-events-none will-change-transform opacity-80 flex items-center justify-center overflow-hidden">
-      <img src="/battlefield.png" className="w-full h-full object-cover brightness-[0.8] contrast-[1.15] saturate-[1.1]" alt="" loading="lazy" decoding="async" />
+    }} className="absolute inset-0 z-10 pointer-events-none will-change-transform opacity-60 flex items-center justify-center overflow-hidden">
+      <img src="/battlefield.png" className="w-full h-full object-cover brightness-[0.8] contrast-[1.15] saturate-[1.1]" alt="" />
     </motion.div>
 
 
-    {/* ATMOSPHERIC: Smoke Layers */}
-    {!prefersReducedMotion && <>
-      {[...Array(4)].map((_, i) => (
-        <SmokeFragment key={`smoke-${i}`} i={i} smoothProgress={smoothProgress} />
-      ))}
-    </>}
 
-    {/* ATMOSPHERIC: Floating Particles */}
-    <ParticleSystem count={prefersReducedMotion ? 5 : 18} />
 
     <motion.div style={{
-      y: prefersReducedMotion ? 0 : knightY,
-      rotateX: prefersReducedMotion ? 0 : knightRotateX,
-      scale: prefersReducedMotion ? 1 : knightScale,
+      y: knightY,
       translateZ: 0
-    }} className="hidden md:block absolute bottom-[8%] md:bottom-[-14%] lg:bottom-[-18%] right-[-20%] md:right-[-5%] w-[95vw] md:w-[75vw] lg:w-[45vw] z-30 pointer-events-none will-change-transform origin-bottom drop-shadow-[0_20px_50px_rgba(0,0,0,0.9)]">
+    }} className="hidden md:block absolute bottom-[-10%] md:bottom-[-15%] lg:bottom-[-20%] right-[-5%] w-[90vw] md:w-[70vw] lg:w-[45vw] z-30 pointer-events-none will-change-transform origin-bottom">
       <canvas
         ref={canvasRef}
-        className="w-full h-auto max-h-[60vh] md:max-h-none block"
+        className="w-full h-auto block"
         style={{ mixBlendMode: 'screen' }}
       />
     </motion.div>

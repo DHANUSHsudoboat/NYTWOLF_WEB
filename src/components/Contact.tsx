@@ -320,7 +320,7 @@ const Contact = () => {
                     translateX: "-50%"
                   }}
                 >
-                  <Logo className="w-16 h-16 sm:w-20 sm:h-20 text-[#A855C5] shadow-[0_0_30px_rgba(168,85,197,0.8)] filter brightness-125" />
+                  <Logo className="w-16 h-16 sm:w-20 sm:h-20 text-[#A855C5]  filter brightness-125" />
                 </motion.div>
               </div>
 
