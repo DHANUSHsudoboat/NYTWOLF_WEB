@@ -21,9 +21,9 @@ const FeaturedProject = () => {
     offset: ["start end", "end start"]
   });
   const smoothProgress = useSpring(scrollYProgress, {
-    damping: 40,
-    stiffness: 150,
-    mass: 0.5,
+    damping: 25,       // Increased for more control and less bounce
+    stiffness: 55,     // Lowered for a slower, more cinematic motion
+    mass: 1,           // Added weight for a more "heavy" feel
     restDelta: 0.0001
   });
 
@@ -58,7 +58,7 @@ const FeaturedProject = () => {
   const renderCanvas = (index: number) => {
     // Avoid redundant renders
     if (index === lastIndexRef.current) return;
-    
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d', { alpha: true });
@@ -77,34 +77,53 @@ const FeaturedProject = () => {
     lastIndexRef.current = index;
   };
 
-  // Optimized scroll listener - using scrollYProgress directly for immediate stop
+  const knightFrame = useMotionValue(0);
+  const [animationPhase, setAnimationPhase] = useState<'intro' | 'active' | 'outro'>('intro');
+
   useEffect(() => {
     const unsubscribe = scrollYProgress.on("change", (latest) => {
-      // Map progress [0, 1] to frame sequence [0, 152]
-      // Using raw scrollYProgress ensures it stops exactly when the scroll stops
-      const calculatedIndex = Math.floor(latest * (totalFrames - 1));
-      
-      const index = Math.min(
-        Math.max(calculatedIndex, 0),
-        totalFrames - 1
-      );
-      
+      // Thresholds: entrance phase is before 0.25, exit phase is after 0.75
+      if (latest < 0.25) {
+        if (animationPhase !== 'intro') setAnimationPhase('intro');
+      } else if (latest < 0.75) {
+        if (animationPhase !== 'active') setAnimationPhase('active');
+      } else {
+        if (animationPhase !== 'outro') setAnimationPhase('outro');
+      }
+    });
+    return () => unsubscribe();
+  }, [scrollYProgress, animationPhase]);
+
+  useEffect(() => {
+    let target = 0;
+    if (animationPhase === 'active') target = 100;
+    if (animationPhase === 'outro') target = 153;
+
+    animate(knightFrame, target, {
+      duration: 1.8,
+      ease: [0.42, 0, 0.58, 1]
+    });
+  }, [animationPhase, knightFrame]);
+
+  useEffect(() => {
+    const unsubscribe = knightFrame.on("change", (latest) => {
+      const index = Math.min(Math.max(Math.round(latest), 0), totalFrames - 1);
       renderCanvas(index);
     });
     return () => unsubscribe();
-  }, [scrollYProgress, totalFrames]);
+  }, [knightFrame, totalFrames]);
 
   // ========== AAA CINEMATIC PARALLAX LAYERS ==========
 
   // Cleaned up transforms: Removed scale (zoom) and kept only subtle Y parallax
   const skyY = useTransform(smoothProgress, [0, 1], ["0%", "5%"]);
-  
+
   const battlefieldY = useTransform(smoothProgress, [0, 1], ["0%", "-5%"]);
   const battlefieldX = useTransform(smoothProgress, [0, 1], ["0%", "0%"]);
 
-  // Knight: Removed rotation and scale zoom for stability
-  const knightY = useTransform(smoothProgress, [0, 1], ["10%", "-5%"]);
-  
+  // Knight: Vertical descent profile (Top to Bottom motion on scroll)
+  const knightY = useTransform(smoothProgress, [0, 1], ["-25%", "25%"]);
+
   // 4. Content Reveal
   const textOpacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
@@ -119,7 +138,7 @@ const FeaturedProject = () => {
       opacity: 1,
       transition: {
         staggerChildren: 0.1,
-        ease: [0.22, 1, 0.36, 1]
+        ease: [0.45, 0, 0.58, 1]
       }
     }
   };
@@ -130,8 +149,8 @@ const FeaturedProject = () => {
     visible: {
       opacity: 1,
       transition: {
-        duration: 0.8,
-        ease: [0.22, 1, 0.36, 1]
+        duration: 1.2,
+        ease: [0.45, 0, 0.58, 1]
       }
     }
   };
@@ -164,7 +183,7 @@ const FeaturedProject = () => {
     <motion.div style={{
       y: knightY,
       translateZ: 0
-    }} className="hidden md:block absolute bottom-[-10%] md:bottom-[-15%] lg:bottom-[-20%] right-[-5%] w-[90vw] md:w-[70vw] lg:w-[45vw] z-30 pointer-events-none will-change-transform origin-bottom">
+    }} className="hidden md:block absolute bottom-[-2%] md:bottom-[-5%] lg:bottom-[-8%] left-[-15%] xl:left-[-10%] w-[90vw] md:w-[70vw] lg:w-[45vw] z-30 pointer-events-none will-change-transform origin-bottom">
       <canvas
         ref={canvasRef}
         className="w-full h-auto block"

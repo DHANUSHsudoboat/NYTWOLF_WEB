@@ -27,7 +27,7 @@ const LoadingScreen: React.FC<{
     progressMV.set(progress);
   }, [progress, progressMV]);
   useEffect(() => {
-    const MIN_DISPLAY_MS = 3000;
+    const MIN_DISPLAY_MS = 2000;
     const startTime = Date.now();
     const total = PRELOAD_ASSETS.length + 1; // +1 for fonts
     let loaded = 0;
@@ -49,10 +49,12 @@ const LoadingScreen: React.FC<{
         clearInterval(interval);
         setProgress(100);
         const elapsed = Date.now() - startTime;
-        const delay = Math.max(0, MIN_DISPLAY_MS - elapsed);
+        // Wait for MIN_DISPLAY_MS and then add an extra 800ms grace period 
+        // to ensure the spring-smoothed fill animation actually reaches 100%
+        const delay = Math.max(0, MIN_DISPLAY_MS - elapsed) + 800;
         setTimeout(() => {
           setIsFinishing(true);
-          setTimeout(onComplete, 900);
+          setTimeout(onComplete, 1200);
         }, delay);
       }
     };

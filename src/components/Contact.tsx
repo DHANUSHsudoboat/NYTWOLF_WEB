@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence, useInView, useMotionValue, useSpring, animate, useReducedMotion, useMotionTemplate } from 'motion/react';
+import { motion, useScroll, useTransform, AnimatePresence, useInView, useMotionValue, useSpring, animate, useReducedMotion, useMotionTemplate, useMotionValueEvent } from 'motion/react';
 import { ChevronRight, Gamepad2, Layout, Palette, Cpu, Users, Mail, ArrowUpRight, Menu, X, Globe, Zap, Layers, Box, Linkedin, Instagram, Facebook, Code, Paintbrush, LayoutGrid, Compass, Mouse } from 'lucide-react';
 import { MouseGlowContext } from '../context';
 import Footer from './Footer';
@@ -33,9 +33,20 @@ const Contact = () => {
   const [isVerified, setIsVerified] = useState(false);
   const [isPuzzleOpen, setIsPuzzleOpen] = useState(false);
   const [puzzleVal, setPuzzleVal] = useState(0);
+  const [shuffledLogos, setShuffledLogos] = useState([
+    { id: 'mirrored', transform: 'scaleX(-1)' },
+    { id: 'correct', transform: 'rotate(0deg)' },
+    { id: 'upside', transform: 'rotate(180deg)' },
+    { id: 'tilted', transform: 'rotate(90deg)' }
+  ]);
 
-  // High-performance smooth motion for the puzzle shard
+  const handleShuffleLogos = () => {
+    setShuffledLogos(prev => [...prev].sort(() => Math.random() - 0.5));
+  };
+
+  // High-performance smooth motion for the puzzle shard and thumb
   const puzzleX = useMotionValue(0);
+  const thumbX = useMotionValue(0);
   const smoothPuzzleX = useSpring(puzzleX, { damping: 25, stiffness: 200 });
 
   // Sync state to motion value
@@ -66,6 +77,7 @@ const Contact = () => {
         type: 'error',
         message: 'Please fill in all fields.'
       });
+      setTimeout(() => setResult(null), 3000);
       return;
     }
     if (!isVerified) {
@@ -73,49 +85,61 @@ const Contact = () => {
         type: 'error',
         message: 'Please verify that you are not a robot.'
       });
+      setTimeout(() => setResult(null), 3000);
       return;
     }
     setIsSubmitting(true);
     setResult(null);
     const payload = {
-      NAME: formData.name,
-      EMAIL: formData.email,
-      SUBJECT: formData.subject,
-      MESSAGE: formData.message
+      name: formData.name,
+      email: formData.email,
+      subject: formData.subject,
+      message: formData.message
     };
-    const webhookUrl = import.meta.env.VITE_WEBHOOK_URL || 'YOUR_WEBHOOK_URL_HERE'; // Fallback for dev
-    console.log(webhookUrl);
+    
+    // Improved resolution: Don't use a placeholder URL if VITE_WEBHOOK_URL is not set or set to dummy value
+    const envUrl = import.meta.env.VITE_WEBHOOK_URL;
+    const webhookUrl = (!envUrl || envUrl === 'Webhook Url' || !envUrl.startsWith('http')) 
+      ? '/api/send-email' 
+      : envUrl;
+
+    console.log("Submitting to:", webhookUrl);
     try {
       // Send the payload as JSON, but keep no-cors to prevent browser blocking.
       // Note: Google Apps Script needs to handle POST requests and CORS internally 
       // (often by having a doPost function return ContentService.createTextOutput().setMimeType(ContentService.MimeType.JSON))
-      await fetch(webhookUrl, {
+      const response = await fetch(webhookUrl, {
         method: 'POST',
-        mode: 'no-cors',
         headers: {
-          'Content-Type': 'text/plain;charset=utf-8'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(payload)
       });
 
-      // With no-cors, we can't read the response properly (it's opaque).
-      // We assume success if the fetch didn't throw a network error.
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: `Server error: ${response.status}` }));
+        throw new Error(errorData.error);
+      }
+
       setResult({
         type: 'success',
         message: 'Message sent successfully!'
       });
+      setIsVerified(false); // Reset verification state
+      setTimeout(() => setResult(null), 5000);
       setFormData({
         name: '',
         email: '',
         subject: '',
         message: ''
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Submission error:', error);
       setResult({
         type: 'error',
-        message: 'Connection error. Please try again later.'
+        message: error.message || 'Connection error. Please try again later.'
       });
+      setTimeout(() => setResult(null), 5000);
     } finally {
       setIsSubmitting(false);
     }
@@ -133,6 +157,25 @@ const Contact = () => {
   const fgRot1 = useTransform(smoothProgress, [0, 1], [-20, 20]);
   const fgY2 = useTransform(smoothProgress, [0, 1], ["60%", "-90%"]);
   const fgRot2 = useTransform(smoothProgress, [0, 1], [30, -30]);
+
+  // Scroll direction tracking
+  const { scrollY } = useScroll();
+  const [isScrollingDown, setIsScrollingDown] = useState(true);
+  useMotionValueEvent(scrollY, "change", (current) => {
+    const previous = scrollY.getPrevious() ?? 0;
+    if (current > previous && !isScrollingDown) {
+      setIsScrollingDown(true);
+    } else if (current < previous && isScrollingDown) {
+      setIsScrollingDown(false);
+    }
+  });
+
+  const formRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+  const isFormInView = useInView(formRef, { once: false, amount: 0.1 });
+  const isTextInView = useInView(textRef, { once: false, amount: 0.1 });
+  const isFormVisible = isFormInView || !isScrollingDown;
+  const isTextVisible = isTextInView || !isScrollingDown;
 
   // ========== CONTENT REVEAL LAYERS ==========
   const contentOpacity = useTransform(smoothProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
@@ -170,7 +213,13 @@ const Contact = () => {
       <div className="container-1440 relative w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-20">
           <div className="lg:col-span-6">
-            <motion.div style={{ opacity: contentOpacity }}>
+            <motion.div 
+              ref={textRef}
+              initial={{ rotateX: 45, rotateY: 30, opacity: 0, y: 40 }}
+              animate={isTextVisible ? { rotateX: 0, rotateY: 0, opacity: 1, y: 0 } : { rotateX: 45, rotateY: 30, opacity: 0, y: 40 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              style={{ transformStyle: "preserve-3d" }}
+            >
               <span className="text-[#c79a40] tracking-[0.5em] uppercase text-xs font-bold mb-4 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">SEND A RAVEN</span>
               <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black mb-6 md:mb-10 uppercase tracking-tighter text-white leading-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
                 LET'S <span className="text-[#A855C5]">TALK</span>.
@@ -197,7 +246,14 @@ const Contact = () => {
             </motion.div>
           </div>
 
-          <motion.div style={{ opacity: formOpacity }} className="lg:col-span-6">
+          <motion.div 
+            ref={formRef}
+            initial={{ rotateX: 45, rotateY: -30, opacity: 0, y: 40 }}
+            animate={isFormVisible ? { rotateX: 0, rotateY: 0, opacity: 1, y: 0 } : { rotateX: 45, rotateY: -30, opacity: 0, y: 40 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            style={{ transformStyle: "preserve-3d" }}
+            className="lg:col-span-6"
+          >
             <form onSubmit={handleSubmit} onMouseEnter={() => setIsHoveringCard(true)} onMouseLeave={() => setIsHoveringCard(false)} className="space-y-4 bg-black/40 p-5 md:p-8 rounded-2xl border border-[#A855C5]/20 shadow-[0_30px_60px_rgba(0,0,0,0.7)] relative overflow-hidden group">
               {/* Mystical Altar Ambient Glow */}
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(168,85,197,0.15)_0%,transparent_60%)] pointer-events-none" />
@@ -219,6 +275,8 @@ const Contact = () => {
                   onClick={() => {
                     if (!isVerified) {
                       setPuzzleVal(0);
+                      thumbX.set(0); // Ensure thumb starts at zero
+                      handleShuffleLogos(); // Shuffle order on open
                       setIsPuzzleOpen(true);
                     }
                   }}
@@ -250,15 +308,18 @@ const Contact = () => {
                 </span>
               </button>
 
-              {result && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={`mt-4 p-4 rounded-xl text-center text-sm font-bold tracking-wider relative z-10 ${result.type === 'success' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}`}
-                >
-                  {result.message}
-                </motion.div>
-              )}
+              <AnimatePresence>
+                {result && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className={`mt-4 p-4 rounded-xl text-center text-sm font-bold tracking-wider relative z-10 ${result.type === 'success' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}`}
+                  >
+                    {result.message}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </form>
           </motion.div>
         </div>
@@ -296,12 +357,7 @@ const Contact = () => {
               <div className="relative h-48 bg-black/80 rounded-2xl border border-white/5 flex items-center justify-center group/puzzle overflow-hidden select-none">
                 {/* Targets along the track - Dynamic spacing */}
                 <div className="absolute inset-x-4 sm:inset-x-8 flex justify-between items-center pointer-events-none opacity-20">
-                  {[
-                    { id: 'mirrored', transform: 'scaleX(-1)' },
-                    { id: 'correct', transform: 'rotate(0deg)' },
-                    { id: 'upside', transform: 'rotate(180deg)' },
-                    { id: 'tilted', transform: 'rotate(90deg)' }
-                  ].map((target, i) => (
+                  {shuffledLogos.map((target, i) => (
                     <div key={i} className="relative flex flex-col items-center">
                       <div style={{ transform: target.transform }}>
                         <Logo className="w-8 h-8 sm:w-12 sm:h-12 text-white" />
@@ -348,7 +404,7 @@ const Contact = () => {
                       }
                     }}
                     className="absolute left-1.5 top-1.5 w-11 h-11 bg-white rounded-full shadow-[0_0_20px_white/60] cursor-grab active:cursor-grabbing flex items-center justify-center z-50"
-                    style={{ x: 0 }}
+                    style={{ x: thumbX }}
                   >
                     <Zap className="w-6 h-6 text-[#A855C5]" />
                   </motion.div>
@@ -360,11 +416,20 @@ const Contact = () => {
 
                 <button
                   onClick={() => {
-                    if (puzzleVal >= 34 && puzzleVal <= 40) {
+                    const correctIdx = shuffledLogos.findIndex(l => l.id === 'correct');
+                    // Calculate target position based on layout (approx 29% increments with an 8% offset)
+                    const targetPos = (correctIdx * 29) + 7;
+                    const isValid = Math.abs(puzzleVal - targetPos) <= 7;
+
+                    if (isValid) {
                       setIsVerified(true);
                       setTimeout(() => setIsPuzzleOpen(false), 500);
                     } else {
                       setPuzzleVal(0);
+                      // Animate thumb back to zero
+                      animate(thumbX, 0, { type: "spring", damping: 25, stiffness: 200 });
+                      // Shuffle for next try
+                      handleShuffleLogos();
                     }
                   }}
                   className="w-full py-4 font-black tracking-[0.4em] uppercase text-xs rounded-xl transition-all duration-500 border bg-[#A855C5] text-white border-white/20 shadow-[0_15px_30px_rgba(168,85,197,0.4)] hover:bg-[#c79a40] hover:border-[#c79a40]/50 active:scale-[0.98]"
