@@ -8,20 +8,8 @@ const CareerCard = ({ role, index, scrollProgress }: { role: any; index: number;
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  // Scroll direction detection
-  const { scrollY } = useScroll();
-  const [isScrollingDown, setIsScrollingDown] = useState(true);
-  useMotionValueEvent(scrollY, "change", (current) => {
-    const previous = scrollY.getPrevious() ?? 0;
-    if (current > previous && !isScrollingDown) {
-      setIsScrollingDown(true);
-    } else if (current < previous && isScrollingDown) {
-      setIsScrollingDown(false);
-    }
-  });
-
   const isInView = useInView(cardRef, { once: false, amount: 0.1 });
-  const isVisible = isInView || !isScrollingDown;
+  const isVisible = isInView;
 
   const initialRotX = 45;
   const initialRotY = index % 3 === 0 ? 30 : index % 3 === 2 ? -30 : 0;
@@ -143,9 +131,9 @@ const Careers = ({ onNavItemClick }: { onNavItemClick: (id: string) => void }) =
             href="https://www.linkedin.com/company/nytwolf-games/" 
             target="_blank" 
             rel="noopener noreferrer" 
-            whileHover={{ scale: 1.05 }} 
-            whileTap={{ scale: 0.95 }} 
-            className="px-12 py-5 bg-gradient-to-r from-[#A855C5] to-[#4A1C56] text-white font-bold uppercase tracking-[0.3em] text-sm rounded-3xl flex items-center gap-4 group border border-[#A855C5] shadow-[0_10px_30px_rgba(168,85,197,0.4)]"
+            whileHover={{ scale: 1.02 }} 
+            whileTap={{ scale: 0.98 }} 
+            className="w-full max-w-[320px] md:w-auto px-8 md:px-12 py-4 md:py-5 bg-gradient-to-r from-[#A855C5] to-[#4A1C56] text-white font-bold uppercase tracking-[0.2em] md:tracking-[0.3em] text-[10px] md:text-sm rounded-full flex items-center justify-center gap-3 group border border-[#A855C5]/50 shadow-[0_10px_30px_rgba(168,85,197,0.3)] transition-all duration-300"
           >
             View Openings
             <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-2" />

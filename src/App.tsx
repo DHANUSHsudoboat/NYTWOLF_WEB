@@ -43,6 +43,9 @@ export default function App() {
   const mouseYSpring = useSpring(mouseY, springConfig);
 
   useEffect(() => {
+    // Optimization: Skip mouse tracking on touch devices
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+
     const handleMouseMove = (e: MouseEvent) => {
       mouseX.set(e.clientX / window.innerWidth);
       mouseY.set(e.clientY / window.innerHeight);
@@ -130,61 +133,17 @@ export default function App() {
     };
 
     const handleTouchMove = (e: TouchEvent) => {
+      // Optimization: On mobile, letting native scroll-snapping handle most of the work.
+      // We only intervene if we're midway through a programmatic animation.
       if (isAnimating.current) {
         e.preventDefault();
         return;
       }
-
-      const touchY = e.touches[0].clientY;
-      const delta = touchStartY.current - touchY;
-
-      const currentSection = document.getElementById(activeSectionIdRef.current);
-      let canScrollNatively = false;
-
-      if (currentSection) {
-        const rect = currentSection.getBoundingClientRect();
-        if (delta > 0 && rect.bottom > window.innerHeight + 5) {
-          canScrollNatively = true;
-        } else if (delta < 0 && rect.top < -5) {
-          canScrollNatively = true;
-        }
-      }
-
-      if (canScrollNatively) {
-        touchStartY.current = touchY;
-        return; // Allow native swipe
-      }
-
-      // Prevent native overscroll rubber-banding so programmatic animation isn't blocked by the OS
-      e.preventDefault();
-
-      const now = Date.now();
-      // Enforce cooldown only when taking over scroll
-      if (now - lastScrollTime.current < 1200) {
-        return;
-      }
-
-      if (Math.abs(delta) < 5) return; // Instant touch threshold
-
-      const currentIdx = SECTIONS.indexOf(activeSectionIdRef.current);
-      if (delta > 0) {
-        if (currentIdx < SECTIONS.length - 1) {
-          lastScrollTime.current = now;
-          scrollToSection(SECTIONS[currentIdx + 1], 0.8);
-        }
-      } else {
-        if (currentIdx > 0) {
-          lastScrollTime.current = now;
-          scrollToSection(SECTIONS[currentIdx - 1], 0.8);
-        }
-      }
-
-      touchStartY.current = touchY;
     };
 
     window.addEventListener('wheel', handleWheel, { passive: false });
     window.addEventListener('touchstart', handleTouchStart, { passive: true });
-    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
 
     return () => {
       window.removeEventListener('wheel', handleWheel);
@@ -194,9 +153,15 @@ export default function App() {
   }, [isLoading, scrollToSection]);
 
   useEffect(() => {
-    if (!isLoading) {
+    if (isLoading) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
       window.scrollTo(0, 0);
     }
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isLoading]);
 
   useEffect(() => {
@@ -214,8 +179,10 @@ export default function App() {
             activeSectionIdRef.current = entry.target.id;
 
             // Auto-scroll instantly when next section comes into view natively
+            // Optimization: Skip auto-snap for touch devices to avoid jitter and allow natural swipe
+            const isTouch = window.matchMedia("(pointer: coarse)").matches;
             const now = Date.now();
-            if (!isAnimating.current && now - lastScrollTime.current > 1200) {
+            if (!isTouch && !isAnimating.current && now - lastScrollTime.current > 1200) {
               lastScrollTime.current = now;
               scrollToSection(entry.target.id, 1.2);
             }

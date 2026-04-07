@@ -71,9 +71,9 @@ const ServiceCard = ({ service, index, scrollProgress }: { service: any; index: 
         y: y,
         scale: scrollScale,
         opacity: scrollOpacity,
-        rotateX: flipRotateX,
-        rotateY: flipRotateY,
-        transformStyle: "preserve-3d",
+        rotateX: window.matchMedia("(pointer: coarse)").matches ? 0 : flipRotateX,
+        rotateY: window.matchMedia("(pointer: coarse)").matches ? 0 : flipRotateY,
+        transformStyle: window.matchMedia("(pointer: coarse)").matches ? "flat" : "preserve-3d",
       }}
       className="relative p-6 md:p-8 border border-white/5 bg-gradient-to-b from-white/[0.08] to-transparent backdrop-blur-xl group overflow-hidden"
     >
@@ -109,12 +109,14 @@ const Services = () => {
     offset: ["start end", "end start"]
   });
 
+  const isMobile = typeof window !== 'undefined' && window.matchMedia("(pointer: coarse)").matches;
+
   const smoothProgress = useSpring(scrollYProgress, {
     damping: 25, stiffness: 100, restDelta: 0.001
   });
 
   // ========== ENVIRONMENTAL PARALAX LAYERS ==========
-  const bgY = useTransform(smoothProgress, [0, 1], ["0%", "15%"]);
+  const bgY = useTransform(smoothProgress, [0, 1], ["0%", isMobile ? "0%" : "15%"]);
   const midLeftY = useTransform(smoothProgress, [0, 1], ["20%", "-20%"]);
   const midRightY = useTransform(smoothProgress, [0, 1], ["40%", "-30%"]);
   const fgY1 = useTransform(smoothProgress, [0, 1], ["50%", "-80%"]);

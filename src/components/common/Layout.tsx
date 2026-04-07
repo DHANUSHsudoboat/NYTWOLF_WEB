@@ -7,15 +7,19 @@ export const ParticleSystem = React.memo(({
 }: {
   count?: number;
 }) => {
+  const isMobile = typeof window !== 'undefined' && window.matchMedia("(pointer: coarse)").matches;
+  const actualCount = isMobile ? Math.floor(count / 2) : count;
+  
   const particles = React.useMemo(() => Array.from({
-    length: count
+    length: actualCount
   }, () => ({
     x: Math.random() * 100,
     y0: Math.random() * 100,
     y1: Math.random() * 100,
     opacity: Math.random() * 0.5 + 0.2,
     duration: Math.random() * 10 + 10
-  })), [count]);
+  })), [actualCount]);
+  
   return <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
       {particles.map((p, i) => <motion.div key={i} className="absolute w-1 h-1 bg-[#c79a40]/40 rounded-full blur-[1px]" initial={{
       x: `${p.x}%`,
@@ -44,6 +48,8 @@ export const ShineOverlay = React.memo(({
   duration?: number;
   className?: string;
 }) => {
+  const isMobile = typeof window !== 'undefined' && window.matchMedia("(pointer: coarse)").matches;
+  
   return <div className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`}>
       <motion.div initial={{
       x: "-150%",
@@ -57,9 +63,10 @@ export const ShineOverlay = React.memo(({
       ease: [0.16, 1, 0.3, 1],
       repeat: Infinity,
       repeatDelay: 6
-    }} className="absolute w-[300%] h-[1000px] bg-gradient-to-b from-transparent via-white/[0.12] to-transparent rotate-[-45deg] blur-[150px]" style={{
+    }} className={`absolute w-[300%] h-[1000px] bg-gradient-to-b from-transparent via-white/[0.12] to-transparent rotate-[-45deg] ${isMobile ? 'blur-[60px]' : 'blur-[150px]'}`} style={{
       top: '-100%',
-      left: '-100%'
+      left: '-100%',
+      willChange: 'transform'
     }} />
       <motion.div initial={{
       x: "-150%",
@@ -73,9 +80,10 @@ export const ShineOverlay = React.memo(({
       ease: [0.16, 1, 0.3, 1],
       repeat: Infinity,
       repeatDelay: 6.2
-    }} className="absolute w-[300%] h-[150px] bg-gradient-to-b from-transparent via-white/[0.15] to-transparent rotate-[-45deg] blur-[80px]" style={{
+    }} className={`absolute w-[300%] h-[150px] bg-gradient-to-b from-transparent via-white/[0.15] to-transparent rotate-[-45deg] ${isMobile ? 'blur-[30px]' : 'blur-[80px]'}`} style={{
       top: '-100%',
-      left: '-100%'
+      left: '-100%',
+      willChange: 'transform'
     }} />
     </div>;
 });
@@ -199,6 +207,9 @@ export const CinematicBackground = () => {
     isHoveringCard
   } = React.useContext(MouseGlowContext);
   useEffect(() => {
+    // Optimization: Skip mouse tracking on touch devices
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+
     const handleMouseMove = (e: MouseEvent) => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();

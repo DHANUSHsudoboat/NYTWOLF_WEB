@@ -12,6 +12,7 @@ const Contact = () => {
   } = React.useContext(MouseGlowContext);
   const sectionRef = useRef<HTMLElement>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
+  const isMobile = typeof window !== 'undefined' && window.matchMedia("(pointer: coarse)").matches;
   const {
     scrollYProgress
   } = useScroll({
@@ -147,7 +148,7 @@ const Contact = () => {
 
   // ========== ENVIRONMENTAL PARALLAX LAYERS ==========
   // Deep Background
-  const bgY = useTransform(smoothProgress, [0, 1], ["0%", "10%"]);
+  const bgY = useTransform(smoothProgress, [0, 1], ["0%", isMobile ? "0%" : "10%"]);
   // Midground (Mystical Portal / Floating Symbols)
   const midLeftY = useTransform(smoothProgress, [0, 1], ["10%", "-10%"]);
   const midLeftRot = useTransform(smoothProgress, [0, 1], [0, 45]);
@@ -176,6 +177,13 @@ const Contact = () => {
   const isTextInView = useInView(textRef, { once: false, amount: 0.1 });
   const isFormVisible = isFormInView || !isScrollingDown;
   const isTextVisible = isTextInView || !isScrollingDown;
+  
+  // Close the puzzle modal if user scrolls away
+  useMotionValueEvent(scrollY, "change", () => {
+    if (isPuzzleOpen) {
+      setIsPuzzleOpen(false);
+    }
+  });
 
   // ========== CONTENT REVEAL LAYERS ==========
   const contentOpacity = useTransform(smoothProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
@@ -216,9 +224,9 @@ const Contact = () => {
             <motion.div 
               ref={textRef}
               initial={{ rotateX: 45, rotateY: 30, opacity: 0, y: 40 }}
-              animate={isTextVisible ? { rotateX: 0, rotateY: 0, opacity: 1, y: 0 } : { rotateX: 45, rotateY: 30, opacity: 0, y: 40 }}
+              animate={isTextVisible ? { rotateX: 0, rotateY: 0, opacity: 1, y: 0 } : { rotateX: isMobile ? 0 : 45, rotateY: isMobile ? 0 : 30, opacity: 0, y: 40 }}
               transition={{ duration: 1, ease: "easeOut" }}
-              style={{ transformStyle: "preserve-3d" }}
+              style={{ transformStyle: isMobile ? "flat" : "preserve-3d" }}
             >
               <span className="text-[#c79a40] tracking-[0.5em] uppercase text-xs font-bold mb-4 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">SEND A RAVEN</span>
               <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black mb-6 md:mb-10 uppercase tracking-tighter text-white leading-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
@@ -249,9 +257,9 @@ const Contact = () => {
           <motion.div 
             ref={formRef}
             initial={{ rotateX: 45, rotateY: -30, opacity: 0, y: 40 }}
-            animate={isFormVisible ? { rotateX: 0, rotateY: 0, opacity: 1, y: 0 } : { rotateX: 45, rotateY: -30, opacity: 0, y: 40 }}
+            animate={isFormVisible ? { rotateX: 0, rotateY: 0, opacity: 1, y: 0 } : { rotateX: isMobile ? 0 : 45, rotateY: isMobile ? 0 : -30, opacity: 0, y: 40 }}
             transition={{ duration: 1, ease: "easeOut" }}
-            style={{ transformStyle: "preserve-3d" }}
+            style={{ transformStyle: isMobile ? "flat" : "preserve-3d" }}
             className="lg:col-span-6"
           >
             <form onSubmit={handleSubmit} onMouseEnter={() => setIsHoveringCard(true)} onMouseLeave={() => setIsHoveringCard(false)} className="space-y-4 bg-black/40 p-5 md:p-8 rounded-2xl border border-[#A855C5]/20 shadow-[0_30px_60px_rgba(0,0,0,0.7)] relative overflow-hidden group">

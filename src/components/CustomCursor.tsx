@@ -15,6 +15,9 @@ const CustomCursor = () => {
   const ringY = useSpring(cursorY, { damping: 40, stiffness: 400 });
 
   useEffect(() => {
+    // Optimization: Skip cursor logic entirely on mobile/touch devices
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+
     const moveMouse = (e: MouseEvent) => {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
@@ -36,6 +39,9 @@ const CustomCursor = () => {
       window.removeEventListener('mouseup', handleMouseUp);
     };
   }, []);
+
+  // Don't render on mobile
+  if (typeof window !== 'undefined' && window.matchMedia("(pointer: coarse)").matches) return null;
 
   return (
     <>

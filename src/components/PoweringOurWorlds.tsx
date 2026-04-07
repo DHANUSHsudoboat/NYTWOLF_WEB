@@ -5,20 +5,9 @@ import { MouseGlowContext } from '../context';
 const TechCard = ({ tech, index }: { tech: any; index: number; key?: any }) => {
   const { setIsHoveringCard } = React.useContext(MouseGlowContext);
   const cardRef = useRef<HTMLDivElement>(null);
-  // Scroll direction detection
-  const { scrollY } = useScroll();
-  const [isScrollingDown, setIsScrollingDown] = useState(true);
-  useMotionValueEvent(scrollY, "change", (current) => {
-    const previous = scrollY.getPrevious() ?? 0;
-    if (current > previous && !isScrollingDown) {
-      setIsScrollingDown(true);
-    } else if (current < previous && isScrollingDown) {
-      setIsScrollingDown(false);
-    }
-  });
-
   const isInView = useInView(cardRef, { once: false, amount: 0.2 });
-  const isVisible = isInView || !isScrollingDown;
+  const isVisible = isInView;
+  const isMobile = typeof window !== 'undefined' && window.matchMedia("(pointer: coarse)").matches;
 
   // 3D Flip Angles
   const initialRotX = 45;
@@ -41,13 +30,13 @@ const TechCard = ({ tech, index }: { tech: any; index: number; key?: any }) => {
         opacity: 1,
         y: 0
       } : {
-        rotateX: initialRotX,
-        rotateY: initialRotY,
+        rotateX: isMobile ? 0 : initialRotX,
+        rotateY: isMobile ? 0 : initialRotY,
         opacity: 0,
         y: 40
       }}
       transition={{ duration: 1, ease: "easeOut" }}
-      style={{ transformStyle: "preserve-3d" }}
+      style={{ transformStyle: isMobile ? "flat" : "preserve-3d" }}
       className="relative p-4 md:p-5 lg:p-4 bg-black/40 backdrop-blur-sm border border-white/5 overflow-hidden transition-[border-color,box-shadow] duration-700 group cursor-default h-full flex flex-col items-start hover:border-[#efb034]/20"
     >
       <div className="mb-4 w-12 h-12 md:w-14 md:h-14 border border-white/10 flex items-center justify-center relative group-hover:border-transparent transition-all duration-500">
@@ -69,8 +58,10 @@ const TechCard = ({ tech, index }: { tech: any; index: number; key?: any }) => {
 const PoweringOurWorlds = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const isMobile = typeof window !== 'undefined' && window.matchMedia("(pointer: coarse)").matches;
 
   const handleMouseMove = (e: React.MouseEvent) => {
+    if (isMobile) return;
     if (!sectionRef.current) return;
     const rect = sectionRef.current.getBoundingClientRect();
     setMousePos({
@@ -131,11 +122,13 @@ const PoweringOurWorlds = () => {
           <img src="/tech_room.png" className="w-full h-full object-cover" alt="" />
         </motion.div>
 
-        {/* Layer 2: The Dark Overlay with a hole (mask) around the mouse */}
+        {/* Layer 2: The Dark Overlay - Static on mobile, Dynamic on desktop */}
         <div
           className="absolute inset-0 z-10"
           style={{
-            background: `radial-gradient(circle 350px at ${mousePos.x}px ${mousePos.y}px, transparent 0%, rgba(6, 4, 8, 0.7) 80%)`
+            background: isMobile 
+              ? 'rgba(6, 4, 8, 0.75)' 
+              : `radial-gradient(circle 350px at ${mousePos.x}px ${mousePos.y}px, transparent 0%, rgba(6, 4, 8, 0.7) 80%)`
           }}
         />
       </div>

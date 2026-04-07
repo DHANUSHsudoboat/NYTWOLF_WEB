@@ -82,6 +82,44 @@
   }
 }
 
+/* Performance Optimizations for Mobile */
+@media (pointer: coarse) {
+  * {
+    /* Disable expensive backdrop effects on touch devices to prioritize scroll smoothness */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  .drop-shadow-2xl, .shadow-2xl, .drop-shadow-xl {
+    /* Reduce shadow complexity on mobile */
+    filter: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Limit animation complexity */
+  .motion-safe\:animate-pulse {
+    animation: none !important;
+  }
+
+  /* CRITICAL: Disable section blurs on mobile which kill scroll performance */
+  .section-focus-layer {
+    filter: none !important;
+    opacity: 0.1 !important;
+    transition: opacity 0.5s ease-out !important;
+    will-change: opacity;
+  }
+
+  .section-focus-layer.active {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  /* Relax scroll snapping on touch to make it feel natural and smooth */
+  html {
+    scroll-snap-type: y proximity !important;
+  }
+}
+
 @layer base {
   html {
     scroll-behavior: auto;

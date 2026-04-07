@@ -37,7 +37,7 @@ const Footer = () => {
   return <footer className="relative py-8 md:py-12 bg-black overflow-hidden group">
     {/* Massive Background Text Branding */}
     <div className="absolute inset-0 hidden md:flex items-center justify-center pointer-events-none select-none z-0">
-      <span className="text-[12vw] font-black leading-none uppercase text-white opacity-[0.03] whitespace-nowrap translate-y-[10%] transition-transform duration-1000 group-hover:scale-110 font-display">
+      <span className="text-[9vw] font-black leading-none uppercase text-white opacity-[0.07] whitespace-nowrap translate-y-[10%] transition-all duration-1000 group-hover:opacity-[0.12] font-display">
         NYTWOLF
       </span>
     </div>
@@ -48,7 +48,7 @@ const Footer = () => {
       <div className="flex flex-col md:flex-row justify-between items-center gap-6 md:gap-10">
         {/* Left Side: Copyright & Links */}
         <motion.div variants={staggerItem} className="flex flex-wrap items-center justify-center md:justify-start gap-y-4 gap-x-6 text-[10px] md:text-[11px] text-text-muted uppercase tracking-[0.2em] font-medium">
-          <span className="text-white/40 whitespace-nowrap">© 2026 NYTWOLF GAMES. ALL RIGHTS RESERVED.</span>
+          <span className="text-white/70 whitespace-nowrap">© 2026 NYTWOLF GAMES. ALL RIGHTS RESERVED.</span>
 
           <div className="flex items-center gap-4">
             <span className="hidden md:inline opacity-20">•</span>

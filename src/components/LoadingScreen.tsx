@@ -13,65 +13,64 @@ const LoadingScreen: React.FC<{
 }> = ({
   onComplete
 }) => {
-  const [progress, setProgress] = useState(0);
   const [isFinishing, setIsFinishing] = useState(false);
+  const isMobile = typeof window !== 'undefined' && window.matchMedia("(pointer: coarse)").matches;
 
-  // Spring-smoothed progress drives the logo fill height
+  // Drive progress directly through MotionValues for 60fps smoothness without re-renders
   const progressMV = useMotionValue(0);
   const springProg = useSpring(progressMV, {
     damping: 35,
-    stiffness: 45
+    stiffness: 45,
+    restDelta: 0.001
   });
-  const fillHeight = useTransform(springProg, [0, 100], ['0%', '100%']);
+  
   useEffect(() => {
-    progressMV.set(progress);
-  }, [progress, progressMV]);
-  useEffect(() => {
-    const MIN_DISPLAY_MS = 2000;
+    const MIN_DISPLAY_MS = 2500; // Increased slightly for smoother feel
     const startTime = Date.now();
-    const total = PRELOAD_ASSETS.length + 1; // +1 for fonts
+    const total = PRELOAD_ASSETS.length + 1;
     let loaded = 0;
-    let actualPct = 0;
 
-    // We want the progress to start from 0 and move smoothly even if loading is instant
-    const interval = setInterval(() => {
-      setProgress(prev => {
-        const next = prev + (100 / (MIN_DISPLAY_MS / 50)); // Targeted to reach 100 in 3s
-        return Math.min(Math.max(next, actualPct), 100);
-      });
-    }, 50);
+    // smooth constant progress animation (fake progression for perceived speed)
+    const baseProgress = animate(progressMV, 100, {
+      duration: MIN_DISPLAY_MS / 1000,
+      ease: "linear",
+      autoplay: true
+    });
 
     const onAssetLoaded = () => {
       loaded++;
-      actualPct = Math.round(loaded / total * 100);
-      
+      // We don't actually need to update React state per-asset, the base animation handles the visual smoothness
       if (loaded >= total) {
-        clearInterval(interval);
-        setProgress(100);
-        const elapsed = Date.now() - startTime;
-        // Wait for MIN_DISPLAY_MS and then add an extra 800ms grace period 
-        // to ensure the spring-smoothed fill animation actually reaches 100%
-        const delay = Math.max(0, MIN_DISPLAY_MS - elapsed) + 800;
-        setTimeout(() => {
-          setIsFinishing(true);
-          setTimeout(onComplete, 1200);
-        }, delay);
+        baseProgress.stop();
+        // Snap to real 100% smoothly
+        animate(progressMV, 100, {
+          duration: 0.8,
+          ease: "easeOut",
+          onComplete: () => {
+            const elapsed = Date.now() - startTime;
+            const delay = Math.max(0, MIN_DISPLAY_MS - elapsed);
+            setTimeout(() => {
+              setIsFinishing(true);
+              setTimeout(onComplete, 1200);
+            }, delay);
+          }
+        });
       }
     };
 
-    // Track fonts
+    // Track fonts/images
     document.fonts.ready.then(onAssetLoaded).catch(onAssetLoaded);
-
-    // Track images
     PRELOAD_ASSETS.forEach(src => {
       const img = new Image();
       img.onload = onAssetLoaded;
-      img.onerror = onAssetLoaded; // count errors so we never get stuck
+      img.onerror = onAssetLoaded;
       img.src = src;
     });
 
-    return () => clearInterval(interval);
-  }, [onComplete]);
+    return () => {
+      baseProgress.stop();
+    };
+  }, [onComplete, progressMV]);
 
   return <motion.div className="fixed inset-0 z-[100] bg-[#0F0B14] flex flex-col items-center justify-center overflow-hidden" 
     initial={{ opacity: 1 }} 
@@ -101,7 +100,7 @@ const LoadingScreen: React.FC<{
 
       {/* Subtle Floating Particles */}
       <div className="absolute inset-0 z-1 pointer-events-none overflow-hidden">
-        {Array.from({ length: 15 }).map((_, i) => (
+        {Array.from({ length: isMobile ? 8 : 15 }).map((_, i) => (
           <motion.div 
             key={i} 
             className="absolute w-[1px] h-[1px] bg-white/20 rounded-full blur-[0.5px]" 
@@ -130,13 +129,13 @@ const LoadingScreen: React.FC<{
           y: 0,
           opacity: 1,
           filter: "blur(0px)",
-          scale: typeof window !== "undefined" && window.innerWidth < 768 ? 1.5 : 1.25
+          scale: isMobile ? 1.5 : 1.25
         }} 
         animate={{
           y: 0,
           opacity: 1,
           filter: "blur(0px)",
-          scale: isFinishing ? 1 : typeof window !== "undefined" && window.innerWidth < 768 ? 1.5 : 1.25
+          scale: isFinishing ? 1 : isMobile ? 1.5 : 1.25
         }} 
         transition={{
           duration: isFinishing ? 1.5 : 0.8,
@@ -162,14 +161,19 @@ const LoadingScreen: React.FC<{
         </div>
 
         {/* Studio Name */}
-        <motion.div animate={{
-        opacity: progress > 0 ? 1 : 0,
-        y: progress > 0 ? 0 : 10
-      }} transition={{
-        duration: isFinishing ? 1.5 : 1.2,
-        delay: isFinishing ? 0 : 0.6,
-        ease: [0.22, 1, 0.36, 1]
-      }} className="mt-12 text-center">
+        <motion.div 
+          initial={{ opacity: 1, y: 0 }}
+          animate={{
+            opacity: 1,
+            y: 0
+          }} 
+          transition={{
+            duration: isFinishing ? 1.5 : 1.2,
+            delay: isFinishing ? 0 : 0.6,
+            ease: [0.22, 1, 0.36, 1]
+          }} 
+          className="mt-12 text-center"
+        >
           <h1 className="text-3xl sm:text-4xl md:text-[2.5rem] lg:text-5xl font-black tracking-[0.15em] md:tracking-[0.25em] lg:tracking-[0.3em] text-white uppercase font-display drop-shadow-[0_0_30px_rgba(168,85,197,0.3)] flex flex-col lg:flex-row items-center gap-2 lg:gap-4 text-center justify-center w-full">
             <span className="inline-block align-middle">NYTW<WolfEyeO />LF</span> <span className="text-[#A855C5]">GAMES</span>
           </h1>

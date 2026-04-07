@@ -28,17 +28,20 @@ const Hero = ({
   });
 
   // Background Parallax Transforms (Moved from App.tsx)
-  const bgX = useTransform(mouseX, [0, 1], ["-1.5%", "1.5%"]);
-  const bgYParallax = useTransform(mouseY, [0, 1], ["-1.5%", "1.5%"]);
-  const bgScale = useTransform(mouseY, [0, 1], [1.12, 1.15]);
+  // Background Parallax Transforms (Moved from App.tsx)
+  const isMobile = typeof window !== 'undefined' && window.matchMedia("(pointer: coarse)").matches;
+
+  const bgX = useTransform(mouseX, [0, 1], isMobile ? ["0%", "0%"] : ["-1.5%", "1.5%"]);
+  const bgYParallax = useTransform(mouseY, [0, 1], isMobile ? ["0%", "0%"] : ["-1.5%", "1.5%"]);
+  const bgScale = useTransform(mouseY, [0, 1], isMobile ? [1.12, 1.12] : [1.12, 1.15]);
 
   // Mouse Parallax Transforms for other layers
-  const mouseStatueX = useTransform(mouseX, [0, 1], ["-1%", "1%"]);
-  const mouseStatueY = useTransform(mouseY, [0, 1], ["-0.5%", "0.5%"]);
-  const mouseGrassX = useTransform(mouseX, [0, 1], ["-2%", "2%"]);
-  const mouseGrassY = useTransform(mouseY, [0, 1], ["-1%", "1%"]);
-  const mouseTreeX = useTransform(mouseX, [0, 1], ["-1.5%", "1.5%"]);
-  const mouseTreeY = useTransform(mouseY, [0, 1], ["-0.75%", "0.75%"]);
+  const mouseStatueX = useTransform(mouseX, [0, 1], isMobile ? ["0%", "0%"] : ["-1%", "1%"]);
+  const mouseStatueY = useTransform(mouseY, [0, 1], isMobile ? ["0%", "0%"] : ["-0.5%", "0.5%"]);
+  const mouseGrassX = useTransform(mouseX, [0, 1], isMobile ? ["0%", "0%"] : ["-2%", "2%"]);
+  const mouseGrassY = useTransform(mouseY, [0, 1], isMobile ? ["0%", "0%"] : ["-1%", "1%"]);
+  const mouseTreeX = useTransform(mouseX, [0, 1], isMobile ? ["0%", "0%"] : ["-1.5%", "1.5%"]);
+  const mouseTreeY = useTransform(mouseY, [0, 1], isMobile ? ["0%", "0%"] : ["-0.75%", "0.75%"]);
 
 
   // Layer 2: Statue Mid - Slight depth
@@ -106,7 +109,7 @@ const Hero = ({
       rotateY: statueRotateY,
       transformStyle: "preserve-3d"
     }} className="hidden min-[450px]:block absolute bottom-[0%] md:bottom-[-10%] lg:bottom-[-18%] left-[-10vw] md:left-[-5vw] lg:left-[2vw] z-10 pointer-events-none origin-bottom will-change-transform">
-        <motion.img src="/statue.png" className="h-[135vh] md:h-[135vh] lg:h-[185vh] w-auto max-w-[100vw] md:max-w-[85vw] lg:max-w-[80vw] object-contain object-bottom drop-shadow-[50px_0_30px_rgba(0,0,0,0.3)]" alt="Statue" loading="eager" fetchPriority="high" decoding="async" />
+        <motion.img src="/statue.png" className="h-[135vh] md:h-[135vh] lg:h-[185vh] w-auto max-w-[100vw] md:max-w-[85vw] lg:max-w-[80vw] object-contain object-bottom" alt="Statue" loading="eager" fetchPriority="high" decoding="async" />
       </motion.div>
 
       {/* ===== Atmospheric Fog Mid ===== */}
@@ -120,7 +123,7 @@ const Hero = ({
       translateY: mouseGrassY,
       scale: grassScale
     }} className="hidden min-[450px]:block absolute bottom-[-2%] md:bottom-[-8%] lg:bottom-[-9%] left-[-2vw] z-20 pointer-events-none origin-bottom-left will-change-transform">
-        <motion.img src="/grass.png" className="w-[120vw] md:w-[75vw] lg:w-[66vw] min-w-[300px] h-auto object-contain object-bottom drop-shadow-[20px_0_30px_rgba(0,0,0,0.8)]" alt="Grass" loading="eager" decoding="async" />
+        <motion.img src="/grass.png" className="w-[120vw] md:w-[75vw] lg:w-[66vw] min-w-[300px] h-auto object-contain object-bottom" alt="Grass" loading="eager" decoding="async" />
       </motion.div>
 
       {/* ===== Layer 4: Right Tree Foreground (Bottom Right Edge) ===== */}
@@ -132,11 +135,11 @@ const Hero = ({
       rotate: treeRotate,
       scale: treeScale
     }} className="hidden min-[450px]:block absolute bottom-[0%] md:bottom-[-8%] lg:bottom-[-9%] right-[-5vw] md:right-[-2vw] lg:right-[-5vw] z-20 pointer-events-none origin-bottom-right will-change-transform">
-        <motion.img src="/tree.png" className="w-[110vw] md:w-[60vw] lg:w-[45vw] min-w-[280px] h-auto object-contain object-bottom drop-shadow-[-20px_0_30px_rgba(0,0,0,0.8)]" alt="Tree" loading="eager" decoding="async" />
+        <motion.img src="/tree.png" className="w-[110vw] md:w-[60vw] lg:w-[45vw] min-w-[280px] h-auto object-contain object-bottom" alt="Tree" loading="eager" decoding="async" />
       </motion.div>
 
       {/* ===== Subtle Mystical Particles ===== */}
-      <ParticleSystem count={prefersReducedMotion ? 8 : 20} />
+      <ParticleSystem count={prefersReducedMotion || isMobile ? 8 : 20} />
 
       {/* Main Text Content */}
       <div className="relative z-30 flex flex-col items-center text-center px-6 max-w-5xl translate-y-[15px] md:translate-y-[15px] lg:translate-y-[15px]">

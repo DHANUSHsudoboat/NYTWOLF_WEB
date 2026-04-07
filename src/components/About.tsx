@@ -18,22 +18,8 @@ const FeatureCard = React.memo(({
   const cardRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-
-  // Scroll direction detection
-  const { scrollY } = useScroll();
-  const [isScrollingDown, setIsScrollingDown] = useState(true);
-  useMotionValueEvent(scrollY, "change", (current) => {
-    const previous = scrollY.getPrevious() ?? 0;
-    if (current > previous && !isScrollingDown) {
-      setIsScrollingDown(true);
-    } else if (current < previous && isScrollingDown) {
-      setIsScrollingDown(false);
-    }
-  });
-
-  // 1. DYNAMIC 1S REVEAL (Triggers every time it enters/exits viewport)
   const isInView = useInView(cardRef, { once: false, amount: 0.1 });
-  const isVisible = isInView || !isScrollingDown;
+  const isVisible = isInView;
 
   const initialRotX = 45;
   const initialRotY = index === 0 ? 30 : index === 2 ? -30 : 0;
@@ -87,7 +73,7 @@ const FeatureCard = React.memo(({
       style={{
         transformStyle: "preserve-3d",
       }}
-      className="relative p-5 md:p-6 lg:p-7 border border-white/10 bg-[#0F0B14]/40 backdrop-blur-md group overflow-hidden transition-[border-color,box-shadow] duration-500 hover:border-[#c79a40]/50 group-hover:border-t-[#c79a40]/80 group-hover:border-b-[#c79a40]/80 group-hover:shadow-[0_0_30px_rgba(199,154,64,0.1)] before:absolute before:inset-0 before:bg-gradient-to-t before:from-[#c79a40]/5 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500"
+      className="relative p-5 md:p-6 lg:p-7 border border-white/10 bg-[#0F0B14]/40 backdrop-blur-none md:backdrop-blur-md group overflow-hidden transition-[border-color,box-shadow] duration-500 hover:border-[#c79a40]/50 group-hover:border-t-[#c79a40]/80 group-hover:border-b-[#c79a40]/80 group-hover:shadow-[0_0_30px_rgba(199,154,64,0.1)] before:absolute before:inset-0 before:bg-gradient-to-t before:from-[#c79a40]/5 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 contain-content"
     >
       {/* Top Border Accent Glow */}
       <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#c79a40]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -120,6 +106,7 @@ const About = () => {
   const {
     setIsHoveringCard
   } = React.useContext(MouseGlowContext);
+  const isMobile = typeof window !== 'undefined' && window.matchMedia("(pointer: coarse)").matches;
   const sectionRef = useRef<HTMLDivElement>(null);
   const {
     scrollYProgress
@@ -136,10 +123,11 @@ const About = () => {
   });
 
   // 1. Deep Background Layer (Moves very slowly down)
-  const bgY = useTransform(smoothProgress, [0, 1], ["0%", "15%"]);
+  // Optimization: Disable background parallax on mobile to save CPU/GPU cycles
+  const bgY = useTransform(smoothProgress, [0, 1], ["0%", isMobile ? "0%" : "15%"]);
 
-  // 2. Mid-Ground Environment/Ruins Layer (Moves medium speed opposite to scroll)
-  const midY = useTransform(smoothProgress, [0, 1], ["20%", "-20%"]);
+  // 2. Mid-Ground Environment/Ruins Layer
+  const midY = useTransform(smoothProgress, [0, 1], ["20%", isMobile ? "20%" : "-20%"]);
   const midScaleX = useTransform(smoothProgress, [0, 0.5, 1], [1.1, 1, 1.1]);
 
   // 3. Foreground Gaming Objects (Moves very fast, extreme depth)
@@ -152,13 +140,13 @@ const About = () => {
   const cardsOpacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
   // Heading reveal styles (Triggered as we scroll towards section)
-  const h2Y = useTransform(smoothProgress, [0.2, 0.42], [100, 0]);
+  const h2Y = useTransform(smoothProgress, [0.2, 0.42], [40, 0]);
   const h2RotX = useTransform(smoothProgress, [0.2, 0.42], [45, 0]);
-  const h2Clip = useTransform(smoothProgress, [0.2, 0.42], ["inset(100% 0 0 0)", "inset(0% 0 0 0)"]);
+  const h2RotY = useTransform(smoothProgress, [0.2, 0.42], [30, 0]);
 
   // Cards reveal group (Ensures cards settle before snapping)
   const cardsY = useTransform(smoothProgress, [0.25, 0.48], [150, 0]);
-  const cardsRotX = useTransform(smoothProgress, [0.25, 0.48], [30, 0]);
+  const cardsRotX = useTransform(smoothProgress, [0.25, 0.48], [isMobile ? 0 : 30, 0]);
   const cardsClip = useTransform(smoothProgress, [0.25, 0.48], ["inset(100% 0 0 0)", "inset(-5% 0 -5% 0)"]);
   const features = [{
     title: "Strategic Depth",
@@ -208,16 +196,16 @@ const About = () => {
           style={{
             opacity: h1Opacity,
             y: h2Y,
-            rotateX: h2RotX,
-            clipPath: h2Clip,
-            transformStyle: "preserve-3d"
+            rotateX: isMobile ? 0 : h2RotX,
+            rotateY: isMobile ? 0 : h2RotY,
+            transformStyle: isMobile ? "flat" : "preserve-3d"
           }}
           className="lg:col-span-6 space-y-4 md:space-y-6"
         >
           <div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-3xl xl:text-4xl 2xl:text-6xl font-black tracking-tighter text-white leading-[1.05] uppercase mb-1 lg:mb-2 drop-shadow-[0_20px_50px_rgba(168,85,197,0.5)]">
               WE BUILD WORLDS <br />
-              WHERE <span className="inline-block text-transparent bg-clip-text bg-gradient-to-br from-[#c79a40] to-[#A855C5] pb-1">STRATEGY</span> <br />
+              WHERE <span className="text-[#A855C5]">STRATEGY</span> <br />
               REIGNS
             </h2>
 
