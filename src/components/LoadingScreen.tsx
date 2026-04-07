@@ -14,7 +14,13 @@ const LoadingScreen: React.FC<{
   onComplete
 }) => {
   const [isFinishing, setIsFinishing] = useState(false);
-  const isMobile = typeof window !== 'undefined' && window.matchMedia("(pointer: coarse)").matches;
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Drive progress directly through MotionValues for 60fps smoothness without re-renders
   const progressMV = useMotionValue(0);

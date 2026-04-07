@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform, AnimatePresence, useInView, useMotionV
 import { ChevronRight, Gamepad2, Layout, Palette, Cpu, Users, Mail, ArrowUpRight, Menu, X, Globe, Zap, Layers, Box, Linkedin, Instagram, Facebook, Code, Paintbrush, LayoutGrid, Compass, Mouse } from 'lucide-react';
 import { MouseGlowContext } from '../context';
 
-const ServiceCard = ({ service, index, scrollProgress }: { service: any; index: number; scrollProgress: any; key?: any }) => {
+const ServiceCard = ({ service, index, scrollProgress, isMobile }: { service: any; index: number; scrollProgress: any; isMobile: boolean; key?: any }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -71,9 +71,9 @@ const ServiceCard = ({ service, index, scrollProgress }: { service: any; index: 
         y: y,
         scale: scrollScale,
         opacity: scrollOpacity,
-        rotateX: window.matchMedia("(pointer: coarse)").matches ? 0 : flipRotateX,
-        rotateY: window.matchMedia("(pointer: coarse)").matches ? 0 : flipRotateY,
-        transformStyle: window.matchMedia("(pointer: coarse)").matches ? "flat" : "preserve-3d",
+        rotateX: isMobile ? 0 : flipRotateX,
+        rotateY: isMobile ? 0 : flipRotateY,
+        transformStyle: isMobile ? "flat" : "preserve-3d",
       }}
       className="relative p-6 md:p-8 border border-white/5 bg-gradient-to-b from-white/[0.08] to-transparent backdrop-blur-xl group overflow-hidden"
     >
@@ -109,7 +109,13 @@ const Services = () => {
     offset: ["start end", "end start"]
   });
 
-  const isMobile = typeof window !== 'undefined' && window.matchMedia("(pointer: coarse)").matches;
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const smoothProgress = useSpring(scrollYProgress, {
     damping: 25, stiffness: 100, restDelta: 0.001
@@ -162,7 +168,7 @@ const Services = () => {
           <div className="lg:col-span-7">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
               {services.map((s, i) => (
-                <ServiceCard key={i} service={s} index={i} scrollProgress={smoothProgress} />
+                <ServiceCard key={i} service={s} index={i} scrollProgress={smoothProgress} isMobile={isMobile} />
               ))}
             </div>
           </div>

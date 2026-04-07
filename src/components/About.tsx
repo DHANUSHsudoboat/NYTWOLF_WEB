@@ -106,7 +106,13 @@ const About = () => {
   const {
     setIsHoveringCard
   } = React.useContext(MouseGlowContext);
-  const isMobile = typeof window !== 'undefined' && window.matchMedia("(pointer: coarse)").matches;
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   const sectionRef = useRef<HTMLDivElement>(null);
   const {
     scrollYProgress

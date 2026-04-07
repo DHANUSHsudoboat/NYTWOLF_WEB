@@ -2,12 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring, useMotionValue, useInView, useMotionValueEvent } from 'motion/react';
 import { MouseGlowContext } from '../context';
 
-const TechCard = ({ tech, index }: { tech: any; index: number; key?: any }) => {
+const TechCard = ({ tech, index, isMobile }: { tech: any; index: number; isMobile: boolean; key?: any }) => {
   const { setIsHoveringCard } = React.useContext(MouseGlowContext);
   const cardRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(cardRef, { once: false, amount: 0.2 });
   const isVisible = isInView;
-  const isMobile = typeof window !== 'undefined' && window.matchMedia("(pointer: coarse)").matches;
 
   // 3D Flip Angles
   const initialRotX = 45;
@@ -58,7 +57,13 @@ const TechCard = ({ tech, index }: { tech: any; index: number; key?: any }) => {
 const PoweringOurWorlds = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const isMobile = typeof window !== 'undefined' && window.matchMedia("(pointer: coarse)").matches;
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (isMobile) return;
@@ -145,7 +150,7 @@ const PoweringOurWorlds = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto relative z-10 px-4 md:px-0">
           {techs.map((tech, i) => (
-            <TechCard key={i} tech={tech} index={i} />
+            <TechCard key={i} tech={tech} index={i} isMobile={isMobile} />
           ))}
         </div>
       </div>

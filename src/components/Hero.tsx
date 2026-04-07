@@ -28,8 +28,13 @@ const Hero = ({
   });
 
   // Background Parallax Transforms (Moved from App.tsx)
-  // Background Parallax Transforms (Moved from App.tsx)
-  const isMobile = typeof window !== 'undefined' && window.matchMedia("(pointer: coarse)").matches;
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const bgX = useTransform(mouseX, [0, 1], isMobile ? ["0%", "0%"] : ["-1.5%", "1.5%"]);
   const bgYParallax = useTransform(mouseY, [0, 1], isMobile ? ["0%", "0%"] : ["-1.5%", "1.5%"]);

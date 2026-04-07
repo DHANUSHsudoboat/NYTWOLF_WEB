@@ -7,7 +7,13 @@ export const ParticleSystem = React.memo(({
 }: {
   count?: number;
 }) => {
-  const isMobile = typeof window !== 'undefined' && window.matchMedia("(pointer: coarse)").matches;
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   const actualCount = isMobile ? Math.floor(count / 2) : count;
   
   const particles = React.useMemo(() => Array.from({
@@ -48,7 +54,13 @@ export const ShineOverlay = React.memo(({
   duration?: number;
   className?: string;
 }) => {
-  const isMobile = typeof window !== 'undefined' && window.matchMedia("(pointer: coarse)").matches;
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   
   return <div className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`}>
       <motion.div initial={{
@@ -206,9 +218,17 @@ export const CinematicBackground = () => {
   const {
     isHoveringCard
   } = React.useContext(MouseGlowContext);
+  const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
-    // Optimization: Skip mouse tracking on touch devices
-    if (window.matchMedia("(pointer: coarse)").matches) return;
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    // Optimization: Skip mouse tracking on mobile widths
+    if (isMobile) return;
 
     const handleMouseMove = (e: MouseEvent) => {
       if (!containerRef.current) return;
