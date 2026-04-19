@@ -63,8 +63,8 @@ const Hero = ({
   const treeRotate = useTransform(smoothProgress, [0, 0.6], [0, -1]);
   const treeScale = useTransform(smoothProgress, [0, 0.6], [1, 1.02]);
 
-  // Text content fades out
-  const opacityText = useTransform(smoothProgress, [0, 0.4], [1, 0]);
+  // Text content remains visible while in view
+  const opacityText = useMotionValue(1);
 
   // Fog Parallax
   const fogMidY = useTransform(smoothProgress, [0, 1], ["0%", "15%"]);
@@ -151,13 +151,13 @@ const Hero = ({
         <div className="mb-12 relative animate-none">
           <MouseParallax factor={40}>
             <div className="relative">
-              <Logo className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 text-white" useGradient={false} />
+              <Logo className="w-32 h-32 md:w-40 md:h-40 lg:w-36 lg:h-36 xl:w-48 xl:h-48 text-white" useGradient={false} />
             </div>
           </MouseParallax>
         </div>
 
         <div className="flex flex-col items-center">
-          <h1 className="text-3xl sm:text-4xl md:text-[2.5rem] lg:text-5xl font-black tracking-[0.15em] md:tracking-[0.25em] lg:tracking-[0.3em] text-white uppercase font-display drop-shadow-[0_0_30px_rgba(255,255,255,0.1)] flex flex-col lg:flex-row items-center gap-2 lg:gap-4 text-center">
+          <h1 className="text-3xl sm:text-4xl md:text-[2.5rem] lg:text-4xl xl:text-5xl font-black tracking-[0.15em] md:tracking-[0.25em] lg:tracking-[0.25em] xl:tracking-[0.3em] text-white uppercase font-display drop-shadow-[0_0_30px_rgba(255,255,255,0.1)] flex flex-col lg:flex-row items-center gap-2 lg:gap-4 text-center">
             <span className="inline-block align-middle">NYTW<WolfEyeO />LF</span> <span className="text-[#A855C5]">GAMES</span>
           </h1>
 

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence, useInView, useMotionValue, useSpring, animate, useReducedMotion, useMotionTemplate } from 'motion/react';
+import { motion, useScroll, useTransform, AnimatePresence, useInView, useMotionValue, useSpring, animate, useReducedMotion, useMotionTemplate, useMotionValueEvent } from 'motion/react';
 import { ChevronRight, Gamepad2, Layout, Palette, Cpu, Users, Mail, ArrowUpRight, Menu, X, Globe, Zap, Layers, Box, Linkedin, Instagram, Facebook, Code, Paintbrush, LayoutGrid, Compass, Mouse } from 'lucide-react';
 import { MouseGlowContext } from '../context';
+import { SECTION_HEADER, SECTION_LABEL, SECTION_DESC, CARD_HEADER, CARD_DESC, CARD_ICON_BOX, CARD_ICON } from '../typography';
 
 const ServiceCard = ({ service, index, scrollProgress, isMobile }: { service: any; index: number; scrollProgress: any; isMobile: boolean; key?: any }) => {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -75,7 +76,7 @@ const ServiceCard = ({ service, index, scrollProgress, isMobile }: { service: an
         rotateY: isMobile ? 0 : flipRotateY,
         transformStyle: isMobile ? "flat" : "preserve-3d",
       }}
-      className="relative p-6 md:p-8 border border-white/5 bg-gradient-to-b from-white/[0.08] to-transparent backdrop-blur-xl group overflow-hidden"
+      className="relative p-4 md:p-5 lg:p-4 border border-white/5 bg-gradient-to-b from-white/[0.08] to-transparent backdrop-blur-xl group overflow-hidden"
     >
       <motion.div
         style={{
@@ -84,16 +85,16 @@ const ServiceCard = ({ service, index, scrollProgress, isMobile }: { service: an
           opacity: contentOpacity,
           transformStyle: "preserve-3d",
         }}
-        className="relative z-10 flex flex-col items-center text-center space-y-4"
+        className="relative z-10 flex flex-col items-center text-center space-y-2"
       >
-        <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#A855C5] group-hover:text-[#c79a40] group-hover:border-[#c79a40]/30 transition-all duration-500 shadow-2xl" style={{ transform: "translateZ(30px)" }}>
-          {React.cloneElement(service.icon as React.ReactElement<any>, { className: "w-7 h-7 md:w-8 md:h-8" })}
+        <div className={`${CARD_ICON_BOX} rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#A855C5] group-hover:text-[#c79a40] group-hover:border-[#c79a40]/30 transition-all duration-500 shadow-2xl`} style={{ transform: "translateZ(30px)" }}>
+          {React.cloneElement(service.icon as React.ReactElement<any>, { className: CARD_ICON })}
         </div>
-        <div className="space-y-2" style={{ transform: "translateZ(20px)" }}>
-          <h3 className="text-base md:text-lg lg:text-xl font-black text-white uppercase tracking-wider group-hover:text-[#c79a40] transition-colors">
+        <div className="space-y-1" style={{ transform: "translateZ(20px)" }}>
+          <h3 className={`${CARD_HEADER} text-white group-hover:text-[#c79a40] transition-colors`}>
             {service.title}
           </h3>
-          <p className="text-[10px] md:text-xs lg:text-sm text-white/50 leading-relaxed font-medium group-hover:text-white/80 max-w-[280px] transition-colors">
+          <p className={`${CARD_DESC} text-white/50 group-hover:text-white/80 max-w-[280px] transition-colors`}>
             {service.desc}
           </p>
         </div>
@@ -121,6 +122,22 @@ const Services = () => {
     damping: 25, stiffness: 100, restDelta: 0.001
   });
 
+  // ========== UNIDIRECTIONAL PROGRESS (TOP-TO-BOTTOM ONLY) ==========
+  const unidirectionalProgress = useMotionValue(0);
+  const maxProgressRef = useRef(0);
+  
+  useMotionValueEvent(smoothProgress, "change", (latest) => {
+    if (latest > maxProgressRef.current) {
+      maxProgressRef.current = latest;
+      unidirectionalProgress.set(latest);
+    }
+    // Reset if the section is completely below the viewport (scrolled back up past it)
+    if (latest <= 0) {
+      maxProgressRef.current = 0;
+      unidirectionalProgress.set(0);
+    }
+  });
+
   // ========== ENVIRONMENTAL PARALAX LAYERS ==========
   const bgY = useTransform(smoothProgress, [0, 1], ["0%", isMobile ? "0%" : "15%"]);
   const midLeftY = useTransform(smoothProgress, [0, 1], ["20%", "-20%"]);
@@ -131,7 +148,7 @@ const Services = () => {
   const fgY2 = useTransform(smoothProgress, [0, 1], ["80%", "-120%"]);
   const fgRot2 = useTransform(smoothProgress, [0, 1], [0, 90]);
 
-  const h1Opacity = useTransform(smoothProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
+  const h1Opacity = useTransform(unidirectionalProgress, [0, 0.15], [0, 1]);
 
   const services = [
     { icon: <Gamepad2 />, title: "Game Development", desc: "Full-cycle production from concept to launch. Deep systems, scalable architecture, and high-fidelity gameplay." },
@@ -151,24 +168,24 @@ const Services = () => {
       </motion.div>
 
       <div className="container-1440 relative z-10 block">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-4">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 mb-4">
           <div className="lg:col-span-5 relative z-10 lg:translate-y-12">
             <motion.div style={{ opacity: h1Opacity }}>
-              <span className="text-[#c79a40] tracking-[0.5em] uppercase text-xs font-bold mb-6 block">OUR EXPERTISE</span>
-              <h2 className="text-4xl lg:text-5xl xl:text-6xl font-black leading-none mb-6 uppercase tracking-tighter">
+              <span className={`${SECTION_LABEL} text-[#c79a40] mb-6 block`}>OUR EXPERTISE</span>
+              <h2 className={`${SECTION_HEADER} mb-4 lg:mb-3`}>
                 CORE <br />
                 <span className="text-[#A855C5]">CAPABILITIES</span>
               </h2>
-              <p className="text-base text-white/90 leading-relaxed max-w-md font-medium">
+              <p className={`${SECTION_DESC} text-white/90 max-w-md`}>
                 We engineer worlds, systems, and experiences that push the boundaries of immersive strategy gaming.
               </p>
             </motion.div>
           </div>
 
           <div className="lg:col-span-7">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-4">
               {services.map((s, i) => (
-                <ServiceCard key={i} service={s} index={i} scrollProgress={smoothProgress} isMobile={isMobile} />
+                <ServiceCard key={i} service={s} index={i} scrollProgress={unidirectionalProgress} isMobile={isMobile} />
               ))}
             </div>
           </div>

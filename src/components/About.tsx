@@ -3,33 +3,39 @@ import { motion, useScroll, useTransform, AnimatePresence, useInView, useMotionV
 import { ChevronRight, Gamepad2, Layout, Palette, Cpu, Users, Mail, ArrowUpRight, Menu, X, Globe, Zap, Layers, Box, Linkedin, Instagram, Facebook, Code, Paintbrush, LayoutGrid, Compass, Mouse } from 'lucide-react';
 import { MouseGlowContext } from '../context';
 import { CinematicBackground } from './common/Layout';
+import { SECTION_HEADER, SECTION_DESC, CARD_HEADER, CARD_DESC } from '../typography';
 
 import { useMotionTemplate } from 'motion/react';
 
 const FeatureCard = React.memo(({
   feature,
   index,
-  setIsHoveringCard
+  setIsHoveringCard,
+  scrollProgress
 }: {
   feature: any;
   index: number;
   setIsHoveringCard: (val: boolean) => void;
+  scrollProgress: any;
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const isInView = useInView(cardRef, { once: false, amount: 0.1 });
-  const isVisible = isInView;
-
-  const initialRotX = 45;
-  const initialRotY = index === 0 ? 30 : index === 2 ? -30 : 0;
+  
+  // Drive card entrance directly from unidirectional progress
+  const revealOpacity = useTransform(scrollProgress, [0.25, 0.4], [0, 1]);
+  const revealY = useTransform(scrollProgress, [0.25, 0.45], [40, 0]);
+  const revealRotX = useTransform(scrollProgress, [0.25, 0.45], [45, 0]);
+  const revealRotY = useTransform(scrollProgress, [0.25, 0.45], [index === 0 ? 30 : index === 2 ? -30 : 0, 0]);
 
   // Mouse hover tilt
   const rotateXMouse = useSpring(useTransform(mouseY, [-0.5, 0.5], [10, -10]), { damping: 25, stiffness: 220 });
   const rotateYMouse = useSpring(useTransform(mouseX, [-0.5, 0.5], [-10, 10]), { damping: 25, stiffness: 220 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isVisible) return;
+    // Only allow hover after card is largely revealed
+    if (scrollProgress.get() < 0.4) return;
+    
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     const width = rect.width;
@@ -52,25 +58,11 @@ const FeatureCard = React.memo(({
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHoveringCard(true)}
       onMouseLeave={handleMouseLeave}
-      initial={{
-        rotateX: initialRotX,
-        rotateY: initialRotY,
-        opacity: 0,
-        y: 40
-      }}
-      animate={isVisible ? {
-        rotateX: 0,
-        rotateY: 0,
-        opacity: 1,
-        y: 0
-      } : {
-        rotateX: initialRotX,
-        rotateY: initialRotY,
-        opacity: 0,
-        y: 40
-      }}
-      transition={{ duration: 1, ease: "easeOut" }}
       style={{
+        opacity: revealOpacity,
+        y: revealY,
+        rotateX: revealRotX,
+        rotateY: revealRotY,
         transformStyle: "preserve-3d",
       }}
       className="relative p-5 md:p-6 lg:p-7 border border-white/10 bg-[#0F0B14]/40 backdrop-blur-none md:backdrop-blur-md group overflow-hidden transition-[border-color,box-shadow] duration-500 hover:border-[#c79a40]/50 group-hover:border-t-[#c79a40]/80 group-hover:border-b-[#c79a40]/80 group-hover:shadow-[0_0_30px_rgba(199,154,64,0.1)] before:absolute before:inset-0 before:bg-gradient-to-t before:from-[#c79a40]/5 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 contain-content"
@@ -86,10 +78,10 @@ const FeatureCard = React.memo(({
         }}
         className="relative z-10 space-y-4"
       >
-        <h3 className="text-base md:text-lg lg:text-xl font-black text-white uppercase tracking-widest mb-2 group-hover:text-[#c79a40] transition-colors relative z-10" style={{ transform: "translateZ(20px)" }}>
+        <h3 className={`${CARD_HEADER} text-white mb-2 group-hover:text-[#c79a40] transition-colors relative z-10`} style={{ transform: "translateZ(20px)" }}>
           {feature.title}
         </h3>
-        <p className="text-xs md:text-sm lg:text-base text-white/50 leading-relaxed font-medium relative z-10 group-hover:text-white/80 transition-colors duration-500" style={{ transform: "translateZ(10px)" }}>
+        <p className={`${CARD_DESC} text-white/50 relative z-10 group-hover:text-white/80 transition-colors duration-500`} style={{ transform: "translateZ(10px)" }}>
           {feature.desc}
         </p>
       </motion.div>
@@ -121,11 +113,26 @@ const About = () => {
     offset: ["start end", "end start"]
   });
 
-  // Apply even higher response for 1-second animation feel
   const smoothProgress = useSpring(scrollYProgress, {
     damping: 25,
     stiffness: 150,
     restDelta: 0.001
+  });
+
+  // ========== UNIDIRECTIONAL PROGRESS (TOP-TO-BOTTOM ONLY) ==========
+  const unidirectionalProgress = useMotionValue(0);
+  const maxProgressRef = useRef(0);
+
+  useMotionValueEvent(smoothProgress, "change", (latest) => {
+    if (latest > maxProgressRef.current) {
+      maxProgressRef.current = latest;
+      unidirectionalProgress.set(latest);
+    }
+    // Reset if the section is completely below the viewport (scrolled back up past it)
+    if (latest <= 0) {
+      maxProgressRef.current = 0;
+      unidirectionalProgress.set(0);
+    }
   });
 
   // 1. Deep Background Layer (Moves very slowly down)
@@ -142,18 +149,18 @@ const About = () => {
   const fgRotate = useTransform(smoothProgress, [0, 1], [15, -15]);
 
   // ========== CONTENT REVEAL LAYERS (Coordinated for snap landing) ==========
-  const h1Opacity = useTransform(smoothProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
-  const cardsOpacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+  const h1Opacity = useTransform(unidirectionalProgress, [0, 0.15], [0, 1]);
+  const cardsOpacity = useTransform(unidirectionalProgress, [0, 0.2], [0, 1]);
 
   // Heading reveal styles (Triggered as we scroll towards section)
-  const h2Y = useTransform(smoothProgress, [0.2, 0.42], [40, 0]);
-  const h2RotX = useTransform(smoothProgress, [0.2, 0.42], [45, 0]);
-  const h2RotY = useTransform(smoothProgress, [0.2, 0.42], [30, 0]);
+  const h2Y = useTransform(unidirectionalProgress, [0.2, 0.42], [40, 0]);
+  const h2RotX = useTransform(unidirectionalProgress, [0.2, 0.32], [45, 0]);
+  const h2RotY = useTransform(unidirectionalProgress, [0.2, 0.32], [30, 0]);
 
   // Cards reveal group (Ensures cards settle before snapping)
-  const cardsY = useTransform(smoothProgress, [0.25, 0.48], [150, 0]);
-  const cardsRotX = useTransform(smoothProgress, [0.25, 0.48], [isMobile ? 0 : 30, 0]);
-  const cardsClip = useTransform(smoothProgress, [0.25, 0.48], ["inset(100% 0 0 0)", "inset(-5% 0 -5% 0)"]);
+  const cardsY = useTransform(unidirectionalProgress, [0.25, 0.48], [150, 0]);
+  const cardsRotX = useTransform(unidirectionalProgress, [0.25, 0.48], [isMobile ? 0 : 30, 0]);
+  const cardsClip = useTransform(unidirectionalProgress, [0.25, 0.48], ["inset(100% 0 0 0)", "inset(-5% 0 -5% 0)"]);
   const features = [{
     title: "Strategic Depth",
     desc: "Meaningful systems. No shallow gameplay."
@@ -209,7 +216,7 @@ const About = () => {
           className="lg:col-span-6 space-y-4 md:space-y-6"
         >
           <div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-3xl xl:text-4xl 2xl:text-6xl font-black tracking-tighter text-white leading-[1.05] uppercase mb-1 lg:mb-2 drop-shadow-[0_20px_50px_rgba(168,85,197,0.5)]">
+            <h2 className={`${SECTION_HEADER} text-white mb-1 lg:mb-2 drop-shadow-[0_20px_50px_rgba(168,85,197,0.5)]`}>
               WE BUILD WORLDS <br />
               WHERE <span className="text-[#A855C5]">STRATEGY</span> <br />
               REIGNS
@@ -217,7 +224,7 @@ const About = () => {
 
             <div className="w-16 h-1 bg-[#A855C5] mb-3 lg:mb-4" />
 
-            <p className="text-sm md:text-base lg:text-base xl:text-lg text-white/80 leading-relaxed max-w-xl font-medium tracking-wide">
+            <p className={`${SECTION_DESC} text-white/80 max-w-xl tracking-wide`}>
               NYTWOLF Games is a passionate studio crafting immersive medieval sandbox worlds where every decision matters.
             </p>
           </div>
@@ -243,7 +250,7 @@ const About = () => {
         }}
         className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 pb-2"
       >
-        {features.map((feature, i) => <FeatureCard key={i} feature={feature} index={i} setIsHoveringCard={setIsHoveringCard} />)}
+        {features.map((feature, i) => <FeatureCard key={i} feature={feature} index={i} setIsHoveringCard={setIsHoveringCard} scrollProgress={unidirectionalProgress} />)}
       </motion.div>
     </div>
 

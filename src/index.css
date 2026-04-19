@@ -104,9 +104,10 @@
   /* CRITICAL: Disable section blurs on mobile which kill scroll performance */
   .section-focus-layer {
     filter: none !important;
-    opacity: 0.1 !important;
-    transition: opacity 0.5s ease-out !important;
-    will-change: opacity;
+    opacity: 1 !important;
+    transition: none !important; /* No fade transition needed if always visible */
+    visibility: visible !important;
+    will-change: auto;
   }
 
   .section-focus-layer.active {

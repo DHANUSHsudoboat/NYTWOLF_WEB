@@ -79,9 +79,10 @@ const LoadingScreen: React.FC<{
   }, [onComplete, progressMV]);
 
   return <motion.div className="fixed inset-0 z-[100] bg-[#0F0B14] flex flex-col items-center justify-center overflow-hidden" 
-    initial={{ opacity: 1 }} 
     exit={{ opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }}
   >
+      <HexGridBackground />
+      
       {/* Cinematic Background (Matches Frame 0 of the intro) */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center">
         <img 
@@ -145,8 +146,7 @@ const LoadingScreen: React.FC<{
         }} 
         transition={{
           duration: isFinishing ? 1.5 : 0.8,
-          ease: [0.22, 1, 0.36, 1],
-          delay: isFinishing ? 0 : 1
+          ease: [0.22, 1, 0.36, 1]
         }}
       >
         <div className="relative w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48">
@@ -174,8 +174,7 @@ const LoadingScreen: React.FC<{
             y: 0
           }} 
           transition={{
-            duration: isFinishing ? 1.5 : 1.2,
-            delay: isFinishing ? 0 : 0.6,
+            duration: isFinishing ? 1.5 : 0.8,
             ease: [0.22, 1, 0.36, 1]
           }} 
           className="mt-12 text-center"

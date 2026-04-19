@@ -29,14 +29,14 @@ const Navbar = ({
   ];
 
   return (
-    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-[#0F0B14]/90 backdrop-blur-md py-3 md:py-4' : 'bg-transparent py-4 md:py-8'}`}>
+    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-[#0F0B14]/90 backdrop-blur-md py-2 md:py-3' : 'bg-transparent py-3 md:py-6'}`}>
       <div className="container-1440 flex justify-between items-center px-6 md:px-10">
-        <motion.div 
-          initial={{ opacity: 0 }} 
-          animate={{ opacity: 1 }} 
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           className="flex items-center"
         >
-          <HeaderLogo className="h-14 w-auto text-white" />
+          <HeaderLogo className="h-11 w-auto text-white" />
         </motion.div>
 
         {/* Desktop Nav */}
@@ -52,7 +52,7 @@ const Navbar = ({
               initial={{ opacity: 0, y: -10 }} 
               animate={{ opacity: 1, y: 0 }} 
               transition={{ delay: i * 0.1 }} 
-              className={`text-sm font-display tracking-[0.2em] transition-all duration-300 uppercase relative group ${
+              className={`text-xs xl:text-sm 2xl:text-base font-bold uppercase tracking-[0.2em] font-display transition-all duration-300 relative group ${
                 activeSection === link.id || (link.id === 'services' && activeSection === 'tech') 
                   ? 'text-primary' 
                   : 'text-white/80 hover:text-white'

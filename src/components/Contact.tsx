@@ -4,6 +4,7 @@ import { ChevronRight, Gamepad2, Layout, Palette, Cpu, Users, Mail, ArrowUpRight
 import { MouseGlowContext } from '../context';
 import Footer from './Footer';
 import Logo from './Logo';
+import { SECTION_HEADER, SECTION_LABEL, SECTION_DESC } from '../typography';
 
 
 const Contact = () => {
@@ -105,46 +106,31 @@ const Contact = () => {
     };
     
     // Improved resolution: Don't use a placeholder URL if VITE_WEBHOOK_URL is not set or set to dummy value
-    const envUrl = import.meta.env.VITE_WEBHOOK_URL;
-    const webhookUrl = (!envUrl || envUrl === 'Webhook Url' || !envUrl.startsWith('http')) 
-      ? '/api/send-email' 
-      : envUrl;
+    const webhookUrl = 'https://script.google.com/macros/s/AKfycbyLvnOt595_qvl74pWnivupyr8jBoE3ks2FTh2EjVEWEMQ3MNUJUKVA_EZf65LIjX8xYQ/exec';
 
-    console.log("Submitting to:", webhookUrl);
     try {
-      // Send the payload as JSON, but keep no-cors to prevent browser blocking.
-      // Note: Google Apps Script needs to handle POST requests and CORS internally 
-      // (often by having a doPost function return ContentService.createTextOutput().setMimeType(ContentService.MimeType.JSON))
-      const response = await fetch(webhookUrl, {
+      // Google Apps Script doesn't support CORS preflight (OPTIONS).
+      // Using text/plain avoids the preflight entirely (simple request).
+      // The response is opaque with no-cors so we assume success on no-throw.
+      await fetch(webhookUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(payload)
       });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: `Server error: ${response.status}` }));
-        throw new Error(errorData.error);
-      }
 
       setResult({
         type: 'success',
         message: 'Message sent successfully!'
       });
-      setIsVerified(false); // Reset verification state
+      setIsVerified(false);
       setTimeout(() => setResult(null), 5000);
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
-      });
+      setFormData({ name: '', email: '', subject: '', message: '' });
     } catch (error: any) {
       console.error('Submission error:', error);
       setResult({
         type: 'error',
-        message: error.message || 'Connection error. Please try again later.'
+        message: 'Connection error. Please try again later.'
       });
       setTimeout(() => setResult(null), 5000);
     } finally {
@@ -179,8 +165,8 @@ const Contact = () => {
 
   const formRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
-  const isFormInView = useInView(formRef, { once: false, amount: 0.1 });
-  const isTextInView = useInView(textRef, { once: false, amount: 0.1 });
+  const isFormInView = useInView(formRef, { once: true, amount: 0.1 });
+  const isTextInView = useInView(textRef, { once: true, amount: 0.1 });
   const isFormVisible = isFormInView || !isScrollingDown;
   const isTextVisible = isTextInView || !isScrollingDown;
   
@@ -192,8 +178,8 @@ const Contact = () => {
   });
 
   // ========== CONTENT REVEAL LAYERS ==========
-  const contentOpacity = useTransform(smoothProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
-  const formOpacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+  const contentOpacity = useTransform(smoothProgress, [0, 0.15], [0, 1]);
+  const formOpacity = useTransform(smoothProgress, [0, 0.2], [0, 1]);
   
   return (
     <>
@@ -228,7 +214,7 @@ const Contact = () => {
 
         <div className="flex-1 flex items-center z-10">
           <div className="container-1440 relative w-full">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-20">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 lg:gap-8">
               <div className="lg:col-span-6">
                 <motion.div 
                   ref={textRef}
@@ -237,27 +223,27 @@ const Contact = () => {
                   transition={{ duration: 1, ease: "easeOut" }}
                   style={{ transformStyle: isMobile ? "flat" : "preserve-3d" }}
                 >
-                  <span className="text-[#c79a40] tracking-[0.5em] uppercase text-xs font-bold mb-4 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">SEND A RAVEN</span>
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black mb-6 md:mb-10 uppercase tracking-tighter text-white leading-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
+                  <span className={`${SECTION_LABEL} text-[#c79a40] mb-2 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]`}>SEND A RAVEN</span>
+                  <h2 className={`${SECTION_HEADER} text-white mb-3 md:mb-6 lg:mb-3 drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]`}>
                     LET'S <span className="text-[#A855C5]">TALK</span>.
                   </h2>
-                  <p className="text-base md:text-lg text-text-muted mb-4 md:mb-8 max-w-sm font-medium leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                  <p className={`${SECTION_DESC} text-text-muted mb-4 md:mb-6 lg:mb-4 max-w-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]`}>
                     Whether you're a potential partner, a member of the press, or just want to say hello, we'd love to hear from you.
                   </p>
-                  <div className="space-y-8">
-                    <div onMouseEnter={() => setIsHoveringCard(true)} onMouseLeave={() => setIsHoveringCard(false)} className="flex items-center gap-6 group cursor-pointer">
-                      <div className="w-14 h-14 rounded-xl border border-white/10 bg-[#0F0B14] shadow-[0_10px_20px_rgba(0,0,0,0.5)] flex items-center justify-center text-[#A855C5] group-hover:border-[#c79a40]/50 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(199,154,64,0.3)] transition-all duration-300">
-                        <Mail className="w-6 h-6" />
+                  <div className="space-y-5 lg:space-y-4">
+                    <div onMouseEnter={() => setIsHoveringCard(true)} onMouseLeave={() => setIsHoveringCard(false)} className="flex items-center gap-4 group cursor-pointer">
+                      <div className="w-11 h-11 lg:w-10 lg:h-10 rounded-xl border border-white/10 bg-[#0F0B14] shadow-[0_10px_20px_rgba(0,0,0,0.5)] flex items-center justify-center text-[#A855C5] group-hover:border-[#c79a40]/50 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(199,154,64,0.3)] transition-all duration-300">
+                        <Mail className="w-5 h-5 lg:w-4 lg:h-4" />
                       </div>
-                      <a href="mailto:hello@nytwolfgames.com?subject=Nytwolf%20Website%20Inquiry" className="text-xl font-bold text-white tracking-wider group-hover:text-[#c79a40] transition-colors">
+                      <a href="mailto:hello@nytwolfgames.com?subject=Nytwolf%20Website%20Inquiry" className="text-base lg:text-sm font-bold text-white tracking-wider group-hover:text-[#c79a40] transition-colors">
                         hello@nytwolfgames.com
                       </a>
                     </div>
-                    <a href="https://maps.app.goo.gl/UdhxKFLM2aGkF4ex6" target="_blank" rel="noopener noreferrer" onMouseEnter={() => setIsHoveringCard(true)} onMouseLeave={() => setIsHoveringCard(false)} className="flex items-center gap-6 group cursor-pointer">
-                      <div className="w-14 h-14 rounded-xl border border-white/10 bg-[#0F0B14] shadow-[0_10px_20px_rgba(0,0,0,0.5)] flex items-center justify-center text-[#A855C5] group-hover:border-[#c79a40]/50 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(199,154,64,0.3)] transition-all duration-300">
-                        <Globe className="w-6 h-6" />
+                    <a href="https://maps.app.goo.gl/UdhxKFLM2aGkF4ex6" target="_blank" rel="noopener noreferrer" onMouseEnter={() => setIsHoveringCard(true)} onMouseLeave={() => setIsHoveringCard(false)} className="flex items-center gap-4 group cursor-pointer">
+                      <div className="w-11 h-11 lg:w-10 lg:h-10 rounded-xl border border-white/10 bg-[#0F0B14] shadow-[0_10px_20px_rgba(0,0,0,0.5)] flex items-center justify-center text-[#A855C5] group-hover:border-[#c79a40]/50 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(199,154,64,0.3)] transition-all duration-300">
+                        <Globe className="w-5 h-5 lg:w-4 lg:h-4" />
                       </div>
-                      <span className="text-xl font-bold text-white tracking-wider group-hover:text-[#c79a40] transition-colors">Coimbatore, India</span>
+                      <span className="text-base lg:text-sm font-bold text-white tracking-wider group-hover:text-[#c79a40] transition-colors">Coimbatore, India</span>
                     </a>
                   </div>
                 </motion.div>
@@ -271,21 +257,21 @@ const Contact = () => {
                 style={{ transformStyle: isMobile ? "flat" : "preserve-3d" }}
                 className="lg:col-span-6"
               >
-                <form onSubmit={handleSubmit} onMouseEnter={() => setIsHoveringCard(true)} onMouseLeave={() => setIsHoveringCard(false)} className="space-y-4 bg-black/40 p-5 md:p-8 rounded-2xl border border-[#A855C5]/20 shadow-[0_30px_60px_rgba(0,0,0,0.7)] relative overflow-hidden group">
+                <form onSubmit={handleSubmit} onMouseEnter={() => setIsHoveringCard(true)} onMouseLeave={() => setIsHoveringCard(false)} className="space-y-3 bg-black/40 p-5 md:p-6 lg:p-4 rounded-2xl border border-[#A855C5]/20 shadow-[0_30px_60px_rgba(0,0,0,0.7)] relative overflow-hidden group">
                   {/* Mystical Altar Ambient Glow */}
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(168,85,197,0.15)_0%,transparent_60%)] pointer-events-none" />
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
-                    <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="NAME" className="bg-black/50 border border-white/10 p-4 text-xs tracking-[0.2em] text-white focus:border-[#c79a40]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]" />
-                    <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="EMAIL" className="bg-black/50 border border-white/10 p-4 text-xs tracking-[0.2em] text-white focus:border-[#c79a40]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]" />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 relative z-10">
+                    <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="NAME" className="bg-black/50 border border-white/10 p-3 lg:p-2.5 text-xs tracking-[0.2em] text-white focus:border-[#c79a40]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]" />
+                    <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="EMAIL" className="bg-black/50 border border-white/10 p-3 lg:p-2.5 text-xs tracking-[0.2em] text-white focus:border-[#c79a40]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]" />
                   </div>
-                  <input type="text" name="subject" value={formData.subject} onChange={handleChange} placeholder="SUBJECT" className="w-full bg-black/50 border border-white/10 p-4 text-xs tracking-[0.2em] text-white focus:border-[#A855C5]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] relative z-10" />
-                  <textarea name="message" value={formData.message} onChange={handleChange} placeholder="MESSAGE" rows={3} className="w-full bg-black/50 border border-white/10 p-4 text-xs tracking-[0.2em] text-white focus:border-[#A855C5]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg resize-none shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] relative z-10" />
+                  <input type="text" name="subject" value={formData.subject} onChange={handleChange} placeholder="SUBJECT" className="w-full bg-black/50 border border-white/10 p-3 lg:p-2.5 text-xs tracking-[0.2em] text-white focus:border-[#A855C5]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] relative z-10" />
+                  <textarea name="message" value={formData.message} onChange={handleChange} placeholder="MESSAGE" rows={2} className="w-full bg-black/50 border border-white/10 p-3 lg:p-2.5 text-xs tracking-[0.2em] text-white focus:border-[#A855C5]/70 focus:bg-[#140D1B] outline-none transition-all duration-300 rounded-lg resize-none shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] relative z-10" />
 
                   {/* Custom Human Verification Task */}
                   <div className="relative z-10 space-y-3">
                     <div
-                      className={`flex items-center gap-4 p-4 rounded-xl border transition-all duration-500 cursor-pointer select-none group/btn ${isVerified
+                      className={`flex items-center gap-4 p-3 lg:p-2.5 rounded-xl border transition-all duration-500 cursor-pointer select-none group/btn ${isVerified
                         ? 'bg-green-500/10 border-green-500/30'
                         : 'bg-white/[0.03] border-white/10 hover:bg-white/[0.06] hover:border-[#A855C5]/40'
                         }`}
@@ -319,7 +305,7 @@ const Contact = () => {
                     </div>
                   </div>
 
-                  <button type="submit" disabled={isSubmitting} className={`w-full bg-gradient-to-r from-[#A855C5] to-[#4A1C56] text-white py-4 font-bold tracking-[0.3em] uppercase text-xs hover:from-[#c79a40] hover:to-[#916b20] transition-all duration-500 rounded-lg shadow-[0_10px_30px_rgba(168,85,197,0.4)] border border-[#A855C5]/50 hover:border-[#c79a40]/50 relative z-10 overflow-hidden ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}>
+                  <button type="submit" disabled={isSubmitting} className={`w-full bg-gradient-to-r from-[#A855C5] to-[#4A1C56] text-white py-3 lg:py-2.5 font-bold tracking-[0.3em] uppercase text-xs hover:from-[#c79a40] hover:to-[#916b20] transition-all duration-500 rounded-lg shadow-[0_10px_30px_rgba(168,85,197,0.4)] border border-[#A855C5]/50 hover:border-[#c79a40]/50 relative z-10 overflow-hidden ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}>
                     <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                       {isSubmitting ? 'SENDING...' : 'SEND MESSAGE'}
                     </span>

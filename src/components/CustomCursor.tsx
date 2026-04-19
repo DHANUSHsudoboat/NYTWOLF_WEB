@@ -5,6 +5,7 @@ const CustomCursor = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [isPointer, setIsPointer] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   // Mouse Coordinates
   const cursorX = useMotionValue(-100);
@@ -21,6 +22,7 @@ const CustomCursor = () => {
     const moveMouse = (e: MouseEvent) => {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
+      setIsVisible(true);
 
       const target = e.target as HTMLElement;
       setIsPointer(window.getComputedStyle(target).cursor === 'pointer');
@@ -29,14 +31,32 @@ const CustomCursor = () => {
     const handleMouseDown = () => setIsClicked(true);
     const handleMouseUp = () => setIsClicked(false);
 
+    // Hide when mouse leaves the window
+    const handleMouseLeave = () => setIsVisible(false);
+    // Re-show immediately when mouse re-enters
+    const handleMouseEnter = () => setIsVisible(true);
+
+    // Re-show after tab switch — next mousemove will update position
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setIsVisible(false);
+      }
+    };
+
     window.addEventListener('mousemove', moveMouse);
     window.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('mouseleave', handleMouseLeave);
+    document.addEventListener('mouseenter', handleMouseEnter);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
       window.removeEventListener('mousemove', moveMouse);
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+      document.removeEventListener('mouseenter', handleMouseEnter);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 
@@ -48,6 +68,8 @@ const CustomCursor = () => {
       {/* Main Core Dot */}
       <motion.div
         className="custom-cursor fixed top-0 left-0 w-2 h-2 bg-white rounded-full z-[10000] pointer-events-none mix-blend-difference"
+        animate={{ opacity: isVisible ? 1 : 0 }}
+        transition={{ duration: 0.15 }}
         style={{
           x: cursorX,
           y: cursorY,
@@ -62,7 +84,7 @@ const CustomCursor = () => {
         animate={{
           width: isClicked ? 32 : (isPointer ? 64 : 40),
           height: isClicked ? 32 : (isPointer ? 64 : 40),
-          opacity: isClicked ? 1 : (isPointer ? 0.8 : 0.4),
+          opacity: isVisible ? (isClicked ? 1 : (isPointer ? 0.8 : 0.4)) : 0,
           scale: isClicked ? 0.9 : 1,
           backgroundColor: isPointer ? 'rgba(168, 85, 197, 0.1)' : 'transparent',
           borderColor: isPointer ? '#A855C5' : 'rgba(255, 255, 255, 0.3)',
