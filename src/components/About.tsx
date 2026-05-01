@@ -149,13 +149,11 @@ const About = () => {
   const fgRotate = useTransform(smoothProgress, [0, 1], [15, -15]);
 
   // ========== CONTENT REVEAL LAYERS (Coordinated for snap landing) ==========
-  const h1Opacity = useTransform(unidirectionalProgress, [0, 0.15], [0, 1]);
   const cardsOpacity = useTransform(unidirectionalProgress, [0, 0.2], [0, 1]);
 
-  // Heading reveal styles (Triggered as we scroll towards section)
-  const h2Y = useTransform(unidirectionalProgress, [0.2, 0.42], [40, 0]);
-  const h2RotX = useTransform(unidirectionalProgress, [0.2, 0.32], [45, 0]);
-  const h2RotY = useTransform(unidirectionalProgress, [0.2, 0.32], [30, 0]);
+  // Heading reveal styles
+  const h2Y = useTransform(unidirectionalProgress, [0.05, 0.3], [40, 0]);
+  const h2Opacity = useTransform(unidirectionalProgress, [0.05, 0.3], [0, 1]);
 
   // Cards reveal group (Ensures cards settle before snapping)
   const cardsY = useTransform(unidirectionalProgress, [0.25, 0.48], [150, 0]);
@@ -207,11 +205,8 @@ const About = () => {
         {/* Left Column: Cinematic Heading Reveal */}
         <motion.div
           style={{
-            opacity: h1Opacity,
+            opacity: h2Opacity,
             y: h2Y,
-            rotateX: isMobile ? 0 : h2RotX,
-            rotateY: isMobile ? 0 : h2RotY,
-            transformStyle: isMobile ? "flat" : "preserve-3d"
           }}
           className="lg:col-span-6 space-y-4 md:space-y-6"
         >
