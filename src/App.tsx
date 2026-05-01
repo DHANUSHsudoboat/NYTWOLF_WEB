@@ -1,7 +1,7 @@
 import { MouseGlowContext } from './context';
 import HeaderLogo from './components/HeaderLogo';
 import LoadingScreen from './components/LoadingScreen';
-import Hero from './components/Hero';
+import Home from './components/Home';
 import About from './components/About';
 import Services from './components/Services';
 import Careers from './components/Careers';
@@ -223,7 +223,7 @@ export default function App() {
 
         <main className="relative z-10">
           <div id="home" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col justify-center ${activeSectionId === 'home' || scrollingFromId === 'home' ? 'active' : ''}`}>
-            <Hero mouseX={mouseXSpring} mouseY={mouseYSpring} />
+            <Home mouseX={mouseXSpring} mouseY={mouseYSpring} />
           </div>
           <div id="studio" className={`section-focus-layer relative overflow-hidden min-h-screen flex flex-col justify-center ${activeSectionId === 'studio' || scrollingFromId === 'studio' ? 'active' : ''}`}>
             <About />

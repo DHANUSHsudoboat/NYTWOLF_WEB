@@ -6,7 +6,7 @@ import { ShineOverlay, FogLayer, ParticleSystem, MouseParallax } from './common/
 import Logo from './Logo';
 import WolfEyeO from './WolfEyeO';
 
-const Hero = ({
+const Home = ({
   mouseX,
   mouseY
 }: {
@@ -198,4 +198,4 @@ const Hero = ({
     </section>;
 };
 
-export default Hero;
+export default Home;

@@ -106,7 +106,7 @@ const Contact = () => {
     };
     
     // Improved resolution: Don't use a placeholder URL if VITE_WEBHOOK_URL is not set or set to dummy value
-    const webhookUrl = 'https://script.google.com/macros/s/AKfycbyLvnOt595_qvl74pWnivupyr8jBoE3ks2FTh2EjVEWEMQ3MNUJUKVA_EZf65LIjX8xYQ/exec';
+    const webhookUrl = import.meta.env.VITE_WEBHOOK_URL;
 
     try {
       // Google Apps Script doesn't support CORS preflight (OPTIONS).
@@ -235,15 +235,15 @@ const Contact = () => {
                       <div className="w-11 h-11 lg:w-10 lg:h-10 rounded-xl border border-white/10 bg-[#0F0B14] shadow-[0_10px_20px_rgba(0,0,0,0.5)] flex items-center justify-center text-[#A855C5] group-hover:border-[#c79a40]/50 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(199,154,64,0.3)] transition-all duration-300">
                         <Mail className="w-5 h-5 lg:w-4 lg:h-4" />
                       </div>
-                      <a href="mailto:hello@nytwolfgames.com?subject=Nytwolf%20Website%20Inquiry" className="text-base lg:text-sm font-bold text-white tracking-wider group-hover:text-[#c79a40] transition-colors">
-                        hello@nytwolfgames.com
+                      <a href={`mailto:${import.meta.env.VITE_CONTACT_EMAIL}?subject=Nytwolf%20Website%20Inquiry`} className="text-base lg:text-sm font-bold text-white tracking-wider group-hover:text-[#c79a40] transition-colors">
+                        {import.meta.env.VITE_CONTACT_EMAIL}
                       </a>
                     </div>
-                    <a href="https://maps.app.goo.gl/UdhxKFLM2aGkF4ex6" target="_blank" rel="noopener noreferrer" onMouseEnter={() => setIsHoveringCard(true)} onMouseLeave={() => setIsHoveringCard(false)} className="flex items-center gap-4 group cursor-pointer">
+                    <a href={import.meta.env.VITE_MAPS_URL} target="_blank" rel="noopener noreferrer" onMouseEnter={() => setIsHoveringCard(true)} onMouseLeave={() => setIsHoveringCard(false)} className="flex items-center gap-4 group cursor-pointer">
                       <div className="w-11 h-11 lg:w-10 lg:h-10 rounded-xl border border-white/10 bg-[#0F0B14] shadow-[0_10px_20px_rgba(0,0,0,0.5)] flex items-center justify-center text-[#A855C5] group-hover:border-[#c79a40]/50 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(199,154,64,0.3)] transition-all duration-300">
                         <Globe className="w-5 h-5 lg:w-4 lg:h-4" />
                       </div>
-                      <span className="text-base lg:text-sm font-bold text-white tracking-wider group-hover:text-[#c79a40] transition-colors">Coimbatore, India</span>
+                      <span className="text-base lg:text-sm font-bold text-white tracking-wider group-hover:text-[#c79a40] transition-colors">{import.meta.env.VITE_LOCATION}</span>
                     </a>
                   </div>
                 </motion.div>
